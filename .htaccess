@@ -42,6 +42,10 @@ RewriteRule ^page/tentang-fikes/sertifikat-akreditasi\.php$ /fikes/tentang/serti
 RewriteCond %{THE_REQUEST} \s/+fikes/page/tentang-fikes/unduh-logo\.php(?:[?\s]|$) [NC]
 RewriteRule ^page/tentang-fikes/unduh-logo\.php$ /fikes/tentang/unduh-logo [R=301,L]
 
+# kemahasiswaan
+RewriteRule ^kemahasiswaan/himpunan-mahasiswa/?$ page/kemahasiswaan/himpunan-mahasiswa.php [L]
+RewriteRule ^kemahasiswaan/ukm/?$ page/kemahasiswaan/ukm.php [L]
+
 # Dosen
 RewriteCond %{THE_REQUEST} \s/+fikes/page/dosen/dosen\.php(?:\?prodi=([^\s&]+))? [NC]
 RewriteRule ^page/dosen/dosen\.php$ /fikes/dosen [R=301,L]
@@ -102,4 +106,7 @@ RewriteRule ^survey/?$ page/survey/survey.php [L,QSA]
 RewriteRule ^survey/([^/]+)/?$ page/survey/isi-survey.php?slug=$1 [L,QSA,NE]
 
 RewriteRule ^kemahasiswaan/himpunan-mahasiswa/?$ page/kemahasiswaan/himpunan-mhs.html [L]
+RewriteRule ^kemahasiswaan/himpunan-kemahasiswaan/?$ page/kemahasiswaan/himpunan-kemahasiswaan.php [L]
+RewriteRule ^kemahasiswaan/himpunan/([^/]+)/?$ page/kemahasiswaan/detail-himpunan.php?slug=$1 [L,QSA,NE]
 RewriteRule ^kemahasiswaan/ukm/?$ page/kemahasiswaan/ukm-mhs.html [L]
+RewriteRule ^kemahasiswaan/ukm/([^/]+)/?$ page/kemahasiswaan/detail-ukm.php?slug=$1 [L,QSA,NE]
