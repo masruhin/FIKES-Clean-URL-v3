@@ -1,0 +1,105 @@
+Options -MultiViews
+RewriteEngine On
+
+# =========================================================
+# FIKES - CLEAN URL FINAL
+# Project folder: /fikes
+# =========================================================
+
+# ---------------------------------------------------------
+# 1. URL lama -> URL bersih (301)
+#    THE_REQUEST prevents internal rewrites from redirecting.
+# ---------------------------------------------------------
+RewriteCond %{THE_REQUEST} \s/+fikes/(?:index\.php)?(?:[?\s]|$) [NC]
+RewriteRule ^index\.php$ /fikes/ [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+fikes/detail-berita\.php\?slug=([^\s&]+) [NC]
+RewriteRule ^detail-berita\.php$ /fikes/berita/%1 [R=301,L,NE]
+
+# Tentang FIKES - actual files in page/visi-misi, page/struktur, etc.
+RewriteCond %{THE_REQUEST} \s/+fikes/page/visi-misi/visi-misi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/visi-misi/visi-misi\.php$ /fikes/tentang/visi-misi [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+fikes/page/struktur/struktur-organisasi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/struktur/struktur-organisasi\.php$ /fikes/tentang/struktur-organisasi [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+fikes/page/sertifikat/sertifikat-akreditasi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/sertifikat/sertifikat-akreditasi\.php$ /fikes/tentang/sertifikat-akreditasi [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+fikes/page/unduh-logo/unduh-logo\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/unduh-logo/unduh-logo\.php$ /fikes/tentang/unduh-logo [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+fikes/page/unduh-logo/download-logo-all\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/unduh-logo/download-logo-all\.php$ /fikes/tentang/download-logo [R=301,L]
+
+# Dukungan URL lama dari struktur project sebelumnya.
+RewriteCond %{THE_REQUEST} \s/+fikes/page/tentang-fikes/visi-misi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/tentang-fikes/visi-misi\.php$ /fikes/tentang/visi-misi [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+fikes/page/tentang-fikes/struktur-organisasi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/tentang-fikes/struktur-organisasi\.php$ /fikes/tentang/struktur-organisasi [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+fikes/page/tentang-fikes/sertifikat-akreditasi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/tentang-fikes/sertifikat-akreditasi\.php$ /fikes/tentang/sertifikat-akreditasi [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+fikes/page/tentang-fikes/unduh-logo\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/tentang-fikes/unduh-logo\.php$ /fikes/tentang/unduh-logo [R=301,L]
+
+# Dosen
+RewriteCond %{THE_REQUEST} \s/+fikes/page/dosen/dosen\.php(?:\?prodi=([^\s&]+))? [NC]
+RewriteRule ^page/dosen/dosen\.php$ /fikes/dosen [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+fikes/page/dosen/detail-dosen\.php\?id=([0-9]+) [NC]
+RewriteRule ^page/dosen/detail-dosen\.php$ /fikes/dosen/profil/%1 [R=301,L]
+
+# Program Studi
+RewriteCond %{THE_REQUEST} \s/+fikes/page/program-studi/detail-prodi\.php\?kode=([^\s&]+) [NC]
+RewriteRule ^page/program-studi/detail-prodi\.php$ /fikes/program-studi/%1 [R=301,L,NE]
+RewriteCond %{THE_REQUEST} \s/+fikes/page/program-studi/program-studi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/program-studi/program-studi\.php$ /fikes/program-studi [R=301,L]
+
+# Akademik
+RewriteCond %{THE_REQUEST} \s/+fikes/page/akademik/akademik\.php(?:[?#\s]|$) [NC]
+RewriteRule ^page/akademik/akademik\.php$ /fikes/akademik [R=301,L]
+
+# Survey
+RewriteCond %{THE_REQUEST} \s/+fikes/page/survey/isi-survey\.php\?slug=([^\s&]+) [NC]
+RewriteRule ^page/survey/isi-survey\.php$ /fikes/survey/%1 [R=301,L,NE]
+RewriteCond %{THE_REQUEST} \s/+fikes/page/survey/survey\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/survey/survey\.php$ /fikes/survey [R=301,L]
+
+# Kemahasiswaan
+RewriteCond %{THE_REQUEST} \s/+fikes/page/kemahasiswaan/himpunan-mhs\.html(?:[?\s]|$) [NC]
+RewriteRule ^page/kemahasiswaan/himpunan-mhs\.html$ /fikes/kemahasiswaan/himpunan-mahasiswa [R=301,L]
+RewriteCond %{THE_REQUEST} \s/+fikes/page/kemahasiswaan/ukm-mhs\.html(?:[?\s]|$) [NC]
+RewriteRule ^page/kemahasiswaan/ukm-mhs\.html$ /fikes/kemahasiswaan/ukm [R=301,L]
+
+# ---------------------------------------------------------
+# 2. File/folder fisik jangan di-rewrite
+# ---------------------------------------------------------
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# ---------------------------------------------------------
+# 3. URL bersih -> file asli
+# ---------------------------------------------------------
+RewriteRule ^$ index.php [L]
+RewriteRule ^berita/([^/]+)/?$ detail-berita.php?slug=$1 [L,QSA,NE]
+
+RewriteRule ^tentang/visi-misi/?$ page/visi-misi/visi-misi.php [L]
+RewriteRule ^tentang/struktur-organisasi/?$ page/struktur/struktur-organisasi.php [L]
+RewriteRule ^tentang/sertifikat-akreditasi/?$ page/sertifikat/sertifikat-akreditasi.php [L]
+RewriteRule ^tentang/unduh-logo/?$ page/unduh-logo/unduh-logo.php [L]
+RewriteRule ^tentang/download-logo/?$ page/unduh-logo/download-logo-all.php [L]
+
+RewriteRule ^dosen/?$ page/dosen/dosen.php [L,QSA]
+RewriteRule ^dosen/(keperawatan|kebidanan|farmasi|k3)/?$ page/dosen/dosen.php?prodi=$1 [L,QSA,NC]
+RewriteRule ^dosen/profil/([0-9]+)/?$ page/dosen/detail-dosen.php?id=$1 [L,QSA]
+
+RewriteRule ^program-studi/?$ page/program-studi/program-studi.php [L,QSA]
+RewriteRule ^program-studi/([^/]+)/?$ page/program-studi/detail-prodi.php?kode=$1 [L,QSA,NE]
+
+RewriteRule ^akademik/?$ page/akademik/akademik.php [L,QSA]
+
+RewriteRule ^survey/?$ page/survey/survey.php [L,QSA]
+RewriteRule ^survey/([^/]+)/?$ page/survey/isi-survey.php?slug=$1 [L,QSA,NE]
+
+RewriteRule ^kemahasiswaan/himpunan-mahasiswa/?$ page/kemahasiswaan/himpunan-mhs.html [L]
+RewriteRule ^kemahasiswaan/ukm/?$ page/kemahasiswaan/ukm-mhs.html [L]
