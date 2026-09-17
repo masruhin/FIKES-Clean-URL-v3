@@ -11,23 +11,23 @@ $surveys = $pdo->query("SELECT s.*,(SELECT COUNT(*) FROM survey_pertanyaan p WHE
 <!doctype html>
 <html lang="id">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Survey | FIKES - Fakultas Ilmu Kesehatan</title>
+    <title>Survey | FIKES - Fakultas Ilmu Kesehatan</title>
 
-  <meta name="description"
-    content="Website resmi Fakultas Ilmu Kesehatan - Informasi akademik, program studi, kemahasiswaan, pelayanan dan informasi FIKES." />
+    <meta name="description"
+      content="Website resmi Fakultas Ilmu Kesehatan - Informasi akademik, program studi, kemahasiswaan, pelayanan dan informasi FIKES." />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="/fikes/assets/css/style.css" />
-  <style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/fikes/assets/css/style.css" />
+    <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap");
 
     :root {
@@ -1354,292 +1354,216 @@ $surveys = $pdo->query("SELECT s.*,(SELECT COUNT(*) FROM survey_pertanyaan p WHE
         font-size: 28px
       }
     }
-  </style>
-</head>
+    </style>
+  </head>
 
-<body>
+  <body>
+    <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
 
-  <!-- =========================================================
-     TOP BAR
-========================================================= -->
-
-  <div class="topbar">
-    <div class="container topbar-inner">
-      <div class="topbar-info">
-        <span>📍 Kampus FIKES</span>
-
-        <span>✉️ info@fikes.ac.id</span>
-
-        <span>📞 (021) 1234567</span>
-      </div>
-
-      <div class="topbar-social">
-        <a href="#">Instagram</a>
-        <a href="#">Facebook</a>
-        <a href="#">YouTube</a>
-      </div>
-    </div>
-  </div>
-
-  <!-- =========================================================
-     NAVBAR
-========================================================= -->
-
-  <header class="navbar" id="navbar">
-    <div class="container nav-inner">
-      <a href="/fikes/" class="logo">
-        <div class="logo-icon">F</div>
-        <div class="logo-text"><strong>FIKES</strong><small>FAKULTAS ILMU KESEHATAN</small></div>
-      </a>
-      <button class="menu-toggle" id="menuToggle">☰</button>
-      <nav class="nav-menu" id="navMenu">
-        <div class="nav-item has-dropdown">
-          <a href="#" class="nav-link">Tentang FIKES <span class="arrow">▾</span></a>
-          <div class="dropdown">
-            <div class="dropdown-item"><a href="/fikes/tentang/visi-misi" class="dropdown-link">Visi
-                Misi</a></div>
-            <div class="dropdown-item"><a href="/fikes/tentang/struktur-organisasi"
-                class="dropdown-link">Struktur Organisasi</a></div>
-            <div class="dropdown-item"><a href="/fikes/tentang/sertifikat-akreditasi"
-                class="dropdown-link">Sertifikat Akreditasi</a></div>
-            <div class="dropdown-item"><a href="/fikes/tentang/unduh-logo" class="dropdown-link">Unduh
-                Logo</a></div>
+    <!-- NAVBAR REUSABLE -->
+    <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
+    <main>
+      <section class="page-hero survey-hero">
+        <div class="container">
+          <div class="breadcrumb">⌂ <span>Beranda</span><b>›</b><span>Survey</span></div>
+          <span class="eyebrow">PELAYANAN & MUTU FIKES</span>
+          <h1>Survey FIKES</h1>
+          <p>Berikan penilaian dan masukan Anda untuk membantu FIKES meningkatkan kualitas pendidikan, pelayanan,
+            sarana, dan prasarana.</p>
+        </div>
+      </section>
+      <section class="survey-section">
+        <div class="container">
+          <div class="section-heading">
+            <span class="eyebrow">PARTISIPASI ANDA</span>
+            <h2>Survey yang tersedia</h2>
+            <p>Silakan pilih survey sesuai dengan kategori Anda. Daftar ini terhubung langsung dengan database dan dapat
+              ditambah melalui Dashboard Admin.</p>
           </div>
-        </div>
-        <div class="nav-item has-dropdown">
-          <a href="#" class="nav-link">Kemahasiswaan <span class="arrow">▾</span></a>
-          <div class="dropdown">
-            <div class="dropdown-item"><a href="/fikes/kemahasiswaan/himpunan-mahasiswa" class="dropdown-link">Unit
-                Himpunan Mahasiswa</a></div>
-            <div class="dropdown-item"><a href="/fikes/kemahasiswaan/ukm" class="dropdown-link">UKM
-                Kemahasiswaan</a></div>
-          </div>
-        </div>
-        <div class="nav-item"><a href="/fikes/program-studi" class="nav-link">Program</a></div>
-        <div class="nav-item has-dropdown">
-          <a href="/fikes/akademik" class="nav-link">Akademik <span class="arrow">▾</span></a>
-          <div class="dropdown">
-            <div class="dropdown-item"><a href="/fikes/akademik#kurikulum"
-                class="dropdown-link">Kurikulum &amp; Silabus</a></div>
-            <div class="dropdown-item"><a href="/fikes/akademik#kalender"
-                class="dropdown-link">Kalender Pendidikan</a></div>
-            <div class="dropdown-item"><a href="/fikes/akademik#jadwal" class="dropdown-link">Jadwal
-                Kuliah &amp; Ujian</a></div>
-            <div class="dropdown-item"><a href="/fikes/akademik#registrasi"
-                class="dropdown-link">Jadwal Registrasi</a></div>
-            <div class="dropdown-item"><a href="/fikes/akademik#dokumen"
-                class="dropdown-link">Administrasi &amp; Dokumen Mahasiswa</a></div>
-            <div class="dropdown-item"><a href="/fikes/akademik#penilaian"
-                class="dropdown-link">Sistem Penilaian</a></div>
-          </div>
-        </div>
-        <!-- <div class="nav-item"><a href="#pelayanan" class="nav-link">Pelayanan FIKES</a></div> -->
-        <div class="nav-item"><a href="/fikes/survey" class="nav-link">Survey</a></div>
-      </nav>
-      <a href="/fikes/program-studi" class="nav-cta">Jelajahi Program <span>→</span></a>
-    </div>
-  </header>
-  <main>
-    <section class="page-hero survey-hero">
-      <div class="container">
-        <div class="breadcrumb">⌂ <span>Beranda</span><b>›</b><span>Survey</span></div>
-        <span class="eyebrow">PELAYANAN & MUTU FIKES</span>
-        <h1>Survey FIKES</h1>
-        <p>Berikan penilaian dan masukan Anda untuk membantu FIKES meningkatkan kualitas pendidikan, pelayanan,
-          sarana, dan prasarana.</p>
-      </div>
-    </section>
-    <section class="survey-section">
-      <div class="container">
-        <div class="section-heading">
-          <span class="eyebrow">PARTISIPASI ANDA</span>
-          <h2>Survey yang tersedia</h2>
-          <p>Silakan pilih survey sesuai dengan kategori Anda. Daftar ini terhubung langsung dengan database dan dapat
-            ditambah melalui Dashboard Admin.</p>
-        </div>
-        <div class="survey-grid">
-          <?php if (!$surveys): ?>
+          <div class="survey-grid">
+            <?php if (!$surveys): ?>
             <div class="survey-empty">
               <div class="survey-icon">✓</div>
               <h3>Belum ada survey aktif</h3>
               <p>Silakan kembali lagi nanti untuk mengikuti survey FIKES.</p>
             </div>
             <?php else: foreach ($surveys as $s): ?>
-              <article class="survey-card">
-                <div class="survey-card-accent"></div>
-                <div class="survey-card-body">
-                  <div class="survey-card-top">
-                    <div class="survey-icon">✓</div><span class="survey-status">Aktif</span>
-                  </div>
-                  <h3><?= e($s['judul']) ?></h3>
-                  <div class="survey-meta"><span>👤 <?= e($s['target_responden']) ?></span><span>☑
-                      <?= e($s['jumlah_pertanyaan']) ?> Pertanyaan</span></div>
-                  <p><?= e($s['deskripsi'] ?: 'Silakan isi survey sesuai pengalaman dan penilaian Anda.') ?></p>
-                  <div class="survey-period"><strong>Periode Survey</strong><span><?= e($s['tanggal_mulai'] ?: 'Terbuka') ?>
-                      — <?= e($s['tanggal_selesai'] ?: 'Tidak ditentukan') ?></span></div>
-                  <a class="survey-btn" href="/fikes/survey/<?= rawurlencode($s['slug']) ?>">Isi
-                    Survey <span>→</span></a>
+            <article class="survey-card">
+              <div class="survey-card-accent"></div>
+              <div class="survey-card-body">
+                <div class="survey-card-top">
+                  <div class="survey-icon">✓</div><span class="survey-status">Aktif</span>
                 </div>
-              </article>
-          <?php endforeach;
+                <h3><?= e($s['judul']) ?></h3>
+                <div class="survey-meta"><span>👤 <?= e($s['target_responden']) ?></span><span>☑
+                    <?= e($s['jumlah_pertanyaan']) ?> Pertanyaan</span></div>
+                <p><?= e($s['deskripsi'] ?: 'Silakan isi survey sesuai pengalaman dan penilaian Anda.') ?></p>
+                <div class="survey-period"><strong>Periode
+                    Survey</strong><span><?= e($s['tanggal_mulai'] ?: 'Terbuka') ?>
+                    — <?= e($s['tanggal_selesai'] ?: 'Tidak ditentukan') ?></span></div>
+                <a class="survey-btn" href="/fikes/survey/<?= rawurlencode($s['slug']) ?>">Isi
+                  Survey <span>→</span></a>
+              </div>
+            </article>
+            <?php endforeach;
           endif; ?>
+          </div>
         </div>
-      </div>
-    </section>
-  </main>
-  <footer>
-    <div class="container footer-main">
-      <div class="footer-brand">
-        <div class="logo footer-logo">
-          <div class="logo-icon">F</div>
+      </section>
+    </main>
+    <footer>
+      <div class="container footer-main">
+        <div class="footer-brand">
+          <div class="logo footer-logo">
+            <div class="logo-icon">F</div>
 
-          <div class="logo-text">
-            <strong style="color: white"> FIKES </strong>
+            <div class="logo-text">
+              <strong style="color: white"> FIKES </strong>
 
-            <small> FAKULTAS ILMU KESEHATAN </small>
+              <small> FAKULTAS ILMU KESEHATAN </small>
+            </div>
+          </div>
+
+          <p>
+            Membangun generasi kesehatan yang profesional, berintegritas,
+            inovatif, dan berorientasi kepada masyarakat.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-title">Tentang FIKES</h4>
+
+          <div class="footer-links">
+            <a href="#"> Visi Misi </a>
+
+            <a href="#"> Struktur Organisasi </a>
+
+            <a href="#"> Akreditasi </a>
+
+            <a href="#"> Daftar Dosen </a>
           </div>
         </div>
 
-        <p>
-          Membangun generasi kesehatan yang profesional, berintegritas,
-          inovatif, dan berorientasi kepada masyarakat.
-        </p>
-      </div>
+        <div>
+          <h4 class="footer-title">Program Studi</h4>
 
-      <div>
-        <h4 class="footer-title">Tentang FIKES</h4>
+          <div class="footer-links">
+            <a href="#"> Profesi Ners </a>
 
-        <div class="footer-links">
-          <a href="#"> Visi Misi </a>
+            <a href="#"> Ilmu Keperawatan </a>
 
-          <a href="#"> Struktur Organisasi </a>
+            <a href="#"> Farmasi </a>
 
-          <a href="#"> Akreditasi </a>
+            <a href="#"> Kebidanan </a>
 
-          <a href="#"> Daftar Dosen </a>
+            <a href="#"> K3 </a>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h4 class="footer-title">Program Studi</h4>
+        <div>
+          <h4 class="footer-title">Informasi</h4>
 
-        <div class="footer-links">
-          <a href="#"> Profesi Ners </a>
+          <div class="footer-links">
+            <a href="/fikes/akademik"> Akademik </a>
 
-          <a href="#"> Ilmu Keperawatan </a>
+            <a href="#"> Kemahasiswaan </a>
 
-          <a href="#"> Farmasi </a>
+            <a href="#"> Pelayanan FIKES </a>
 
-          <a href="#"> Kebidanan </a>
-
-          <a href="#"> K3 </a>
+            <a href="/fikes/survey"> Survey </a>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h4 class="footer-title">Informasi</h4>
-
-        <div class="footer-links">
-          <a href="/fikes/akademik"> Akademik </a>
-
-          <a href="#"> Kemahasiswaan </a>
-
-          <a href="#"> Pelayanan FIKES </a>
-
-          <a href="/fikes/survey"> Survey </a>
-        </div>
-      </div>
-
-      <!--MAP PETA-->
-      <!-- =========================================================
+        <!--MAP PETA-->
+        <!-- =========================================================
      LOKASI & PETA
 ========================================================== -->
 
-      <div class="footer-location">
-        <div class="location-header">
-          <div class="location-icon">
-            <i class="fa-solid fa-location-dot"></i>
-          </div>
-
-          <div>
-            <h3>Lokasi Kampus</h3>
-
-            <p>Fakultas Ilmu Kesehatan</p>
-          </div>
-        </div>
-
-        <!-- PETA -->
-
-        <div class="map-card">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.1515727139526!2d109.11806027499709!3d-6.991421893009626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fbef42471658d%3A0x883656d1325ef066!2sUniversitas%20Bhamada%20Slawi!5e0!3m2!1sid!2sid!4v1787544396003!5m2!1sid!2sid"
-            width="600" height="450" style="border: 0" allowfullscreen="" loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin" title="Lokasi Fakultas Ilmu Kesehatan" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
-          </iframe>
-
-          <div class="map-overlay">
-            <div class="map-info">
-              <div class="map-info-icon">
-                <i class="fa-solid fa-location-dot"></i>
-              </div>
-
-              <div>
-                <strong> Fakultas Ilmu Kesehatan </strong>
-
-                <span> Lihat lokasi kampus </span>
-              </div>
+        <div class="footer-location">
+          <div class="location-header">
+            <div class="location-icon">
+              <i class="fa-solid fa-location-dot"></i>
             </div>
 
-            <a href="#" target="_blank" class="map-direction">
-              <i class="fa-solid fa-diamond-turn-right"></i>
+            <div>
+              <h3>Lokasi Kampus</h3>
 
-              Petunjuk Arah
-            </a>
+              <p>Fakultas Ilmu Kesehatan</p>
+            </div>
+          </div>
+
+          <!-- PETA -->
+
+          <div class="map-card">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.1515727139526!2d109.11806027499709!3d-6.991421893009626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fbef42471658d%3A0x883656d1325ef066!2sUniversitas%20Bhamada%20Slawi!5e0!3m2!1sid!2sid!4v1787544396003!5m2!1sid!2sid"
+              width="600" height="450" style="border: 0" allowfullscreen="" loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin" title="Lokasi Fakultas Ilmu Kesehatan" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
+            </iframe>
+
+            <div class="map-overlay">
+              <div class="map-info">
+                <div class="map-info-icon">
+                  <i class="fa-solid fa-location-dot"></i>
+                </div>
+
+                <div>
+                  <strong> Fakultas Ilmu Kesehatan </strong>
+
+                  <span> Lihat lokasi kampus </span>
+                </div>
+              </div>
+
+              <a href="#" target="_blank" class="map-direction">
+                <i class="fa-solid fa-diamond-turn-right"></i>
+
+                Petunjuk Arah
+              </a>
+            </div>
+          </div>
+
+          <!-- ALAMAT -->
+
+          <div class="footer-contact location-contact">
+            <i class="fa-solid fa-location-dot"></i>
+
+            <span>
+              Alamat Fakultas Ilmu Kesehatan, silakan sesuaikan dengan alamat
+              kampus.
+            </span>
+          </div>
+
+          <div class="footer-contact">
+            <i class="fa-solid fa-phone"></i>
+
+            <span> Nomor Telepon FIKES </span>
+          </div>
+
+          <div class="footer-contact">
+            <i class="fa-solid fa-envelope"></i>
+
+            <span> email@fikes.ac.id </span>
           </div>
         </div>
-
-        <!-- ALAMAT -->
-
-        <div class="footer-contact location-contact">
-          <i class="fa-solid fa-location-dot"></i>
-
-          <span>
-            Alamat Fakultas Ilmu Kesehatan, silakan sesuaikan dengan alamat
-            kampus.
-          </span>
-        </div>
-
-        <div class="footer-contact">
-          <i class="fa-solid fa-phone"></i>
-
-          <span> Nomor Telepon FIKES </span>
-        </div>
-
-        <div class="footer-contact">
-          <i class="fa-solid fa-envelope"></i>
-
-          <span> email@fikes.ac.id </span>
-        </div>
+        <!--MAP PETA-->
       </div>
-      <!--MAP PETA-->
-    </div>
 
-    <div class="container footer-bottom">
-      <span>
-        © <span id="year"></span> Fakultas Ilmu Kesehatan. All Rights
-        Reserved.
-      </span>
+      <div class="container footer-bottom">
+        <span>
+          © <span id="year"></span> Fakultas Ilmu Kesehatan. All Rights
+          Reserved.
+        </span>
 
-      <span> Website FIKES </span>
-    </div>
-  </footer>
+        <span> Website FIKES </span>
+      </div>
+    </footer>
 
-  <!-- BACK TO TOP -->
+    <!-- BACK TO TOP -->
 
-  <button class="back-top" id="backTop">↑</button>
-  <!-- <script src="assets/js/main.js"></script> -->
-  <script>
+    <button class="back-top" id="backTop">↑</button>
+    <!-- <script src="assets/js/main.js"></script> -->
+    <script>
     let current = 0;
     let slides = [];
     let dots = [];
@@ -1678,8 +1602,8 @@ $surveys = $pdo->query("SELECT s.*,(SELECT COUNT(*) FROM survey_pertanyaan p WHE
         behavior: "smooth"
       });
     });
-  </script>
-  <script>
+    </script>
+    <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Label kolom otomatis untuk mode kartu di HP.
       document.querySelectorAll('.ak-table').forEach(function(table) {
@@ -1704,8 +1628,8 @@ $surveys = $pdo->query("SELECT s.*,(SELECT COUNT(*) FROM survey_pertanyaan p WHE
       document.querySelectorAll('.ak-side a').forEach(a => a.addEventListener('click', () => document
         .querySelectorAll('.ak-side a').forEach(x => x.classList.remove('active'))));
     });
-  </script>
+    </script>
 
-</body>
+  </body>
 
 </html>

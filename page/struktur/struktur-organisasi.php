@@ -2260,7 +2260,6 @@ if (!empty($data['gambar'])) {
   </head>
 
   <body>
-    <!-- TOPBAR REUSABLE -->
     <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
 
     <!-- NAVBAR REUSABLE -->

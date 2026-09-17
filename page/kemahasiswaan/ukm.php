@@ -1,5 +1,7 @@
 <?php
-$page_title = 'UKM Kemahasiswaan';
+require_once __DIR__ . '/../../admin/config/database.php';
+
+$page_title = 'Unit Kegiatan Mahasiswa';
 
 if (!function_exists('e')) {
   function e($value)
@@ -8,521 +10,1161 @@ if (!function_exists('e')) {
   }
 }
 
-$ukmList = [
-  ['slug' => 'karate', 'nama' => 'Karate', 'kategori' => 'Olahraga & Bela Diri', 'icon' => '🥋', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/karate.png', 'deskripsi' => 'Wadah pengembangan bela diri, disiplin, kebugaran, karakter, dan prestasi mahasiswa.'],
-  ['slug' => 'basket', 'nama' => 'Basket', 'kategori' => 'Olahraga', 'icon' => '🏀', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/basket.png', 'deskripsi' => 'Wadah pengembangan kemampuan bola basket, sportivitas, kebugaran, dan kerja sama tim.'],
-  ['slug' => 'futsal', 'nama' => 'Futsal', 'kategori' => 'Olahraga', 'icon' => '⚽', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/futsal.png', 'deskripsi' => 'Wadah pengembangan teknik futsal, kekompakan, kebugaran, dan pengalaman kompetisi.'],
-  ['slug' => 'badminton', 'nama' => 'Badminton', 'kategori' => 'Olahraga', 'icon' => '🏸', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/badminton.png', 'deskripsi' => 'Wadah pengembangan keterampilan badminton, kebugaran, sportivitas, dan prestasi mahasiswa.'],
-  ['slug' => 'voli', 'nama' => 'Voli', 'kategori' => 'Olahraga', 'icon' => '🏐', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/voli.jpg', 'deskripsi' => 'Wadah pengembangan kemampuan bola voli, kekompakan tim, kebugaran, dan prestasi.'],
-  ['slug' => 'silat', 'nama' => 'Silat', 'kategori' => 'Olahraga & Bela Diri', 'icon' => '🥋', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/silat.jpeg', 'deskripsi' => 'Wadah pengembangan seni bela diri, disiplin, karakter, kebugaran, dan prestasi.'],
-  ['slug' => 'bmb', 'nama' => 'BMB', 'kategori' => 'Minat & Bakat', 'icon' => '✨', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/bmb.png', 'deskripsi' => 'Ruang bagi mahasiswa untuk mengembangkan minat, bakat, kreativitas, dan pengalaman berorganisasi.'],
-  ['slug' => 'pik', 'nama' => 'PIK', 'kategori' => 'Pengembangan Mahasiswa', 'icon' => '💡', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/pik.jpg', 'deskripsi' => 'Ruang pengembangan edukasi, komunikasi, kreativitas, dan kepedulian mahasiswa.'],
-  ['slug' => 'bhapala', 'nama' => 'BHAPALA', 'kategori' => 'Kepencintaalaman', 'icon' => '🏕️', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/bhapala.jpg', 'deskripsi' => 'Wadah kegiatan alam bebas, kepedulian lingkungan, kebersamaan, dan ketangguhan mahasiswa.'],
-  ['slug' => 'sentramada', 'nama' => 'Sentramada', 'kategori' => 'Seni & Kreativitas', 'icon' => '🎨', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/sentramada.png', 'deskripsi' => 'Ruang ekspresi seni, kreativitas, kolaborasi, dan pengembangan potensi mahasiswa.'],
-  ['slug' => 'voice', 'nama' => 'Voice', 'kategori' => 'Seni & Musik', 'icon' => '🎤', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/voice.jpeg', 'deskripsi' => 'Wadah pengembangan vokal, musik, penampilan, kepercayaan diri, dan kreativitas seni.'],
-  ['slug' => 'pramuka', 'nama' => 'Pramuka', 'kategori' => 'Kepanduan', 'icon' => '⚜️', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/pramuka.jpg', 'deskripsi' => 'Wadah pengembangan kepemimpinan, kedisiplinan, kemandirian, dan kegiatan sosial.'],
-  ['slug' => 'bakti', 'nama' => 'Bakti', 'kategori' => 'Sosial & Pengabdian', 'icon' => '🤝', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/bhakti.jpg', 'deskripsi' => 'Ruang pengembangan kepedulian sosial, pengabdian, dan kegiatan kemasyarakatan.'],
-  ['slug' => 'jurnalika', 'nama' => 'Jurnalika', 'kategori' => 'Media & Jurnalistik', 'icon' => '📰', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/jurnalika.jpg', 'deskripsi' => 'Wadah pengembangan jurnalistik, penulisan, dokumentasi, media, dan komunikasi.'],
-  ['slug' => 'ksr', 'nama' => 'KSR', 'kategori' => 'Kemanusiaan', 'icon' => '⛑️', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/ksr.jpg', 'deskripsi' => 'Wadah pengembangan kepedulian kemanusiaan, kesiapsiagaan, dan kegiatan sosial.'],
-  ['slug' => 'bec', 'nama' => 'BEC', 'kategori' => 'Bahasa & Komunikasi', 'icon' => '🌐', 'logo' => '/fikes/vendor/kemahasiswaan/ukm/bec.png', 'deskripsi' => 'Ruang pengembangan kemampuan bahasa, komunikasi, kepercayaan diri, dan kreativitas.'],
-];
+function ukm_public_image($value)
+{
+  $value = trim((string)$value);
+  if ($value === '') return '';
+
+  if (preg_match('~^https?://~i', $value) || str_starts_with($value, '/')) {
+    return $value;
+  }
+
+  if (str_starts_with($value, 'vendor/')) {
+    return '/fikes/' . ltrim($value, '/');
+  }
+
+  return '/fikes/admin/uploads/kemahasiswaan/logo/' . rawurlencode(basename($value));
+}
+
+function ukm_excerpt($value, $limit = 155)
+{
+  $text = trim(strip_tags((string)$value));
+  if (mb_strlen($text) <= $limit) return $text;
+  return mb_substr($text, 0, $limit - 1) . '…';
+}
+
+$st = $pdo->prepare("
+    SELECT *
+    FROM kemahasiswaan_organisasi
+    WHERE jenis = 'ukm'
+      AND status = 'aktif'
+    ORDER BY nomor_urut ASC, id ASC
+");
+$st->execute();
+$ukm = $st->fetchAll(PDO::FETCH_ASSOC);
+$total = count($ukm);
 ?>
 <!doctype html>
 <html lang="id">
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title><?= e($page_title) ?> | FIKES</title>
-  <meta name="description"
-    content="Informasi Unit Kegiatan Mahasiswa FIKES dan berbagai kegiatan pengembangan minat, bakat, kreativitas, serta prestasi mahasiswa.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="/fikes/assets/css/style.css">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= e($page_title) ?> | FIKES - Fakultas Ilmu Kesehatan</title>
+    <meta name="description" content="Informasi Unit Kegiatan Mahasiswa Fakultas Ilmu Kesehatan.">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" href="/fikes/assets/css/style.css">
+  </head>
   <style>
-    :root {
-      --ukm-green: #087f5b;
-      --ukm-dark: #12372a;
-      --ukm-text: #5f716b;
-      --ukm-soft: #eef8f4;
-      --ukm-border: #e1ebe7;
-      --ukm-gold: #f4b942
-    }
+  :root {
+    --ukm-primary: #087f5b;
+    --ukm-dark: #12372a;
+    --ukm-text: #566a63;
+    --ukm-muted: #74847e;
+    --ukm-bg: #f6faf8;
+    --ukm-border: #e1ebe7;
+    --ukm-soft: #e7f7f1;
+    --ukm-white: #fff;
+  }
 
-    .ukm-hero {
-      position: relative;
-      overflow: hidden;
-      padding: 64px 0 76px;
-      color: #fff;
-      background: radial-gradient(circle at 88% 15%, rgba(255, 255, 255, .22), transparent 27%), linear-gradient(120deg, #00685a 0%, #008f78 58%, #7fcbbd 150%)
-    }
+  .ukm-hero,
+  .ukm-detail-hero {
+    position: relative;
+    overflow: hidden;
+    color: #fff;
+    background:
+      radial-gradient(circle at 90% 15%, rgba(255, 255, 255, .18), transparent 28%),
+      linear-gradient(120deg, #00685a 0%, #008f78 55%, #8acfc0 150%);
+  }
 
-    .ukm-hero:before,
-    .ukm-hero:after {
-      content: "";
-      position: absolute;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, .07)
-    }
+  .ukm-hero {
+    padding: 64px 0 70px
+  }
 
-    .ukm-hero:before {
-      width: 280px;
-      height: 280px;
-      right: -80px;
-      top: -130px
-    }
+  .ukm-detail-hero {
+    padding: 48px 0 62px
+  }
 
-    .ukm-hero:after {
-      width: 390px;
-      height: 390px;
-      left: -220px;
-      bottom: -300px
-    }
+  .ukm-hero:after,
+  .ukm-detail-hero:after {
+    content: "";
+    position: absolute;
+    width: 390px;
+    height: 390px;
+    right: -150px;
+    bottom: -250px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, .07);
+    pointer-events: none
+  }
 
-    .ukm-breadcrumb {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      gap: 9px;
-      align-items: center;
-      flex-wrap: wrap;
-      font-size: 13px;
-      color: rgba(255, 255, 255, .8);
-      margin-bottom: 22px
-    }
+  .ukm-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, .82);
+    position: relative;
+    z-index: 1
+  }
 
-    .ukm-breadcrumb a {
-      color: #fff;
-      text-decoration: none;
-      font-weight: 700
-    }
+  .ukm-breadcrumb a {
+    color: #fff;
+    text-decoration: none;
+    font-weight: 700
+  }
 
-    .ukm-kicker {
-      position: relative;
-      z-index: 2;
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-      color: #dcf7ef
-    }
+  .ukm-eyebrow,
+  .ukm-label {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 800;
+    letter-spacing: 1.6px;
+    text-transform: uppercase
+  }
 
-    .ukm-hero h1 {
-      position: relative;
-      z-index: 2;
-      font-family: "Plus Jakarta Sans", sans-serif;
-      color: #fff;
-      font-size: clamp(34px, 5vw, 58px);
-      line-height: 1.08;
-      margin: 12px 0 16px;
-      max-width: 820px
-    }
+  .ukm-eyebrow {
+    color: #dff7ef;
+    position: relative;
+    z-index: 1
+  }
 
-    .ukm-hero h1 em {
-      font-style: normal;
-      color: var(--ukm-gold)
-    }
+  .ukm-label {
+    color: var(--ukm-primary)
+  }
 
-    .ukm-hero p {
-      position: relative;
-      z-index: 2;
-      max-width: 760px;
-      margin: 0;
-      color: rgba(255, 255, 255, .9);
-      font-size: 16px;
-      line-height: 1.85
-    }
+  .ukm-hero h1,
+  .ukm-detail-hero h1 {
+    position: relative;
+    z-index: 1;
+    margin: 10px 0 14px;
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-weight: 800;
+    line-height: 1.08
+  }
 
-    .ukm-toolbar {
-      margin-top: 34px;
-      position: relative;
-      z-index: 2;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 12px
-    }
+  .ukm-hero h1 {
+    font-size: clamp(34px, 5vw, 58px)
+  }
 
-    .ukm-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 7px;
-      padding: 9px 13px;
-      border: 1px solid rgba(255, 255, 255, .2);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, .1);
-      backdrop-filter: blur(8px);
-      font-size: 12px;
-      font-weight: 700
-    }
+  .ukm-detail-hero h1 {
+    font-size: clamp(32px, 4vw, 50px)
+  }
 
-    .ukm-main {
-      padding: 78px 0 90px;
-      background: #fff
-    }
+  .ukm-hero h1 span {
+    color: #c9f2e6
+  }
 
-    .ukm-heading {
-      text-align: center;
-      max-width: 760px;
-      margin: 0 auto 38px
-    }
+  .ukm-hero>.container>p {
+    position: relative;
+    z-index: 1;
+    max-width: 760px;
+    margin: 0;
+    color: rgba(255, 255, 255, .9);
+    font-size: 16px;
+    line-height: 1.8
+  }
 
-    .ukm-label {
-      display: block;
-      color: var(--ukm-green);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1.7px;
-      text-transform: uppercase;
-      margin-bottom: 9px
-    }
+  .ukm-stats {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-top: 30px
+  }
 
-    .ukm-heading h2 {
-      font-family: "Plus Jakarta Sans", sans-serif;
-      color: var(--ukm-dark);
-      font-size: clamp(27px, 3.4vw, 38px);
-      margin: 0 0 10px
-    }
+  .ukm-stats>div {
+    min-width: 135px;
+    padding: 13px 16px;
+    border: 1px solid rgba(255, 255, 255, .18);
+    border-radius: 14px;
+    background: rgba(255, 255, 255, .09);
+    backdrop-filter: blur(5px)
+  }
 
-    .ukm-heading p {
-      margin: 0;
-      color: var(--ukm-text);
-      font-size: 14px;
-      line-height: 1.8
-    }
+  .ukm-stats strong {
+    display: block;
+    font: 800 21px "Plus Jakarta Sans", sans-serif
+  }
 
+  .ukm-stats span {
+    display: block;
+    margin-top: 2px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, .75)
+  }
+
+  .ukm-section,
+  .ukm-detail-section {
+    padding: 72px 0 82px;
+    background: #fff
+  }
+
+  .ukm-heading {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 38px
+  }
+
+  .ukm-heading h2,
+  .ukm-section-head h2 {
+    margin: 7px 0 8px;
+    color: var(--ukm-dark);
+    font: 800 30px "Plus Jakarta Sans", sans-serif
+  }
+
+  .ukm-heading p,
+  .ukm-section-head p {
+    margin: 0;
+    color: var(--ukm-muted);
+    font-size: 14px;
+    line-height: 1.75
+  }
+
+  .ukm-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 20px
+  }
+
+  .ukm-card {
+    min-width: 0;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--ukm-border);
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 9px 28px rgba(18, 55, 42, .06);
+    transition: .22s ease
+  }
+
+  .ukm-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 18px 42px rgba(18, 55, 42, .12)
+  }
+
+  .ukm-card-image {
+    height: 205px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 22px;
+    background: linear-gradient(180deg, #f5faf8, #edf6f2);
+    border-bottom: 1px solid #edf2f0;
+    text-decoration: none
+  }
+
+  .ukm-card-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain
+  }
+
+  .ukm-image-fallback {
+    width: 90px;
+    height: 90px;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 22px;
+    background: var(--ukm-soft);
+    color: var(--ukm-primary);
+    font: 800 22px "Plus Jakarta Sans", sans-serif
+  }
+
+  .ukm-card-body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    padding: 21px
+  }
+
+  .ukm-badge {
+    display: inline-flex;
+    width: max-content;
+    max-width: 100%;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: var(--ukm-soft);
+    color: var(--ukm-primary);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: .5px;
+    text-transform: uppercase
+  }
+
+  .ukm-badge-light {
+    background: rgba(255, 255, 255, .14);
+    color: #fff;
+    border: 1px solid rgba(255, 255, 255, .18)
+  }
+
+  .ukm-card h3 {
+    margin: 11px 0 7px;
+    color: var(--ukm-dark);
+    font: 800 19px "Plus Jakarta Sans", sans-serif
+  }
+
+  .ukm-card p {
+    margin: 0;
+    color: #687a74;
+    font-size: 13px;
+    line-height: 1.7
+  }
+
+  .ukm-focus {
+    margin-top: 14px;
+    padding: 10px 11px;
+    border-radius: 11px;
+    background: #f6faf8
+  }
+
+  .ukm-focus span {
+    display: block;
+    color: var(--ukm-primary);
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .8px
+  }
+
+  .ukm-focus strong {
+    display: block;
+    margin-top: 3px;
+    color: #53655f;
+    font-size: 11px;
+    line-height: 1.5
+  }
+
+  .ukm-detail-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: auto;
+    padding: 11px 13px;
+    border-radius: 12px;
+    background: var(--ukm-dark);
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 800;
+    transition: .2s ease
+  }
+
+  .ukm-detail-btn:hover {
+    background: var(--ukm-primary);
+    transform: translateY(-1px)
+  }
+
+  .ukm-detail-btn b {
+    font-size: 17px
+  }
+
+  .ukm-inline-btn {
+    display: inline-flex;
+    margin-top: 15px
+  }
+
+  .ukm-empty,
+  .ukm-no-data {
+    border: 1px dashed #d6e4df;
+    border-radius: 18px;
+    background: #f9fcfb;
+    text-align: center;
+    color: var(--ukm-muted)
+  }
+
+  .ukm-empty {
+    padding: 55px 24px
+  }
+
+  .ukm-no-data {
+    padding: 28px 18px;
+    font-size: 13px
+  }
+
+  .ukm-empty-icon {
+    width: 54px;
+    height: 54px;
+    margin: 0 auto 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--ukm-soft);
+    color: var(--ukm-primary);
+    font: 800 23px "Plus Jakarta Sans", sans-serif
+  }
+
+  .ukm-empty h2,
+  .ukm-empty h3 {
+    margin: 0 0 7px;
+    color: var(--ukm-dark);
+    font-family: "Plus Jakarta Sans", sans-serif
+  }
+
+  .ukm-empty p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.7
+  }
+
+  .ukm-cta {
+    margin-top: 32px;
+    padding: 28px 30px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    background: var(--ukm-dark);
+    color: #fff
+  }
+
+  .ukm-cta .ukm-label {
+    color: #bfeadd
+  }
+
+  .ukm-cta h3 {
+    margin: 6px 0 6px;
+    color: #fff;
+    font: 800 23px "Plus Jakarta Sans", sans-serif
+  }
+
+  .ukm-cta p {
+    margin: 0;
+    color: #d7e8e2;
+    font-size: 13px;
+    line-height: 1.6
+  }
+
+  .ukm-cta>a {
+    flex: 0 0 auto;
+    padding: 12px 15px;
+    border-radius: 11px;
+    background: #fff;
+    color: var(--ukm-dark);
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 800
+  }
+
+  .ukm-cta>a span {
+    margin-left: 8px
+  }
+
+  .ukm-profile {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    gap: 34px;
+    align-items: center
+  }
+
+  .ukm-profile-logo {
+    height: 240px;
+    padding: 24px;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, .96);
+    box-shadow: 0 20px 45px rgba(0, 0, 0, .12);
+    display: flex;
+    align-items: center;
+    justify-content: center
+  }
+
+  .ukm-profile-logo img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain
+  }
+
+  .ukm-profile-fallback {
+    font: 800 40px "Plus Jakarta Sans", sans-serif;
+    color: var(--ukm-primary)
+  }
+
+  .ukm-profile-content h1 {
+    margin-top: 11px
+  }
+
+  .ukm-profile-description {
+    margin: 0;
+    max-width: 800px;
+    color: rgba(255, 255, 255, .9);
+    font-size: 15px;
+    line-height: 1.8
+  }
+
+  .ukm-profile-focus {
+    margin-top: 18px;
+    max-width: 780px;
+    padding: 14px 16px;
+    border-radius: 13px;
+    border: 1px solid rgba(255, 255, 255, .18);
+    background: rgba(255, 255, 255, .08)
+  }
+
+  .ukm-profile-focus span {
+    display: block;
+    color: #c9f2e6;
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 1px
+  }
+
+  .ukm-profile-focus strong {
+    display: block;
+    margin-top: 4px;
+    color: #fff;
+    font-size: 13px;
+    line-height: 1.65
+  }
+
+  .ukm-overview-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 22px;
+    margin-bottom: 55px
+  }
+
+  .ukm-panel {
+    min-width: 0;
+    padding: 27px;
+    border: 1px solid var(--ukm-border);
+    border-radius: 20px;
+    background: #fff;
+    box-shadow: 0 8px 25px rgba(18, 55, 42, .05)
+  }
+
+  .ukm-panel-title {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px
+  }
+
+  .ukm-panel-title h2 {
+    margin: 4px 0 0;
+    color: var(--ukm-dark);
+    font: 800 21px "Plus Jakarta Sans", sans-serif
+  }
+
+  .ukm-panel-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: var(--ukm-soft);
+    color: var(--ukm-primary);
+    font-weight: 800
+  }
+
+  .ukm-info-list {
+    display: grid;
+    gap: 0
+  }
+
+  .ukm-info-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 12px 0;
+    border-bottom: 1px solid #edf2f0
+  }
+
+  .ukm-info-row:last-child {
+    border-bottom: 0
+  }
+
+  .ukm-info-row span {
+    color: #778780;
+    font-size: 12px
+  }
+
+  .ukm-info-row strong {
+    max-width: 65%;
+    text-align: right;
+    color: #304b42;
+    font-size: 12px;
+    line-height: 1.5
+  }
+
+  .ukm-socials {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 16px
+  }
+
+  .ukm-socials a {
+    padding: 8px 10px;
+    border-radius: 9px;
+    background: #f1f7f4;
+    color: var(--ukm-primary);
+    text-decoration: none;
+    font-size: 11px;
+    font-weight: 800
+  }
+
+  .ukm-text-block {
+    margin-bottom: 18px
+  }
+
+  .ukm-text-block:last-child {
+    margin-bottom: 0
+  }
+
+  .ukm-text-block h3 {
+    margin: 0 0 5px;
+    color: var(--ukm-dark);
+    font-size: 14px
+  }
+
+  .ukm-text-block p {
+    margin: 0;
+    color: #64766f;
+    font-size: 13px;
+    line-height: 1.8
+  }
+
+  .ukm-muted {
+    margin: 0;
+    color: #7a8984;
+    font-size: 13px;
+    line-height: 1.7
+  }
+
+  .ukm-content-block {
+    margin-top: 52px
+  }
+
+  .ukm-section-head {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px
+  }
+
+  .ukm-count {
+    flex: 0 0 auto;
+    padding: 7px 10px;
+    border-radius: 999px;
+    background: var(--ukm-soft);
+    color: var(--ukm-primary);
+    font-size: 10px;
+    font-weight: 800
+  }
+
+  .ukm-pengurus-grid {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 16px
+  }
+
+  .ukm-person-card {
+    overflow: hidden;
+    border: 1px solid var(--ukm-border);
+    border-radius: 17px;
+    background: #fff;
+    box-shadow: 0 6px 20px rgba(18, 55, 42, .05)
+  }
+
+  .ukm-person-photo {
+    height: 190px;
+    background: #eef6f2;
+    display: flex;
+    align-items: center;
+    justify-content: center
+  }
+
+  .ukm-person-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+  }
+
+  .ukm-person-photo span,
+  .ukm-member-avatar span {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--ukm-soft);
+    color: var(--ukm-primary);
+    font: 800 27px "Plus Jakarta Sans", sans-serif
+  }
+
+  .ukm-person-photo span {
+    width: 78px;
+    height: 78px
+  }
+
+  .ukm-person-body {
+    padding: 16px
+  }
+
+  .ukm-person-body span {
+    color: var(--ukm-primary);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .7px
+  }
+
+  .ukm-person-body h3 {
+    margin: 5px 0 0;
+    color: var(--ukm-dark);
+    font: 800 15px "Plus Jakarta Sans", sans-serif
+  }
+
+  .ukm-member-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 13px
+  }
+
+  .ukm-member-card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid var(--ukm-border);
+    border-radius: 15px;
+    background: #fff
+  }
+
+  .ukm-member-avatar {
+    flex: 0 0 auto;
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    overflow: hidden;
+    background: #eef6f2;
+    display: flex;
+    align-items: center;
+    justify-content: center
+  }
+
+  .ukm-member-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+  }
+
+  .ukm-member-avatar span {
+    width: 100%;
+    height: 100%;
+    font-size: 18px
+  }
+
+  .ukm-member-card h3 {
+    margin: 0;
+    color: var(--ukm-dark);
+    font-size: 13px
+  }
+
+  .ukm-member-role {
+    display: inline-block;
+    margin-top: 3px;
+    color: var(--ukm-primary);
+    font-size: 10px;
+    font-weight: 800
+  }
+
+  .ukm-member-meta {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    margin-top: 5px
+  }
+
+  .ukm-member-meta span {
+    font-size: 9px;
+    color: #71817b
+  }
+
+  .ukm-activity-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 18px
+  }
+
+  .ukm-activity-card {
+    overflow: hidden;
+    border: 1px solid var(--ukm-border);
+    border-radius: 17px;
+    background: #fff
+  }
+
+  .ukm-activity-image {
+    height: 185px;
+    background: #edf5f1
+  }
+
+  .ukm-activity-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+  }
+
+  .ukm-activity-body {
+    padding: 17px
+  }
+
+  .ukm-date {
+    display: inline-block;
+    color: var(--ukm-primary);
+    font-size: 10px;
+    font-weight: 800
+  }
+
+  .ukm-activity-body h3 {
+    margin: 6px 0 7px;
+    color: var(--ukm-dark);
+    font: 800 16px "Plus Jakarta Sans", sans-serif
+  }
+
+  .ukm-activity-body p {
+    margin: 0;
+    color: #687a74;
+    font-size: 12px;
+    line-height: 1.7
+  }
+
+  .ukm-gallery {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 15px
+  }
+
+  .ukm-gallery-item {
+    position: relative;
+    overflow: hidden;
+    min-width: 0;
+    height: 230px;
+    margin: 0;
+    border-radius: 16px;
+    background: #edf5f1
+  }
+
+  .ukm-gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: .3s ease
+  }
+
+  .ukm-gallery-item:hover img {
+    transform: scale(1.04)
+  }
+
+  .ukm-gallery-item figcaption {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 28px 13px 13px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    color: #fff;
+    background: linear-gradient(transparent, rgba(0, 0, 0, .72))
+  }
+
+  .ukm-gallery-item figcaption strong {
+    font-size: 12px
+  }
+
+  .ukm-gallery-item figcaption span {
+    font-size: 10px;
+    color: rgba(255, 255, 255, .8)
+  }
+
+  .ukm-back-wrap {
+    text-align: center;
+    margin-top: 52px
+  }
+
+  .ukm-back-btn {
+    display: inline-flex;
+    padding: 12px 16px;
+    border-radius: 11px;
+    background: var(--ukm-dark);
+    color: #fff;
+    text-decoration: none;
+    font-size: 12px;
+    font-weight: 800
+  }
+
+  .ukm-back-btn:hover {
+    background: var(--ukm-primary)
+  }
+
+  @media(max-width:1100px) {
     .ukm-grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 20px
+      grid-template-columns: repeat(3, minmax(0, 1fr))
     }
 
-    .ukm-card {
-      position: relative;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      border: 1px solid var(--ukm-border);
-      border-radius: 22px;
-      background: #fff;
-      box-shadow: 0 12px 35px rgba(18, 55, 42, .065);
-      transition: transform .25s ease, box-shadow .25s ease, border-color .25s ease
+    .ukm-pengurus-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr))
     }
 
-    .ukm-card:hover {
-      transform: translateY(-7px);
-      box-shadow: 0 24px 55px rgba(18, 55, 42, .13);
-      border-color: #c9ded7
+    .ukm-gallery {
+      grid-template-columns: repeat(3, minmax(0, 1fr))
+    }
+  }
+
+  @media(max-width:900px) {
+    .ukm-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    .ukm-overview-grid {
+      grid-template-columns: 1fr
+    }
+
+    .ukm-pengurus-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    .ukm-member-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    .ukm-activity-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    .ukm-gallery {
+      grid-template-columns: repeat(2, minmax(0, 1fr))
+    }
+
+    .ukm-profile {
+      grid-template-columns: 180px 1fr;
+      gap: 24px
+    }
+
+    .ukm-profile-logo {
+      height: 180px
+    }
+  }
+
+  @media(max-width:600px) {
+    .ukm-hero {
+      padding: 50px 0 58px
+    }
+
+    .ukm-detail-hero {
+      padding: 38px 0 50px
+    }
+
+    .ukm-section,
+    .ukm-detail-section {
+      padding: 55px 0 65px
+    }
+
+    .ukm-grid,
+    .ukm-pengurus-grid,
+    .ukm-member-grid,
+    .ukm-activity-grid,
+    .ukm-gallery {
+      grid-template-columns: 1fr
     }
 
     .ukm-card-image {
-      height: 205px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 25px;
-      background: linear-gradient(145deg, #f8fcfa, #eaf6f1)
+      height: 220px
     }
 
-    .ukm-card-image:after {
-      content: "";
-      position: absolute;
-      width: 120px;
-      height: 120px;
-      border-radius: 50%;
-      background: rgba(8, 127, 91, .055)
+    .ukm-section-head {
+      display: block
     }
 
-    .ukm-card-image img {
-      position: relative;
-      z-index: 1;
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      transition: transform .3s ease
-    }
-
-    .ukm-card:hover .ukm-card-image img {
-      transform: scale(1.05)
-    }
-
-    .ukm-icon {
-      position: absolute;
-      z-index: 2;
-      right: 13px;
-      top: 13px;
-      width: 38px;
-      height: 38px;
-      display: grid;
-      place-items: center;
-      border-radius: 12px;
-      background: #fff;
-      box-shadow: 0 7px 20px rgba(18, 55, 42, .12);
-      font-size: 18px
-    }
-
-    .ukm-card-body {
-      display: flex;
-      flex: 1;
-      flex-direction: column;
-      padding: 21px
-    }
-
-    .ukm-category {
+    .ukm-count {
       display: inline-flex;
-      align-self: flex-start;
-      padding: 6px 9px;
-      border-radius: 999px;
-      background: var(--ukm-soft);
-      color: var(--ukm-green);
-      font-size: 9px;
-      font-weight: 800;
-      letter-spacing: .8px;
-      text-transform: uppercase;
-      margin-bottom: 11px
-    }
-
-    .ukm-card h3 {
-      font-family: "Plus Jakarta Sans", sans-serif;
-      color: var(--ukm-dark);
-      font-size: 19px;
-      margin: 0 0 8px
-    }
-
-    .ukm-card p {
-      margin: 0;
-      color: var(--ukm-text);
-      font-size: 12.5px;
-      line-height: 1.75
-    }
-
-    .ukm-detail {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      margin-top: auto;
-      padding-top: 18px
-    }
-
-    .ukm-detail a {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 8px;
-      width: 100%;
-      padding: 11px 14px;
-      border-radius: 11px;
-      background: var(--ukm-dark);
-      color: #fff;
-      text-decoration: none;
-      font-size: 12px;
-      font-weight: 800;
-      transition: .2s
-    }
-
-    .ukm-detail a:hover {
-      background: var(--ukm-green)
-    }
-
-    .ukm-info {
-      margin-top: 52px;
-      padding: 34px;
-      border: 1px solid var(--ukm-border);
-      border-radius: 24px;
-      background: linear-gradient(135deg, #f8fbfa, #eef8f4);
-      display: grid;
-      grid-template-columns: 1.2fr .8fr;
-      gap: 28px;
-      align-items: center
-    }
-
-    .ukm-info h3 {
-      font-family: "Plus Jakarta Sans", sans-serif;
-      color: var(--ukm-dark);
-      font-size: 25px;
-      margin: 0 0 9px
-    }
-
-    .ukm-info p {
-      margin: 0;
-      color: var(--ukm-text);
-      font-size: 14px;
-      line-height: 1.8
-    }
-
-    .ukm-mini {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 12px
-    }
-
-    .ukm-mini-item {
-      padding: 16px;
-      border: 1px solid var(--ukm-border);
-      border-radius: 15px;
-      background: #fff
-    }
-
-    .ukm-mini-item strong {
-      display: block;
-      color: var(--ukm-dark);
-      font-size: 14px;
-      margin-bottom: 4px
-    }
-
-    .ukm-mini-item span {
-      color: #71817c;
-      font-size: 11px;
-      line-height: 1.5
+      margin-top: 12px
     }
 
     .ukm-cta {
-      margin-top: 20px;
-      padding: 34px;
-      border-radius: 22px;
-      background: var(--ukm-dark);
-      text-align: center;
-      color: #fff
+      display: block;
+      padding: 25px
     }
 
-    .ukm-cta h3 {
-      color: #fff;
-      font-family: "Plus Jakarta Sans", sans-serif;
-      margin: 0 0 8px;
-      font-size: 25px
+    .ukm-cta>a {
+      display: inline-flex;
+      margin-top: 18px
     }
 
-    .ukm-cta p {
-      margin: 0;
-      color: #dce9e4;
-      font-size: 14px;
-      line-height: 1.7
+    .ukm-profile {
+      grid-template-columns: 1fr
     }
 
-    @media(max-width:1100px) {
-      .ukm-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr))
-      }
+    .ukm-profile-logo {
+      width: 190px;
+      height: 190px;
+      margin: 0 auto
     }
 
-    @media(max-width:820px) {
-      .ukm-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr))
-      }
-
-      .ukm-info {
-        grid-template-columns: 1fr
-      }
+    .ukm-profile-content {
+      text-align: center
     }
 
-    @media(max-width:560px) {
-      .ukm-hero {
-        padding: 50px 0 60px
-      }
-
-      .ukm-main {
-        padding: 58px 0 70px
-      }
-
-      .ukm-grid {
-        grid-template-columns: 1fr
-      }
-
-      .ukm-card-image {
-        height: 220px
-      }
-
-      .ukm-mini {
-        grid-template-columns: 1fr
-      }
-
-      .ukm-toolbar {
-        gap: 8px
-      }
-
-      .ukm-pill {
-        font-size: 11px
-      }
+    .ukm-profile-focus {
+      text-align: left
     }
+
+    .ukm-badge {
+      margin-left: 0
+    }
+
+    .ukm-info-row {
+      display: block
+    }
+
+    .ukm-info-row strong {
+      display: block;
+      max-width: none;
+      text-align: left;
+      margin-top: 3px
+    }
+
+    .ukm-panel {
+      padding: 21px
+    }
+  }
   </style>
-</head>
 
-<body>
-  <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
-  <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
+  <body>
 
-  <main>
-    <section class="ukm-hero">
-      <div class="container">
-        <div class="ukm-breadcrumb"><a
-            href="/fikes/">Beranda</a><span>›</span><span>Kemahasiswaan</span><span>›</span><span>UKM</span></div>
-        <div class="ukm-kicker">KEMAHASISWAAN FIKES</div>
-        <h1>Temukan ruang untuk <em>berkarya & berkembang</em></h1>
-        <p>Unit Kegiatan Mahasiswa menjadi ruang bagi mahasiswa FIKES untuk mengembangkan minat, bakat, kreativitas,
-          kepemimpinan, keterampilan, jejaring, dan pengalaman di luar kegiatan akademik.</p>
-        <div class="ukm-toolbar"><span class="ukm-pill">🎯 Minat & Bakat</span><span class="ukm-pill">🏆
-            Prestasi</span><span class="ukm-pill">🤝 Organisasi</span><span class="ukm-pill">📸 Kegiatan &
-            Dokumentasi</span></div>
-      </div>
-    </section>
+    <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
+    <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
 
-    <section class="ukm-main">
-      <div class="container">
-        <div class="ukm-heading"><span class="ukm-label">UNIT KEGIATAN MAHASISWA</span>
-          <h2>Beragam UKM untuk Mengembangkan Potensi</h2>
-          <p>Pilih salah satu UKM untuk melihat profil, kepengurusan, anggota, kegiatan, dan dokumentasi secara lebih
-            lengkap.</p>
+    <main>
+      <section class="ukm-hero">
+        <div class="container">
+          <div class="ukm-breadcrumb">
+            <a href="/fikes/">Beranda</a>
+            <span>›</span>
+            <span>Kemahasiswaan</span>
+            <span>›</span>
+            <span>UKM</span>
+          </div>
+
+          <span class="ukm-eyebrow">KEMAHASISWAAN FIKES</span>
+          <h1>Unit Kegiatan <span>Mahasiswa</span></h1>
+          <p>
+            Wadah mahasiswa untuk mengembangkan minat, bakat, kreativitas,
+            keterampilan, kepemimpinan, dan pengalaman non-akademik.
+          </p>
+
+          <div class="ukm-stats">
+            <div>
+              <strong><?= $total ?></strong>
+              <span>UKM Aktif</span>
+            </div>
+            <div>
+              <strong>FIKES</strong>
+              <span>Lingkungan Kegiatan</span>
+            </div>
+            <div>
+              <strong>Aktif</strong>
+              <span>Status Data</span>
+            </div>
+          </div>
         </div>
-        <div class="ukm-grid">
-          <?php foreach ($ukmList as $ukm): ?>
+      </section>
+
+      <section class="ukm-section">
+        <div class="container">
+          <div class="ukm-heading">
+            <span class="ukm-label">KEGIATAN MAHASISWA</span>
+            <h2>Daftar Unit Kegiatan Mahasiswa</h2>
+            <p>
+              Data UKM ditampilkan langsung dari database dan dikelola melalui
+              Dashboard Admin.
+            </p>
+          </div>
+
+          <?php if ($ukm): ?>
+          <div class="ukm-grid">
+            <?php foreach ($ukm as $item): ?>
+            <?php
+              $slug = trim((string)$item['slug']);
+              $detailUrl = '/fikes/kemahasiswaan/ukm/' . rawurlencode($slug);
+              $image = ukm_public_image($item['logo'] ?? '');
+              ?>
             <article class="ukm-card">
-              <div class="ukm-card-image"><span class="ukm-icon"><?= e($ukm['icon']) ?></span><img
-                  src="<?= e($ukm['logo']) ?>" alt="Logo <?= e($ukm['nama']) ?>" loading="lazy"></div>
+              <a class="ukm-card-image" href="<?= e($detailUrl) ?>">
+                <?php if ($image): ?>
+                <img src="<?= e($image) ?>" alt="Logo <?= e($item['nama']) ?>" loading="lazy"
+                  onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                <?php endif; ?>
+                <span class="ukm-image-fallback" <?= $image ? '' : 'style="display:flex"' ?>>UKM</span>
+              </a>
+
               <div class="ukm-card-body">
-                <span class="ukm-category"><?= e($ukm['kategori']) ?></span>
-                <h3><?= e($ukm['nama']) ?></h3>
-                <p><?= e($ukm['deskripsi']) ?></p>
-                <div class="ukm-detail"><a href="/fikes/kemahasiswaan/ukm/<?= e($ukm['slug']) ?>">Lihat Detail
-                    <span>→</span></a></div>
+                <span class="ukm-badge">
+                  <?= e($item['kategori'] ?: 'UKM FIKES') ?>
+                </span>
+
+                <h3><?= e($item['nama']) ?></h3>
+
+                <p>
+                  <?= e(ukm_excerpt($item['deskripsi'] ?: 'Unit Kegiatan Mahasiswa FIKES.')) ?>
+                </p>
+
+                <?php if (!empty($item['fokus'])): ?>
+                <div class="ukm-focus">
+                  <span>Fokus</span>
+                  <strong><?= e(ukm_excerpt($item['fokus'], 85)) ?></strong>
+                </div>
+                <?php endif; ?>
+
+                <a class="ukm-detail-btn" href="<?= e($detailUrl) ?>">
+                  <span>Lihat Detail</span>
+                  <b>→</b>
+                </a>
               </div>
             </article>
-          <?php endforeach; ?>
-        </div>
-
-        <div class="ukm-info">
-          <div><span class="ukm-label">KEHIDUPAN KAMPUS</span>
-            <h3>Belajar tidak hanya berlangsung di ruang kelas</h3>
-            <p>Kegiatan UKM membantu mahasiswa mendapatkan pengalaman kolaborasi, kepemimpinan, komunikasi,
-              kreativitas, dan pengembangan diri melalui aktivitas yang sesuai dengan minat masing-masing.</p>
+            <?php endforeach; ?>
           </div>
-          <div class="ukm-mini">
-            <div class="ukm-mini-item"><strong>16 UKM</strong><span>Berbagai bidang kegiatan mahasiswa</span></div>
-            <div class="ukm-mini-item"><strong>Minat & Bakat</strong><span>Olahraga, seni, sosial, media, dan
-                lainnya</span></div>
-            <div class="ukm-mini-item"><strong>Kegiatan</strong><span>Program rutin dan kegiatan pengembangan</span>
+          <?php else: ?>
+          <div class="ukm-empty">
+            <div class="ukm-empty-icon">◎</div>
+            <h3>Belum Ada UKM Aktif</h3>
+            <p>Data UKM yang berstatus aktif akan otomatis tampil di halaman ini.</p>
+          </div>
+          <?php endif; ?>
+
+          <div class="ukm-cta">
+            <div>
+              <span class="ukm-label">ORGANISASI MAHASISWA</span>
+              <h3>Jelajahi Himpunan Mahasiswa</h3>
+              <p>Kenali organisasi mahasiswa dan himpunan yang ada di lingkungan FIKES.</p>
             </div>
-            <div class="ukm-mini-item"><strong>Dokumentasi</strong><span>Galeri kegiatan setiap organisasi</span>
-            </div>
+            <a href="/fikes/kemahasiswaan/himpunan-mahasiswa">
+              Lihat Himpunan <span>→</span>
+            </a>
           </div>
         </div>
-        <div class="ukm-cta">
-          <h3>Ingin mengenal kegiatan mahasiswa lebih dekat?</h3>
-          <p>Pilih UKM di atas dan lihat informasi lengkap organisasi, kepengurusan, anggota, kegiatan, serta
-            dokumentasinya.</p>
-        </div>
-      </div>
-    </section>
-  </main>
+      </section>
+    </main>
 
-  <?php require_once __DIR__ . '/../menu/footer.php'; ?>
-  <script src="/fikes/assets/js/main.js"></script>
-</body>
+    <?php require_once __DIR__ . '/../menu/footer.php'; ?>
+  </body>
 
 </html>

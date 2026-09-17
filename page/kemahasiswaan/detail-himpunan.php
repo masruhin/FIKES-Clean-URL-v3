@@ -1,113 +1,76 @@
 <?php
-$page_title = 'Detail Himpunan Mahasiswa';
+require_once __DIR__ . '/../../admin/config/database.php';
 
 if (!function_exists('e')) {
-    function e($value) {
-        return htmlspecialchars($value ?? '', ENT_QUOTES, 'UTF-8');
-    }
+  function e($value)
+  {
+    return htmlspecialchars((string)($value ?? ''), ENT_QUOTES, 'UTF-8');
+  }
 }
 
-$orgs = [
-    'himafarda' => [
-        'nama' => 'HIMAFARDA',
-        'kategori' => 'Himpunan Mahasiswa Farmasi',
-        'logo' => '/fikes/vendor/kemahasiswaan/himpunan/himafarda.jpg',
-        'deskripsi' => 'Wadah mahasiswa Farmasi untuk mengembangkan organisasi, aspirasi, kreativitas, dan kegiatan kemahasiswaan.',
-        'fokus' => 'Pengembangan organisasi, keilmuan, kreativitas, pengabdian, dan kebersamaan mahasiswa Farmasi.'
-    ],
-    'himasada' => [
-        'nama' => 'HIMASADA',
-        'kategori' => 'Himpunan Mahasiswa',
-        'logo' => '/fikes/vendor/kemahasiswaan/himpunan/himasada.jpg',
-        'deskripsi' => 'Ruang pengembangan potensi, kebersamaan, kepemimpinan, dan kolaborasi mahasiswa di lingkungan FIKES.',
-        'fokus' => 'Pengembangan potensi mahasiswa, kepemimpinan, kebersamaan, dan kegiatan kemahasiswaan.'
-    ],
-    'himadika' => [
-        'nama' => 'HIMADIKA',
-        'kategori' => 'Himpunan Mahasiswa Keperawatan',
-        'logo' => '/fikes/vendor/kemahasiswaan/himpunan/himadika.png',
-        'deskripsi' => 'Wadah mahasiswa Keperawatan dalam kegiatan organisasi, pengembangan diri, dan kontribusi kepada lingkungan kampus.',
-        'fokus' => 'Keilmuan keperawatan, kepemimpinan, pengembangan diri, pengabdian, dan kegiatan mahasiswa.'
-    ],
-    'himika' => [
-        'nama' => 'HIMIKA',
-        'kategori' => 'Himpunan Mahasiswa',
-        'logo' => '/fikes/vendor/kemahasiswaan/himpunan/himika.png',
-        'deskripsi' => 'Organisasi mahasiswa yang mendukung aktivitas kemahasiswaan, aspirasi, dan pengembangan kepemimpinan.',
-        'fokus' => 'Organisasi, aspirasi mahasiswa, kepemimpinan, kreativitas, dan kolaborasi.'
-    ],
-    'himadan' => [
-        'nama' => 'HIMADAN',
-        'kategori' => 'Himpunan Mahasiswa',
-        'logo' => '/fikes/vendor/kemahasiswaan/himpunan/himadan.jpg',
-        'deskripsi' => 'Wadah mahasiswa untuk mengembangkan kreativitas, komunikasi, solidaritas, dan kegiatan sosial.',
-        'fokus' => 'Kreativitas, komunikasi, solidaritas, kegiatan sosial, dan pengembangan mahasiswa.'
-    ],
-    'bem-fikes' => [
-        'nama' => 'BEM FIKES',
-        'kategori' => 'Organisasi Mahasiswa Tingkat Fakultas',
-        'logo' => '/fikes/vendor/kemahasiswaan/himpunan/bem.jpg',
-        'deskripsi' => 'Badan Eksekutif Mahasiswa sebagai wadah pelaksanaan program dan kegiatan mahasiswa di tingkat fakultas.',
-        'fokus' => 'Koordinasi program kerja, pelayanan mahasiswa, pengembangan kegiatan, dan kolaborasi.'
-    ],
-    'dpm-fikes' => [
-        'nama' => 'DPM FIKES',
-        'kategori' => 'Organisasi Mahasiswa Tingkat Fakultas',
-        'logo' => '/fikes/vendor/kemahasiswaan/himpunan/dpm.png',
-        'deskripsi' => 'Dewan Perwakilan Mahasiswa sebagai ruang perwakilan dan penyampaian aspirasi mahasiswa.',
-        'fokus' => 'Perwakilan mahasiswa, aspirasi, pengawasan organisasi, dan komunikasi kelembagaan.'
-    ],
-];
+function hd_image_url($value, $folder = 'logo')
+{
+  $value = trim((string)$value);
+  if ($value === '') return '';
+  if (preg_match('~^https?://~i', $value)) return $value;
+  if (str_starts_with($value, '/')) return $value;
+  if (str_starts_with($value, 'vendor/')) return '/fikes/' . ltrim($value, '/');
+  return '/fikes/admin/uploads/kemahasiswaan/' . $folder . '/' . rawurlencode(basename($value));
+}
 
-$slug = trim((string)($_GET['slug'] ?? ''));
-if (!isset($orgs[$slug])) {
-    http_response_code(404);
-    $org = null;
+function hd_date($value)
+{
+  if (!$value) return '-';
+  $months = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'];
+  $time = strtotime($value);
+  return $time ? date('d', $time) . ' ' . $months[(int)date('m', $time) - 1] . ' ' . date('Y', $time) : $value;
+}
+
+$slug = trim($_GET['slug'] ?? '');
+if ($slug === '') {
+  http_response_code(404);
+  exit('Data himpunan tidak ditemukan.');
+}
+
+$stmt = $pdo->prepare("SELECT * FROM kemahasiswaan_organisasi
+                       WHERE jenis = 'himpunan' AND slug = ? AND status = 'aktif'
+                       LIMIT 1");
+$stmt->execute([$slug]);
+$org = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$org) {
+  http_response_code(404);
+  $page_title = 'Himpunan Tidak Ditemukan';
 } else {
-    $org = $orgs[$slug];
-    $page_title = $org['nama'];
+  $page_title = $org['nama'];
 }
 
-function table_exists(PDO $pdo, string $table): bool {
-    $st = $pdo->prepare("SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ?");
-    $st->execute([$table]);
-    return (bool)$st->fetchColumn();
-}
-
-$pdo = null;
-$pengurus = [];
-$anggota_count = null;
-$kegiatan = [];
-$galeri = [];
+$pengurus = $anggota = $kegiatan = $galeri = [];
 
 if ($org) {
-    try {
-        require_once __DIR__ . '/../../admin/config/database.php';
-        if ($pdo instanceof PDO) {
-            if (table_exists($pdo, 'kemahasiswaan_pengurus')) {
-                $st = $pdo->prepare('SELECT nama, jabatan, foto FROM kemahasiswaan_pengurus WHERE organisasi_slug = ? AND status = "aktif" ORDER BY nomor_urut, id');
-                $st->execute([$slug]);
-                $pengurus = $st->fetchAll();
-            }
-            if (table_exists($pdo, 'kemahasiswaan_anggota')) {
-                $st = $pdo->prepare('SELECT COUNT(*) FROM kemahasiswaan_anggota WHERE organisasi_slug = ? AND status = "aktif"');
-                $st->execute([$slug]);
-                $anggota_count = (int)$st->fetchColumn();
-            }
-            if (table_exists($pdo, 'kemahasiswaan_kegiatan')) {
-                $st = $pdo->prepare('SELECT judul, tanggal_kegiatan, deskripsi, foto FROM kemahasiswaan_kegiatan WHERE organisasi_slug = ? AND status = "publish" ORDER BY tanggal_kegiatan DESC, nomor_urut, id');
-                $st->execute([$slug]);
-                $kegiatan = $st->fetchAll();
-            }
-            if (table_exists($pdo, 'kemahasiswaan_galeri')) {
-                $st = $pdo->prepare('SELECT judul, foto, keterangan FROM kemahasiswaan_galeri WHERE organisasi_slug = ? AND status = "publish" ORDER BY nomor_urut, id DESC');
-                $st->execute([$slug]);
-                $galeri = $st->fetchAll();
-            }
-        }
-    } catch (Throwable $e) {
-        // Halaman tetap tampil meskipun tabel detail belum dibuat.
-    }
+  $q = $pdo->prepare("SELECT * FROM kemahasiswaan_pengurus
+                        WHERE organisasi_slug = ? AND status = 'aktif'
+                        ORDER BY nomor_urut ASC, id ASC");
+  $q->execute([$org['slug']]);
+  $pengurus = $q->fetchAll(PDO::FETCH_ASSOC);
+
+  $q = $pdo->prepare("SELECT * FROM kemahasiswaan_anggota
+                        WHERE organisasi_slug = ? AND status = 'aktif'
+                        ORDER BY nama ASC, id ASC");
+  $q->execute([$org['slug']]);
+  $anggota = $q->fetchAll(PDO::FETCH_ASSOC);
+
+  $q = $pdo->prepare("SELECT * FROM kemahasiswaan_kegiatan
+                        WHERE organisasi_slug = ? AND status = 'publish'
+                        ORDER BY tanggal_kegiatan DESC, nomor_urut ASC, id DESC");
+  $q->execute([$org['slug']]);
+  $kegiatan = $q->fetchAll(PDO::FETCH_ASSOC);
+
+  $q = $pdo->prepare("SELECT * FROM kemahasiswaan_galeri
+                        WHERE organisasi_slug = ? AND status = 'publish'
+                        ORDER BY nomor_urut ASC, id DESC");
+  $q->execute([$org['slug']]);
+  $galeri = $q->fetchAll(PDO::FETCH_ASSOC);
 }
 ?>
 <!doctype html>
@@ -116,8 +79,8 @@ if ($org) {
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?= e($page_title) ?> | FIKES - Fakultas Ilmu Kesehatan</title>
-    <meta name="description" content="Informasi detail <?= e($page_title) ?> Fakultas Ilmu Kesehatan.">
+    <title><?= e($page_title) ?> | FIKES</title>
+    <meta name="description" content="Profil <?= e($org['nama'] ?? 'Himpunan Mahasiswa') ?> FIKES.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
@@ -125,456 +88,1100 @@ if ($org) {
       rel="stylesheet">
     <link rel="stylesheet" href="/fikes/assets/css/style.css">
     <style>
-    :root {
+    .hm-page {
       --hm-primary: #087f5b;
       --hm-dark: #12372a;
       --hm-text: #52635d;
-      --hm-soft: #eef8f4;
-      --hm-border: #e2ece8;
+      --hm-muted: #7b8b85;
+      --hm-light: #f6faf8;
+      --hm-border: #e2ebe7;
       --hm-gold: #f4b942;
+      color: var(--hm-text)
+    }
+
+    .hm-container {
+      width: min(1180px, calc(100% - 40px));
+      margin: 0 auto
+    }
+
+    .hm-page * {
+      box-sizing: border-box
+    }
+
+    .hm-page a {
+      text-decoration: none
+    }
+
+    .hm-page img {
+      max-width: 100%;
+      display: block
     }
 
     .hm-hero {
       position: relative;
       overflow: hidden;
-      padding: 54px 0 64px;
-      background: linear-gradient(120deg, #00685a 0%, #008f78 58%, #8ad0c1 150%);
+      padding: 68px 0 76px;
+      background: linear-gradient(120deg, #005e51 0%, #087f5b 58%, #70c4ae 150%);
       color: #fff
     }
 
-    .hm-hero:before {
+    .hm-hero:before,
+    .hm-hero:after {
       content: "";
       position: absolute;
-      width: 420px;
-      height: 420px;
-      right: -170px;
-      top: -220px;
       border-radius: 50%;
       background: rgba(255, 255, 255, .08)
     }
 
+    .hm-hero:before {
+      width: 430px;
+      height: 430px;
+      right: -190px;
+      top: -250px
+    }
+
+    .hm-hero:after {
+      width: 250px;
+      height: 250px;
+      left: -140px;
+      bottom: -170px
+    }
+
     .hm-breadcrumb {
+      position: relative;
+      z-index: 2;
       display: flex;
-      gap: 9px;
       align-items: center;
+      gap: 9px;
       flex-wrap: wrap;
       font-size: 13px;
-      color: rgba(255, 255, 255, .8);
-      margin-bottom: 25px;
-      position: relative;
-      z-index: 1
+      margin-bottom: 28px;
+      color: rgba(255, 255, 255, .78)
     }
 
     .hm-breadcrumb a {
       color: #fff;
-      text-decoration: none;
       font-weight: 700
     }
 
     .hm-hero-grid {
-      display: grid;
-      grid-template-columns: 180px 1fr;
-      gap: 30px;
-      align-items: center;
       position: relative;
-      z-index: 1
+      z-index: 2;
+      display: grid;
+      grid-template-columns: 1fr 270px;
+      gap: 50px;
+      align-items: center
     }
 
-    .hm-logo {
-      width: 180px;
-      height: 180px;
-      border-radius: 28px;
-      background: #fff;
-      padding: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      box-shadow: 0 18px 50px rgba(0, 0, 0, .14)
-    }
-
-    .hm-logo img {
-      max-width: 100%;
-      max-height: 100%;
-      object-fit: contain;
-      border-radius: 12px
-    }
-
-    .hm-kicker {
+    .hm-eyebrow,
+    .hm-label {
+      display: inline-flex;
       font-size: 11px;
-      letter-spacing: 1.8px;
+      letter-spacing: 1.6px;
       font-weight: 800;
-      color: #dff7ef;
       text-transform: uppercase
     }
 
+    .hm-eyebrow {
+      color: #dff7ef
+    }
+
     .hm-hero h1 {
-      font-family: "Plus Jakarta Sans", sans-serif;
+      margin: 10px 0 16px;
       color: #fff;
-      font-size: clamp(34px, 5vw, 58px);
-      margin: 10px 0 12px;
-      line-height: 1.08
+      font: 800 clamp(38px, 5vw, 58px)/1.12 "Plus Jakarta Sans", sans-serif;
+      letter-spacing: -1.7px
+    }
+
+    .hm-hero h1 span {
+      color: #bff0df
     }
 
     .hm-hero p {
-      max-width: 800px;
+      max-width: 760px;
+      margin: 0;
       color: rgba(255, 255, 255, .88);
-      line-height: 1.8;
-      font-size: 15px;
-      margin: 0
+      font-size: 16px;
+      line-height: 1.85
     }
 
-    .hm-back {
+    .hm-hero-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 28px
+    }
+
+    .hm-btn {
       display: inline-flex;
-      margin-top: 20px;
-      padding: 10px 15px;
-      border: 1px solid rgba(255, 255, 255, .35);
-      border-radius: 12px;
-      color: #fff;
-      text-decoration: none;
+      align-items: center;
+      gap: 13px;
+      padding: 12px 17px;
+      border-radius: 11px;
       font-size: 12px;
-      font-weight: 800
+      font-weight: 800;
+      transition: .2s
     }
 
-    .hm-content {
-      padding: 72px 0 90px;
-      background: #fff
+    .hm-btn-light {
+      background: #fff;
+      color: var(--hm-dark)
+    }
+
+    .hm-btn-outline {
+      border: 1px solid rgba(255, 255, 255, .45);
+      color: #fff
+    }
+
+    .hm-btn:hover {
+      transform: translateY(-2px)
+    }
+
+    .hm-hero-stat {
+      justify-self: end;
+      width: 230px;
+      min-height: 190px;
+      padding: 30px;
+      border: 1px solid rgba(255, 255, 255, .2);
+      border-radius: 25px;
+      background: rgba(255, 255, 255, .1);
+      backdrop-filter: blur(12px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center
+    }
+
+    .hm-hero-stat strong {
+      font: 800 60px/1 "Plus Jakarta Sans", sans-serif;
+      color: #fff
+    }
+
+    .hm-hero-stat span {
+      margin-top: 10px;
+      color: rgba(255, 255, 255, .76);
+      font-size: 13px;
+      line-height: 1.6
     }
 
     .hm-section {
-      margin-bottom: 28px
+      padding: 86px 0;
+      background: #fff
     }
 
     .hm-section-head {
-      margin-bottom: 20px
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 30px;
+      margin-bottom: 35px
     }
 
     .hm-label {
-      display: block;
       color: var(--hm-primary);
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
       margin-bottom: 8px
     }
 
-    .hm-section h2 {
-      font-family: "Plus Jakarta Sans", sans-serif;
+    .hm-section-head h2,
+    .hd-heading h2,
+    .hd-text-card h2,
+    .hd-social h2 {
+      margin: 0;
       color: var(--hm-dark);
-      font-size: clamp(24px, 3vw, 34px);
-      margin: 0 0 8px
+      font: 800 clamp(27px, 3vw, 36px)/1.25 "Plus Jakarta Sans", sans-serif;
+      letter-spacing: -.7px
     }
 
     .hm-section-head p {
-      color: #6b7c76;
+      max-width: 750px;
+      margin: 9px 0 0;
       font-size: 14px;
-      line-height: 1.8;
-      margin: 0;
-      max-width: 760px
+      line-height: 1.75
     }
 
-    .hm-stats {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 14px;
-      margin-bottom: 40px
-    }
-
-    .hm-stat {
-      padding: 20px;
+    .hm-total {
+      min-width: 100px;
+      text-align: center;
+      padding: 14px 18px;
       border: 1px solid var(--hm-border);
-      border-radius: 16px;
-      background: #fff;
-      box-shadow: 0 10px 30px rgba(18, 55, 42, .06)
+      border-radius: 15px;
+      background: var(--hm-light)
     }
 
-    .hm-stat strong {
+    .hm-total b {
       display: block;
-      font-family: "Plus Jakarta Sans", sans-serif;
-      color: var(--hm-dark);
-      font-size: 20px;
-      margin-bottom: 4px
+      color: var(--hm-primary);
+      font: 800 25px "Plus Jakarta Sans", sans-serif
     }
 
-    .hm-stat span {
-      font-size: 12px;
-      color: #74847f
+    .hm-total span {
+      font-size: 11px;
+      color: var(--hm-muted)
     }
 
-    .hm-about {
+    .hm-grid {
       display: grid;
-      grid-template-columns: 1.15fr .85fr;
-      gap: 24px;
-      margin-bottom: 42px
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 22px
     }
 
-    .hm-panel {
+    .hm-card {
+      overflow: hidden;
       border: 1px solid var(--hm-border);
-      border-radius: 20px;
-      padding: 28px;
+      border-radius: 21px;
       background: #fff;
-      box-shadow: 0 10px 30px rgba(18, 55, 42, .05)
+      box-shadow: 0 12px 35px rgba(18, 55, 42, .055);
+      transition: .25s
     }
 
-    .hm-panel.soft {
-      background: #f7fbf9
+    .hm-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 22px 50px rgba(18, 55, 42, .12)
     }
 
-    .hm-panel p {
-      font-size: 14px;
-      color: #62736d;
-      line-height: 1.9;
-      margin: 0 0 14px
-    }
-
-    .hm-focus {
+    .hm-card-image {
+      height: 235px;
+      position: relative;
       display: flex;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(135deg, #f2faf7, #e6f3ee);
+      overflow: hidden
+    }
+
+    .hm-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 25px;
+      transition: .3s
+    }
+
+    .hm-card:hover .hm-card-image img {
+      transform: scale(1.04)
+    }
+
+    .hm-card-arrow {
+      position: absolute;
+      right: 14px;
+      top: 14px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      color: var(--hm-dark);
+      box-shadow: 0 7px 18px rgba(0, 0, 0, .1);
+      font-weight: 800
+    }
+
+    .hm-fallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--hm-primary)
+    }
+
+    .hm-fallback span {
+      width: 70px;
+      height: 70px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      background: #fff;
+      font: 800 30px "Plus Jakarta Sans", sans-serif;
+      box-shadow: 0 12px 30px rgba(8, 127, 91, .12)
+    }
+
+    .hm-fallback small {
+      margin-top: 8px;
+      font-weight: 800;
+      letter-spacing: 2px
+    }
+
+    .hm-card-body {
+      padding: 22px;
+      display: flex;
+      flex-direction: column;
+      min-height: 310px
+    }
+
+    .hm-badge {
+      display: inline-flex;
+      width: max-content;
+      max-width: 100%;
+      padding: 6px 10px;
+      border-radius: 50px;
+      background: #e9f7f1;
+      color: var(--hm-primary);
+      font-size: 10px;
+      font-weight: 800
+    }
+
+    .hm-card h3 {
+      margin: 13px 0 7px;
+      color: var(--hm-dark);
+      font: 800 22px/1.25 "Plus Jakarta Sans", sans-serif
+    }
+
+    .hm-card p {
+      margin: 0;
+      color: #687a74;
+      font-size: 13px;
+      line-height: 1.75
+    }
+
+    .hm-card-meta {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      margin-top: 17px;
+      padding-top: 14px;
+      border-top: 1px solid #edf2f0
+    }
+
+    .hm-card-meta span {
+      display: flex;
+      flex-direction: column
+    }
+
+    .hm-card-meta small {
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: #94a19c;
+      font-weight: 800
+    }
+
+    .hm-card-meta b {
+      font-size: 11px;
+      color: #486059;
+      margin-top: 2px
+    }
+
+    .hm-detail-btn {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       gap: 10px;
-      align-items: flex-start;
-      padding: 14px;
-      border-radius: 13px;
-      background: var(--hm-soft);
-      color: #36584d;
+      margin-top: auto;
+      padding: 11px 14px;
+      border-radius: 11px;
+      background: var(--hm-dark);
+      color: #fff !important;
+      font-size: 12px;
+      font-weight: 800;
+      transition: .2s
+    }
+
+    .hm-detail-btn:hover {
+      background: var(--hm-primary);
+      transform: translateY(-1px)
+    }
+
+    .hm-detail-btn span {
+      font-size: 17px
+    }
+
+    .hm-detail-btn-inline {
+      display: inline-flex !important;
+      width: max-content;
+      margin-top: 20px !important
+    }
+
+    .hm-empty {
+      padding: 55px 25px;
+      border: 1px dashed #cfded8;
+      border-radius: 20px;
+      background: var(--hm-light);
+      text-align: center
+    }
+
+    .hm-empty-icon {
+      width: 55px;
+      height: 55px;
+      margin: 0 auto 13px;
+      border-radius: 17px;
+      display: grid;
+      place-items: center;
+      background: #dff3eb;
+      color: var(--hm-primary);
+      font-size: 25px;
+      font-weight: 800
+    }
+
+    .hm-empty h3,
+    .hm-empty h2 {
+      margin: 0;
+      color: var(--hm-dark);
+      font: 800 23px "Plus Jakarta Sans", sans-serif
+    }
+
+    .hm-empty p {
+      margin: 8px auto 0;
+      max-width: 520px;
       font-size: 13px;
       line-height: 1.7
     }
 
-    .hm-focus i {
-      color: var(--hm-primary);
-      font-style: normal;
-      font-weight: 900
+    .hm-info-panel {
+      margin-top: 42px;
+      padding: 29px 32px;
+      border-radius: 20px;
+      background: var(--hm-dark);
+      color: #fff;
+      display: grid;
+      grid-template-columns: 1.4fr .9fr;
+      gap: 30px;
+      align-items: center
     }
 
-    .hm-people {
+    .hm-info-panel .hm-label {
+      color: #9ee1cb
+    }
+
+    .hm-info-panel h3 {
+      margin: 4px 0 8px;
+      color: #fff;
+      font: 800 24px "Plus Jakarta Sans", sans-serif
+    }
+
+    .hm-info-panel p {
+      margin: 0;
+      color: #d4e5df;
+      font-size: 13px;
+      line-height: 1.75
+    }
+
+    .hm-info-points {
+      display: grid;
+      gap: 9px
+    }
+
+    .hm-info-points span {
+      padding: 10px 12px;
+      border: 1px solid rgba(255, 255, 255, .13);
+      border-radius: 10px;
+      color: #e6f2ee;
+      font-size: 12px;
+      background: rgba(255, 255, 255, .05)
+    }
+
+    /* DETAIL */
+    .hd-hero {
+      padding: 38px 0 55px;
+      background: linear-gradient(135deg, #f4fbf8, #fff 65%, #eaf7f2);
+      border-bottom: 1px solid var(--hm-border)
+    }
+
+    .hd-breadcrumb {
+      color: #74857f;
+      margin-bottom: 30px
+    }
+
+    .hd-breadcrumb a {
+      color: var(--hm-primary)
+    }
+
+    .hd-profile {
+      display: grid;
+      grid-template-columns: 260px 1fr;
+      gap: 38px;
+      align-items: center
+    }
+
+    .hd-logo-box {
+      height: 260px;
+      border: 1px solid #dfeae5;
+      border-radius: 28px;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      box-shadow: 0 20px 50px rgba(18, 55, 42, .08);
+      overflow: hidden
+    }
+
+    .hd-logo-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      padding: 30px
+    }
+
+    .hd-logo-fallback {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--hm-primary)
+    }
+
+    .hd-logo-fallback strong {
+      width: 85px;
+      height: 85px;
+      border-radius: 25px;
+      display: grid;
+      place-items: center;
+      background: #e7f7f1;
+      font: 800 38px "Plus Jakarta Sans", sans-serif
+    }
+
+    .hd-logo-fallback span {
+      margin-top: 9px;
+      font-weight: 800;
+      letter-spacing: 2px
+    }
+
+    .hd-badge {
+      margin-bottom: 12px
+    }
+
+    .hd-profile-content h1 {
+      margin: 0 0 12px;
+      color: var(--hm-dark);
+      font: 800 clamp(35px, 5vw, 54px)/1.1 "Plus Jakarta Sans", sans-serif;
+      letter-spacing: -1.3px
+    }
+
+    .hd-profile-content>p {
+      max-width: 820px;
+      margin: 0;
+      color: #61746d;
+      font-size: 15px;
+      line-height: 1.85
+    }
+
+    .hd-focus {
+      margin-top: 18px;
+      padding: 14px 16px;
+      border-left: 4px solid var(--hm-primary);
+      border-radius: 0 12px 12px 0;
+      background: #eaf7f2
+    }
+
+    .hd-focus span {
+      display: block;
+      color: #71837c;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 1.1px;
+      font-weight: 800
+    }
+
+    .hd-focus strong {
+      display: block;
+      margin-top: 4px;
+      color: var(--hm-dark);
+      font-size: 13px;
+      line-height: 1.6
+    }
+
+    .hd-contact-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-top: 32px
+    }
+
+    .hd-contact-grid>div {
+      padding: 16px;
+      border: 1px solid #dfeae5;
+      border-radius: 14px;
+      background: #fff
+    }
+
+    .hd-contact-grid small {
+      display: block;
+      color: #8a9893;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 800
+    }
+
+    .hd-contact-grid strong,
+    .hd-contact-grid a {
+      display: block;
+      margin-top: 5px;
+      color: var(--hm-dark);
+      font-size: 12px;
+      font-weight: 800;
+      overflow-wrap: anywhere
+    }
+
+    .hd-section {
+      padding-top: 65px
+    }
+
+    .hd-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 14px;
+      margin-bottom: 38px
+    }
+
+    .hd-stats>div {
+      padding: 20px;
+      border: 1px solid var(--hm-border);
+      border-radius: 16px;
+      background: var(--hm-light);
+      text-align: center
+    }
+
+    .hd-stats strong {
+      display: block;
+      color: var(--hm-primary);
+      font: 800 30px "Plus Jakarta Sans", sans-serif
+    }
+
+    .hd-stats span {
+      font-size: 11px;
+      color: #71817b
+    }
+
+    .hd-vision-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 62px
+    }
+
+    .hd-text-card {
+      padding: 27px;
+      border: 1px solid var(--hm-border);
+      border-radius: 20px;
+      background: #fff;
+      box-shadow: 0 12px 35px rgba(18, 55, 42, .045)
+    }
+
+    .hd-text-card p {
+      margin: 12px 0 0;
+      color: #667972;
+      font-size: 14px;
+      line-height: 1.9
+    }
+
+    .hd-block {
+      padding-top: 55px;
+      margin-top: 55px;
+      border-top: 1px solid #eaf0ed
+    }
+
+    .hd-heading {
+      margin-bottom: 24px
+    }
+
+    .hd-heading p {
+      margin: 7px 0 0;
+      color: #7a8984;
+      font-size: 13px
+    }
+
+    .hd-people-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 16px
     }
 
-    .hm-person {
+    .hd-person {
+      padding: 15px;
       border: 1px solid var(--hm-border);
-      border-radius: 16px;
+      border-radius: 17px;
+      background: #fff;
+      box-shadow: 0 8px 25px rgba(18, 55, 42, .04)
+    }
+
+    .hd-person-photo {
+      height: 205px;
+      border-radius: 12px;
       overflow: hidden;
-      background: #fff
+      background: #edf6f2;
+      display: grid;
+      place-items: center;
+      color: var(--hm-primary)
     }
 
-    .hm-person-photo {
-      height: 170px;
-      background: #f1f7f4;
-      display: flex;
-      align-items: center;
-      justify-content: center
-    }
-
-    .hm-person-photo img {
+    .hd-person-photo img {
       width: 100%;
       height: 100%;
       object-fit: cover
     }
 
-    .hm-person-empty {
-      font-size: 12px;
-      color: #83928d;
-      text-align: center;
-      padding: 20px
+    .hd-person-photo span {
+      width: 60px;
+      height: 60px;
+      border-radius: 18px;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      font: 800 25px "Plus Jakarta Sans", sans-serif
     }
 
-    .hm-person-body {
-      padding: 16px
-    }
-
-    .hm-person-body strong {
-      display: block;
+    .hd-person h3 {
+      margin: 13px 0 3px;
       color: var(--hm-dark);
-      font-size: 14px;
-      margin-bottom: 4px
+      font: 800 14px/1.4 "Plus Jakarta Sans", sans-serif
     }
 
-    .hm-person-body span {
-      font-size: 12px;
-      color: #73827d
+    .hd-person p {
+      margin: 0;
+      color: var(--hm-primary);
+      font-size: 11px;
+      font-weight: 700
     }
 
-    .hm-list {
-      display: grid;
-      gap: 12px
-    }
-
-    .hm-item {
-      display: grid;
-      grid-template-columns: 1fr auto;
-      gap: 18px;
-      padding: 18px;
+    .hd-table-wrap {
+      overflow: auto;
       border: 1px solid var(--hm-border);
-      border-radius: 15px;
+      border-radius: 17px
+    }
+
+    .hd-table {
+      width: 100%;
+      min-width: 760px;
+      border-collapse: collapse;
       background: #fff
     }
 
-    .hm-item h3 {
-      margin: 0 0 5px;
-      color: var(--hm-dark);
-      font-size: 15px
+    .hd-table th,
+    .hd-table td {
+      padding: 13px 14px;
+      border-bottom: 1px solid #edf2f0;
+      text-align: left;
+      font-size: 12px
     }
 
-    .hm-item p {
-      margin: 0;
-      color: #71817c;
-      font-size: 13px;
-      line-height: 1.7
+    .hd-table th {
+      background: #f5faf8;
+      color: #61746d;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: .6px
     }
 
-    .hm-date {
-      font-size: 11px;
-      font-weight: 800;
+    .hd-table td strong {
+      color: var(--hm-dark)
+    }
+
+    .hd-activity-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px
+    }
+
+    .hd-activity {
+      overflow: hidden;
+      border: 1px solid var(--hm-border);
+      border-radius: 18px;
+      background: #fff
+    }
+
+    .hd-activity-photo {
+      height: 205px;
+      background: #edf6f2
+    }
+
+    .hd-activity-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover
+    }
+
+    .hd-activity-body {
+      padding: 19px
+    }
+
+    .hd-activity-body>span {
       color: var(--hm-primary);
-      white-space: nowrap
+      font-size: 10px;
+      font-weight: 800
     }
 
-    .hm-gallery {
+    .hd-activity-body h3 {
+      margin: 7px 0;
+      color: var(--hm-dark);
+      font: 800 16px/1.4 "Plus Jakarta Sans", sans-serif
+    }
+
+    .hd-activity-body p {
+      margin: 0;
+      color: #6c7d77;
+      font-size: 12px;
+      line-height: 1.75
+    }
+
+    .hd-gallery {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 14px
     }
 
-    .hm-gallery figure {
+    .hd-gallery figure {
       margin: 0;
-      border-radius: 15px;
       overflow: hidden;
-      background: #f2f7f5;
-      border: 1px solid var(--hm-border)
+      border: 1px solid var(--hm-border);
+      border-radius: 16px;
+      background: #fff
     }
 
-    .hm-gallery img {
+    .hd-gallery img {
       width: 100%;
-      height: 180px;
-      object-fit: cover;
+      height: 190px;
+      object-fit: cover
+    }
+
+    .hd-gallery figcaption {
+      padding: 11px 12px
+    }
+
+    .hd-gallery figcaption strong,
+    .hd-gallery figcaption span {
       display: block
     }
 
-    .hm-gallery figcaption {
-      padding: 10px 12px;
-      font-size: 11px;
-      color: #6c7b76
+    .hd-gallery figcaption strong {
+      color: var(--hm-dark);
+      font-size: 11px
     }
 
-    .hm-empty {
+    .hd-gallery figcaption span {
+      margin-top: 3px;
+      color: #7b8b85;
+      font-size: 10px;
+      line-height: 1.5
+    }
+
+    .hd-social {
+      margin-top: 55px;
       padding: 28px;
-      text-align: center;
-      border: 1px dashed #cfded8;
-      border-radius: 16px;
-      color: #7b8a85;
-      background: #fafcfb;
-      font-size: 13px;
-      line-height: 1.7
-    }
-
-    .hm-cta {
-      margin-top: 35px;
-      padding: 30px;
       border-radius: 20px;
       background: var(--hm-dark);
       color: #fff;
-      display: flex;
-      justify-content: space-between;
-      gap: 20px;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 30px;
       align-items: center
     }
 
-    .hm-cta h3 {
-      margin: 0 0 5px;
+    .hd-social .hm-label {
+      color: #9ee1cb
+    }
+
+    .hd-social h2 {
       color: #fff;
-      font-family: "Plus Jakarta Sans", sans-serif;
-      font-size: 23px
+      margin-top: 4px
     }
 
-    .hm-cta p {
-      margin: 0;
-      color: #d8e8e1;
-      font-size: 13px;
-      line-height: 1.7
+    .hd-social p {
+      margin: 8px 0 0;
+      color: #d2e4dd;
+      font-size: 12px
     }
 
-    .hm-cta a {
-      flex: none;
-      padding: 11px 15px;
-      border-radius: 12px;
-      background: #fff;
+    .hd-social-links {
+      display: flex;
+      gap: 9px;
+      flex-wrap: wrap;
+      justify-content: flex-end
+    }
+
+    .hd-social-links a {
+      padding: 10px 13px;
+      border: 1px solid rgba(255, 255, 255, .16);
+      border-radius: 10px;
+      background: rgba(255, 255, 255, .06);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 800
+    }
+
+    .hd-social-links a:hover {
+      background: var(--hm-primary)
+    }
+
+    .hd-social-links span {
+      margin-left: 8px
+    }
+
+    .hd-back {
+      text-align: center;
+      padding-top: 42px
+    }
+
+    .hd-back a {
+      display: inline-flex;
+      padding: 12px 17px;
+      border: 1px solid #d9e6e1;
+      border-radius: 11px;
       color: var(--hm-dark);
       font-size: 12px;
       font-weight: 800;
-      text-decoration: none
+      background: #fff
     }
 
-    @media(max-width:950px) {
-      .hm-stats {
-        grid-template-columns: repeat(2, 1fr)
-      }
+    .hd-back a:hover {
+      border-color: var(--hm-primary);
+      color: var(--hm-primary)
+    }
 
-      .hm-about {
+    .hm-not-found {
+      min-height: 50vh;
+      display: grid;
+      place-items: center
+    }
+
+    @media(max-width:1000px) {
+      .hm-hero-grid {
         grid-template-columns: 1fr
       }
 
-      .hm-people {
+      .hm-hero-stat {
+        justify-self: start;
+        width: 220px;
+        min-height: auto
+      }
+
+      .hm-grid {
         grid-template-columns: repeat(2, 1fr)
       }
 
-      .hm-gallery {
+      .hm-info-panel {
+        grid-template-columns: 1fr
+      }
+
+      .hd-profile {
+        grid-template-columns: 210px 1fr
+      }
+
+      .hd-logo-box {
+        height: 210px
+      }
+
+      .hd-contact-grid {
         grid-template-columns: repeat(2, 1fr)
+      }
+
+      .hd-stats {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .hd-people-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .hd-activity-grid {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .hd-gallery {
+        grid-template-columns: repeat(3, 1fr)
       }
     }
 
     @media(max-width:650px) {
+      .hm-container {
+        width: calc(100% - 28px)
+      }
+
       .hm-hero {
-        padding: 45px 0 52px
+        padding: 52px 0 60px
       }
 
-      .hm-hero-grid {
-        grid-template-columns: 1fr;
-        text-align: center
-      }
-
-      .hm-logo {
-        margin: auto;
-        width: 150px;
-        height: 150px
+      .hm-hero h1 {
+        font-size: 38px
       }
 
       .hm-hero p {
         font-size: 14px
       }
 
-      .hm-stats {
-        grid-template-columns: 1fr 1fr
+      .hm-section {
+        padding: 62px 0
       }
 
-      .hm-content {
-        padding: 58px 0 68px
-      }
-
-      .hm-people,
-      .hm-gallery {
-        grid-template-columns: 1fr
-      }
-
-      .hm-gallery img {
-        height: 220px
-      }
-
-      .hm-item {
-        grid-template-columns: 1fr
-      }
-
-      .hm-date {
-        white-space: normal
-      }
-
-      .hm-cta {
+      .hm-section-head {
         display: block
       }
 
-      .hm-cta a {
-        display: inline-flex;
-        margin-top: 18px
+      .hm-total {
+        margin-top: 18px;
+        width: max-content
+      }
+
+      .hm-grid {
+        grid-template-columns: 1fr
+      }
+
+      .hm-card-image {
+        height: 220px
+      }
+
+      .hm-card-body {
+        min-height: 290px
+      }
+
+      .hm-info-panel {
+        padding: 23px
+      }
+
+      .hd-hero {
+        padding-top: 25px
+      }
+
+      .hd-profile {
+        grid-template-columns: 1fr;
+        gap: 22px
+      }
+
+      .hd-logo-box {
+        height: 250px
+      }
+
+      .hd-profile-content h1 {
+        font-size: 35px
+      }
+
+      .hd-contact-grid {
+        grid-template-columns: 1fr
+      }
+
+      .hd-stats {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .hd-vision-grid {
+        grid-template-columns: 1fr
+      }
+
+      .hd-people-grid,
+      .hd-activity-grid {
+        grid-template-columns: 1fr
+      }
+
+      .hd-gallery {
+        grid-template-columns: repeat(2, 1fr)
+      }
+
+      .hd-gallery img {
+        height: 150px
+      }
+
+      .hd-social {
+        grid-template-columns: 1fr;
+        padding: 23px
+      }
+
+      .hd-social-links {
+        justify-content: flex-start
+      }
+
+      .hd-heading h2 {
+        font-size: 27px
       }
     }
     </style>
@@ -584,180 +1191,215 @@ if ($org) {
     <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
     <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
 
-    <?php if (!$org): ?>
-    <main>
-      <section class="hm-content">
-        <div class="container">
-          <div class="hm-empty">Data organisasi tidak ditemukan. <a
-              href="/fikes/kemahasiswaan/himpunan-kemahasiswaan">Kembali ke Himpunan Mahasiswa</a></div>
+    <main class="hm-page">
+      <?php if (!$org): ?>
+      <section class="hm-section hm-not-found">
+        <div class="hm-container">
+          <div class="hm-empty">
+            <div class="hm-empty-icon">!</div>
+            <h2>Himpunan tidak ditemukan</h2>
+            <p>Data mungkin sudah dinonaktifkan atau slug URL tidak tersedia.</p>
+            <a class="hm-detail-btn hm-detail-btn-inline" href="/fikes/kemahasiswaan/himpunan-mahasiswa">← Kembali ke
+              Himpunan</a>
+          </div>
         </div>
       </section>
-    </main>
-    <?php else: ?>
-    <main>
-      <section class="hm-hero">
-        <div class="container">
-          <div class="hm-breadcrumb"><a href="/fikes/">Beranda</a><span>›</span><a
-              href="/fikes/kemahasiswaan/himpunan-kemahasiswaan">Kemahasiswaan</a><span>›</span><span><?= e($org['nama']) ?></span>
+      <?php else: ?>
+      <section class="hd-hero">
+        <div class="hm-container">
+          <div class="hm-breadcrumb hd-breadcrumb">
+            <a href="/fikes/">Beranda</a><span>›</span>
+            <a href="/fikes/kemahasiswaan/himpunan-mahasiswa">Himpunan Mahasiswa</a><span>›</span>
+            <span><?= e($org['nama']) ?></span>
           </div>
-          <div class="hm-hero-grid">
-            <div class="hm-logo"><img src="<?= e($org['logo']) ?>" alt="<?= e($org['nama']) ?>"></div>
-            <div>
-              <div class="hm-kicker"><?= e($org['kategori']) ?></div>
+
+          <div class="hd-profile">
+            <div class="hd-logo-box">
+              <?php $logo = hd_image_url($org['logo'] ?? ''); ?>
+              <?php if ($logo): ?>
+              <img src="<?= e($logo) ?>" alt="Logo <?= e($org['nama']) ?>">
+              <?php else: ?>
+              <div class="hd-logo-fallback">
+                <strong><?= e(mb_strtoupper(mb_substr($org['nama'], 0, 1))) ?></strong><span>FIKES</span>
+              </div>
+              <?php endif; ?>
+            </div>
+            <div class="hd-profile-content">
+              <span class="hm-badge hd-badge"><?= e($org['kategori'] ?: 'Himpunan Mahasiswa') ?></span>
               <h1><?= e($org['nama']) ?></h1>
-              <p><?= e($org['deskripsi']) ?></p><a class="hm-back" href="/fikes/kemahasiswaan/himpunan-kemahasiswaan">←
-                Kembali ke Himpunan</a>
+              <p><?= nl2br(e($org['deskripsi'] ?: 'Profil organisasi mahasiswa FIKES.')) ?></p>
+              <?php if (!empty($org['fokus'])): ?>
+              <div class="hd-focus"><span>Fokus / Bidang Kegiatan</span><strong><?= e($org['fokus']) ?></strong></div>
+              <?php endif; ?>
             </div>
+          </div>
+
+          <div class="hd-contact-grid">
+            <?php if (!empty($org['ketua_nama'])): ?><div><small>Ketua Saat
+                Ini</small><strong><?= e($org['ketua_nama']) ?></strong></div><?php endif; ?>
+            <?php if (!empty($org['sekretariat'])): ?><div>
+              <small>Sekretariat</small><strong><?= e($org['sekretariat']) ?></strong>
+            </div><?php endif; ?>
+            <?php if (!empty($org['email'])): ?><div><small>Email</small><a
+                href="mailto:<?= e($org['email']) ?>"><?= e($org['email']) ?></a></div><?php endif; ?>
+            <?php if (!empty($org['telepon'])): ?><div><small>Telepon</small><a
+                href="tel:<?= e(preg_replace('/[^0-9+]/', '', $org['telepon'])) ?>"><?= e($org['telepon']) ?></a></div>
+            <?php endif; ?>
           </div>
         </div>
       </section>
 
-      <section class="hm-content">
-        <div class="container">
-          <div class="hm-stats">
-            <div class="hm-stat">
-              <strong><?= $anggota_count !== null ? number_format($anggota_count) : '—' ?></strong><span>Anggota
-                aktif</span>
-            </div>
-            <div class="hm-stat"><strong><?= count($pengurus) ?: '—' ?></strong><span>Pengurus aktif</span></div>
-            <div class="hm-stat"><strong><?= count($kegiatan) ?: '—' ?></strong><span>Kegiatan terdokumentasi</span>
-            </div>
-            <div class="hm-stat"><strong><?= count($galeri) ?: '—' ?></strong><span>Dokumentasi foto</span></div>
+      <section class="hm-section hd-section">
+        <div class="hm-container">
+          <div class="hd-stats">
+            <div><strong><?= count($pengurus) ?></strong><span>Pengurus Aktif</span></div>
+            <div><strong><?= count($anggota) ?></strong><span>Anggota Aktif</span></div>
+            <div><strong><?= count($kegiatan) ?></strong><span>Kegiatan Publish</span></div>
+            <div><strong><?= count($galeri) ?></strong><span>Foto Galeri</span></div>
           </div>
 
-          <div class="hm-about">
-            <div class="hm-panel"><span class="hm-label">Profil Organisasi</span>
-              <h2>Tentang <?= e($org['nama']) ?></h2>
-              <p><?= e($org['deskripsi']) ?></p>
-              <div class="hm-focus"><i>✓</i><span><strong>Fokus kegiatan:</strong> <?= e($org['fokus']) ?></span></div>
-            </div>
-            <div class="hm-panel soft"><span class="hm-label">Informasi Organisasi</span>
-              <h2>Identitas</h2>
-              <p><strong>Nama organisasi</strong><br><?= e($org['nama']) ?></p>
-              <p><strong>Kategori</strong><br><?= e($org['kategori']) ?></p>
-              <p><strong>Status data</strong><br>Informasi detail dapat dikelola melalui data organisasi.</p>
-            </div>
+          <?php if (!empty($org['visi']) || !empty($org['misi'])): ?>
+          <div class="hd-vision-grid">
+            <?php if (!empty($org['visi'])): ?>
+            <article class="hd-text-card"><span class="hm-label">VISI</span>
+              <h2>Visi Organisasi</h2>
+              <p><?= nl2br(e($org['visi'])) ?></p>
+            </article>
+            <?php endif; ?>
+            <?php if (!empty($org['misi'])): ?>
+            <article class="hd-text-card"><span class="hm-label">MISI</span>
+              <h2>Misi Organisasi</h2>
+              <p><?= nl2br(e($org['misi'])) ?></p>
+            </article>
+            <?php endif; ?>
           </div>
+          <?php endif; ?>
 
-          <div class="hm-section">
-            <div class="hm-section-head"><span class="hm-label">Kepengurusan</span>
-              <h2>Pengurus Organisasi</h2>
-              <p>Daftar pejabat/pengurus akan tampil otomatis apabila data kepengurusan sudah dimasukkan.</p>
+          <?php if ($pengurus): ?>
+          <section class="hd-block">
+            <div class="hd-heading"><span class="hm-label">STRUKTUR ORGANISASI</span>
+              <h2>Pengurus Himpunan</h2>
+              <p>Data pengurus aktif yang dikelola dari Dashboard Admin.</p>
             </div>
-            <?php if ($pengurus): ?><div class="hm-people"><?php foreach ($pengurus as $p): ?><article
-                class="hm-person">
-                <div class="hm-person-photo"><?php if (!empty($p['foto'])): ?><img
-                    src="/fikes/vendor/kemahasiswaan/pengurus/<?= e($p['foto']) ?>"
-                    alt="<?= e($p['nama']) ?>"><?php else: ?><div class="hm-person-empty">Foto belum tersedia</div>
-                  <?php endif; ?></div>
-                <div class="hm-person-body"><strong><?= e($p['nama']) ?></strong><span><?= e($p['jabatan']) ?></span>
+            <div class="hd-people-grid">
+              <?php foreach ($pengurus as $person): ?>
+              <?php $foto = hd_image_url($person['foto'] ?? '', 'pengurus'); ?>
+              <article class="hd-person">
+                <div class="hd-person-photo">
+                  <?php if ($foto): ?><img src="<?= e($foto) ?>" alt="<?= e($person['nama']) ?>"
+                    loading="lazy"><?php else: ?><span><?= e(mb_strtoupper(mb_substr($person['nama'], 0, 1))) ?></span><?php endif; ?>
                 </div>
-              </article><?php endforeach; ?></div><?php else: ?><div class="hm-empty">Data pengurus belum tersedia.
-              Struktur ini sudah disiapkan untuk menampilkan <strong>Ketua, Wakil Ketua, Sekretaris, Bendahara,
-                bidang/divisi, dan pengurus lainnya</strong> setelah data dimasukkan.</div><?php endif; ?>
-          </div>
-
-          <div class="hm-section">
-            <div class="hm-section-head"><span class="hm-label">Keanggotaan</span>
-              <h2>Anggota</h2>
-              <p>Informasi anggota dapat dikembangkan menjadi daftar anggota, angkatan, bidang/divisi, dan status
-                keanggotaan.</p>
-            </div>
-            <div class="hm-empty"><?php if ($anggota_count !== null): ?>Terdapat
-              <strong><?= number_format($anggota_count) ?></strong> anggota aktif.<?php else: ?>Data anggota belum
-              tersedia. Bagian ini siap menampilkan daftar anggota secara lengkap setelah data
-              dimasukkan.<?php endif; ?>
-            </div>
-          </div>
-
-          <div class="hm-section">
-            <div class="hm-section-head"><span class="hm-label">Program & Aktivitas</span>
-              <h2>Kegiatan Organisasi</h2>
-              <p>Daftar kegiatan dapat berisi nama kegiatan, tanggal, deskripsi, dokumentasi, dan informasi hasil
-                kegiatan.</p>
-            </div><?php if ($kegiatan): ?><div class="hm-list"><?php foreach ($kegiatan as $k): ?><article
-                class="hm-item">
                 <div>
-                  <h3><?= e($k['judul']) ?></h3>
-                  <p><?= e($k['deskripsi']) ?></p>
+                  <h3><?= e($person['nama']) ?></h3>
+                  <p><?= e($person['jabatan']) ?></p>
                 </div>
-                <div class="hm-date"><?= e($k['tanggal_kegiatan']) ?></div>
-              </article><?php endforeach; ?></div><?php else: ?><div class="hm-empty">Belum ada kegiatan yang
-              dipublikasikan.</div><?php endif; ?>
-          </div>
+              </article>
+              <?php endforeach; ?>
+            </div>
+          </section>
+          <?php endif; ?>
 
-          <div class="hm-section">
-            <div class="hm-section-head"><span class="hm-label">Dokumentasi</span>
-              <h2>Galeri Kegiatan</h2>
-              <p>Foto kegiatan organisasi dapat ditampilkan dalam bentuk galeri visual.</p>
-            </div><?php if ($galeri): ?><div class="hm-gallery"><?php foreach ($galeri as $g): ?><figure><img
-                  src="/fikes/vendor/kemahasiswaan/galeri/<?= e($g['foto']) ?>" alt="<?= e($g['judul']) ?>"
-                  loading="lazy">
+          <?php if ($anggota): ?>
+          <section class="hd-block">
+            <div class="hd-heading"><span class="hm-label">ANGGOTA</span>
+              <h2>Anggota Aktif</h2>
+              <p>Daftar anggota yang berstatus aktif pada database.</p>
+            </div>
+            <div class="hd-table-wrap">
+              <table class="hd-table">
+                <thead>
+                  <tr>
+                    <th>No</th>
+                    <th>Nama</th>
+                    <th>NIM</th>
+                    <th>Program Studi</th>
+                    <th>Angkatan</th>
+                    <th>Jabatan</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <?php foreach ($anggota as $i => $member): ?>
+                  <tr>
+                    <td><?= $i + 1 ?></td>
+                    <td><strong><?= e($member['nama']) ?></strong></td>
+                    <td><?= e($member['nim'] ?: '-') ?></td>
+                    <td><?= e($member['prodi'] ?: '-') ?></td>
+                    <td><?= e($member['angkatan'] ?: '-') ?></td>
+                    <td><?= e($member['jabatan'] ?: '-') ?></td>
+                  </tr>
+                  <?php endforeach; ?>
+                </tbody>
+              </table>
+            </div>
+          </section>
+          <?php endif; ?>
+
+          <?php if ($kegiatan): ?>
+          <section class="hd-block">
+            <div class="hd-heading"><span class="hm-label">KEGIATAN</span>
+              <h2>Kegiatan Himpunan</h2>
+              <p>Dokumentasi kegiatan dengan status <b>publish</b>.</p>
+            </div>
+            <div class="hd-activity-grid">
+              <?php foreach ($kegiatan as $activity): ?>
+              <?php $foto = hd_image_url($activity['foto'] ?? '', 'kegiatan'); ?>
+              <article class="hd-activity">
+                <?php if ($foto): ?><div class="hd-activity-photo"><img src="<?= e($foto) ?>"
+                    alt="<?= e($activity['judul']) ?>" loading="lazy"></div><?php endif; ?>
+                <div class="hd-activity-body"><span><?= e(hd_date($activity['tanggal_kegiatan'] ?? null)) ?></span>
+                  <h3><?= e($activity['judul']) ?></h3><?php if (!empty($activity['deskripsi'])): ?><p>
+                    <?= nl2br(e($activity['deskripsi'])) ?></p><?php endif; ?>
+                </div>
+              </article>
+              <?php endforeach; ?>
+            </div>
+          </section>
+          <?php endif; ?>
+
+          <?php if ($galeri): ?>
+          <section class="hd-block">
+            <div class="hd-heading"><span class="hm-label">GALERI</span>
+              <h2>Dokumentasi Foto</h2>
+              <p>Foto yang berstatus <b>publish</b> dari galeri organisasi.</p>
+            </div>
+            <div class="hd-gallery">
+              <?php foreach ($galeri as $photo): ?>
+              <?php $foto = hd_image_url($photo['foto'] ?? '', 'galeri'); ?>
+              <?php if ($foto): ?>
+              <figure><img src="<?= e($foto) ?>" alt="<?= e($photo['judul']) ?>" loading="lazy">
                 <figcaption>
-                  <strong><?= e($g['judul']) ?></strong><?= !empty($g['keterangan']) ? ' — '.e($g['keterangan']) : '' ?>
+                  <strong><?= e($photo['judul']) ?></strong><?php if (!empty($photo['keterangan'])): ?><span><?= e($photo['keterangan']) ?></span><?php endif; ?>
                 </figcaption>
-              </figure><?php endforeach; ?></div><?php else: ?><div class="hm-empty">Belum ada foto kegiatan yang
-              dipublikasikan. Setelah foto dimasukkan, galeri akan tampil otomatis di bagian ini.</div><?php endif; ?>
-          </div>
+              </figure>
+              <?php endif; ?>
+              <?php endforeach; ?>
+            </div>
+          </section>
+          <?php endif; ?>
 
-          <div class="hm-cta">
-            <div>
-              <h3>Ingin mengenal lebih jauh?</h3>
-              <p>Kembali ke daftar Himpunan Mahasiswa FIKES untuk melihat organisasi lainnya.</p>
-            </div><a href="/fikes/kemahasiswaan/himpunan-kemahasiswaan">Lihat Semua Himpunan</a>
-          </div>
+          <?php if (!empty($org['instagram']) || !empty($org['facebook']) || !empty($org['youtube'])): ?>
+          <section class="hd-social">
+            <div><span class="hm-label">MEDIA SOSIAL</span>
+              <h2>Ikuti <?= e($org['nama']) ?></h2>
+              <p>Informasi media sosial mengikuti data yang dimasukkan melalui Dashboard Admin.</p>
+            </div>
+            <div class="hd-social-links">
+              <?php if (!empty($org['instagram'])): ?><a href="<?= e($org['instagram']) ?>" target="_blank"
+                rel="noopener">Instagram <span>↗</span></a><?php endif; ?>
+              <?php if (!empty($org['facebook'])): ?><a href="<?= e($org['facebook']) ?>" target="_blank"
+                rel="noopener">Facebook <span>↗</span></a><?php endif; ?>
+              <?php if (!empty($org['youtube'])): ?><a href="<?= e($org['youtube']) ?>" target="_blank"
+                rel="noopener">YouTube <span>↗</span></a><?php endif; ?>
+            </div>
+          </section>
+          <?php endif; ?>
+
+          <div class="hd-back"><a href="/fikes/kemahasiswaan/himpunan-mahasiswa">← Kembali ke Daftar Himpunan</a></div>
         </div>
       </section>
+      <?php endif; ?>
     </main>
-    <?php endif; ?>
-
-    <footer>
-      <div class="container footer-main">
-        <div class="footer-brand">
-          <div class="logo footer-logo">
-            <div class="logo-icon">F</div>
-            <div class="logo-text"><strong style="color:white">FIKES</strong><small>FAKULTAS ILMU KESEHATAN</small>
-            </div>
-          </div>
-          <p>Membangun generasi kesehatan yang profesional, berintegritas, inovatif, dan berorientasi kepada masyarakat.
-          </p>
-        </div>
-        <div>
-          <h4 class="footer-title">Tentang FIKES</h4>
-          <div class="footer-links"><a href="/fikes/tentang/visi-misi">Visi Misi</a><a
-              href="/fikes/tentang/struktur-organisasi">Struktur Organisasi</a><a
-              href="/fikes/tentang/sertifikat-akreditasi">Akreditasi</a><a href="/fikes/dosen">Daftar Dosen</a></div>
-        </div>
-        <div>
-          <h4 class="footer-title">Program Studi</h4>
-          <div class="footer-links"><a href="/fikes/program-studi">Profesi Ners</a><a href="/fikes/program-studi">Ilmu
-              Keperawatan</a><a href="/fikes/program-studi">Farmasi</a><a href="/fikes/program-studi">Kebidanan</a><a
-              href="/fikes/program-studi">K3</a></div>
-        </div>
-        <div>
-          <h4 class="footer-title">Informasi</h4>
-          <div class="footer-links"><a href="/fikes/akademik">Akademik</a><a
-              href="/fikes/kemahasiswaan/himpunan-kemahasiswaan">Kemahasiswaan</a><a href="/fikes/survey">Survey</a>
-          </div>
-        </div>
-        <div class="footer-location">
-          <div class="location-header">
-            <div class="location-icon"><i class="fa-solid fa-location-dot"></i></div>
-            <div>
-              <h3>Lokasi Kampus</h3>
-              <p>Fakultas Ilmu Kesehatan</p>
-            </div>
-          </div>
-          <div class="map-card"><iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.1515727139526!2d109.11806027499709!3d-6.991421893009626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fbef42471658d%3A0x883656d1325ef066!2sUniversitas%20Bhamada%20Slawi!5e0!3m2!1sid!2sid!4v1787544396003!5m2!1sid!2sid"
-              width="600" height="450" style="border:0" allowfullscreen loading="lazy"
-              title="Lokasi Fakultas Ilmu Kesehatan"></iframe></div>
-        </div>
-      </div>
-      <div class="container footer-bottom"><span>© <span id="year"></span> Fakultas Ilmu Kesehatan. All Rights
-          Reserved.</span><span>Website FIKES</span></div>
-    </footer>
-    <script src="/fikes/assets/js/main.js"></script>
+    <?php require_once __DIR__ . '/../menu/footer.php'; ?>
   </body>
 
 </html>
