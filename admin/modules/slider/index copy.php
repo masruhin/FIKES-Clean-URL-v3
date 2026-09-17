@@ -74,18 +74,8 @@ include __DIR__ . '/../../includes/header.php';
   min-width: 280px
 }
 
-.table-wrap {
-  width: 100%;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  border: 1px solid #edf1f0;
-  border-radius: 12px;
-  background: #fff;
-}
-
 .table {
   width: 100%;
-  min-width: 850px;
   border-collapse: collapse;
   background: #fff
 }
@@ -122,70 +112,6 @@ include __DIR__ . '/../../includes/header.php';
 .badge.off {
   background: #f3f4f6;
   color: #6b7280
-}
-
-.table-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 12px;
-  flex-wrap: wrap;
-  margin-top: 14px;
-}
-
-.table-info {
-  color: #6b7280;
-  font-size: 13px;
-}
-
-.pagination {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.page-btn {
-  min-width: 36px;
-  height: 36px;
-  padding: 0 10px;
-  border: 1px solid #dbe4e2;
-  border-radius: 8px;
-  background: #fff;
-  color: #285b55;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.page-btn:hover {
-  background: #edf7f4;
-}
-
-.page-btn.active {
-  background: #078f78;
-  color: #fff;
-  border-color: #078f78;
-}
-
-.page-btn:disabled {
-  opacity: .45;
-  cursor: not-allowed;
-}
-
-.page-ellipsis {
-  color: #6b7280;
-  padding: 0 2px;
-}
-
-@media(max-width:800px) {
-  .table-footer {
-    align-items: stretch;
-    flex-direction: column;
-  }
-
-  .pagination {
-    justify-content: flex-start;
-  }
 }
 
 .modal {
@@ -282,8 +208,10 @@ include __DIR__ . '/../../includes/header.php';
     flex-direction: column
   }
 
-  .table-wrap {
-    border-radius: 10px;
+  .table {
+    display: block;
+    overflow: auto;
+    white-space: nowrap
   }
 }
 </style>
@@ -294,20 +222,12 @@ include __DIR__ . '/../../includes/header.php';
       <div class="muted">Kelola gambar dan konten slider yang tampil pada halaman beranda.</div>
     </div><button class="btn primary" onclick="baru()">+ Tambah Slider</button>
   </div>
-  <div class="toolbar">
-    <input id="q" placeholder="Cari judul, label, atau deskripsi slider..." oninput="load(true)">
-    <select id="st" onchange="load(true)">
+  <div class="toolbar"><input id="q" placeholder="Cari judul slider..." oninput="load()"><select id="st"
+      onchange="load()">
       <option value="">Semua status</option>
       <option value="aktif">Aktif</option>
       <option value="nonaktif">Nonaktif</option>
-    </select>
-    <select id="pageSize" onchange="changePageSize()">
-      <option value="5">5 data</option>
-      <option value="10" selected>10 data</option>
-      <option value="25">25 data</option>
-      <option value="50">50 data</option>
-    </select>
-  </div>
+    </select></div>
   <div id="list">Memuat...</div>
 </div>
 <div class="modal" id="modal">
@@ -359,143 +279,30 @@ const api = 'ajax.php',
     "'": '&#039;'
   } [m]));
 async function jsonRequest(url, options = {}) {
-  const response = await fetch(url, {
-    credentials: 'same-origin',
-    cache: 'no-store',
-    ...options
-  });
+  const response = await fetch(url, { credentials: 'same-origin', cache: 'no-store', ...options });
   const text = await response.text();
   if (response.redirected || /<\s*!doctype|<\s*html/i.test(text)) {
-    throw new Error(
-      'Server mengembalikan halaman HTML, bukan JSON. Kemungkinan sesi login admin sudah berakhir atau endpoint AJAX terkena redirect. Silakan login ulang.'
-    );
+    throw new Error('Server mengembalikan halaman HTML, bukan JSON. Kemungkinan sesi login admin sudah berakhir atau endpoint AJAX terkena redirect. Silakan login ulang.');
   }
   let data;
-  try {
-    data = JSON.parse(text);
-  } catch (err) {
-    throw new Error('Respons server bukan JSON yang valid. HTTP ' + response.status + '.');
-  }
+  try { data = JSON.parse(text); } catch (err) { throw new Error('Respons server bukan JSON yang valid. HTTP ' + response.status + '.'); }
   if (!response.ok) throw new Error(data.message || ('HTTP ' + response.status));
   return data;
 }
-let rows = [];
-let currentPage = 1;
-let pageSize = 10;
-
-async function load(resetPage = false) {
-  if (resetPage) currentPage = 1;
-
-  $('list').innerHTML = '<div class="muted" style="padding:18px">Memuat data...</div>';
-
+async function load() {
   try {
-    let d = await jsonRequest(api + '?action=list&search=' + encodeURIComponent($('q').value) +
-      '&status=' + encodeURIComponent($('st').value));
-
+    let d = await jsonRequest(api + '?action=list&search=' + encodeURIComponent($('q').value) + '&status=' +
+      encodeURIComponent($('st').value));
     if (!d.success) throw Error(d.message);
-
-    rows = Array.isArray(d.data) ? d.data : [];
-    pageSize = parseInt($('pageSize').value, 10) || 10;
-
-    const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
-    if (currentPage > totalPages) currentPage = totalPages;
-
-    renderTable();
+    let h =
+      '<table class="table"><tr><th>No</th><th>Gambar</th><th>Slider</th><th>Urut</th><th>Status</th><th>Aksi</th></tr>';
+    d.data.forEach((x, i) => h +=
+      `<tr><td>${i+1}</td><td><img class="thumb" src="${esc(x.gambar_url)}" alt=""></td><td><b>${esc(x.judul)}</b><br><span class="muted">${esc(x.label||'')}</span></td><td>${esc(x.nomor_urut)}</td><td><span class="badge ${x.status==='aktif'?'':'off'}">${esc(x.status)}</span></td><td><button class="btn soft" onclick="edit(${x.id})">Edit</button> <button class="btn danger" onclick="hapus(${x.id})">Hapus</button></td></tr>`
+    );
+    $('list').innerHTML = h + '</table>'
   } catch (e) {
-    $('list').innerHTML =
-      '<div class="muted" style="padding:18px">Gagal memuat data: ' + esc(e.message) + '</div>';
+    $('list').innerHTML = '<div class="muted">Gagal memuat data: ' + esc(e.message) + '</div>'
   }
-}
-
-function renderTable() {
-  const total = rows.length;
-  const totalPages = Math.max(1, Math.ceil(total / pageSize));
-  if (currentPage > totalPages) currentPage = totalPages;
-
-  const startIndex = (currentPage - 1) * pageSize;
-  const endIndex = Math.min(startIndex + pageSize, total);
-  const pageRows = rows.slice(startIndex, endIndex);
-
-  let h = '<div class="table-wrap"><table class="table">';
-  h +=
-    '<thead><tr><th>No</th><th>Gambar</th><th>Slider</th><th>Urut</th><th>Status</th><th>Aksi</th></tr></thead><tbody>';
-
-  if (!pageRows.length) {
-    h +=
-      '<tr><td colspan="6" style="text-align:center;padding:30px;color:#6b7280">Data slider tidak ditemukan.</td></tr>';
-  } else {
-    pageRows.forEach((x, i) => {
-      const no = startIndex + i + 1;
-      h += `<tr>
-        <td>${no}</td>
-        <td><img class="thumb" src="${esc(x.gambar_url)}" alt="Gambar slider"></td>
-        <td><b>${esc(x.judul)}</b><br><span class="muted">${esc(x.label || '')}</span></td>
-        <td>${esc(x.nomor_urut)}</td>
-        <td><span class="badge ${x.status === 'aktif' ? '' : 'off'}">${esc(x.status)}</span></td>
-        <td>
-          <button class="btn soft" onclick="edit(${x.id})">Edit</button>
-          <button class="btn danger" onclick="hapus(${x.id})">Hapus</button>
-        </td>
-      </tr>`;
-    });
-  }
-
-  h += '</tbody></table></div>';
-
-  const shownStart = total ? startIndex + 1 : 0;
-  h += `<div class="table-footer">
-    <div class="table-info">Menampilkan <b>${shownStart}</b> - <b>${endIndex}</b> dari <b>${total}</b> data</div>
-    <div class="pagination">
-      <button class="page-btn" onclick="goPage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>‹ Sebelumnya</button>
-      ${pageButtons(totalPages)}
-      <button class="page-btn" onclick="goPage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>Berikutnya ›</button>
-    </div>
-  </div>`;
-
-  $('list').innerHTML = h;
-}
-
-function pageButtons(totalPages) {
-  if (totalPages <= 1) return '';
-
-  const pages = [];
-  const add = n => {
-    if (!pages.includes(n)) pages.push(n);
-  };
-
-  add(1);
-  for (let n = currentPage - 1; n <= currentPage + 1; n++) {
-    if (n >= 1 && n <= totalPages) add(n);
-  }
-  add(totalPages);
-  pages.sort((a, b) => a - b);
-
-  let html = '';
-  let previous = null;
-
-  pages.forEach(n => {
-    if (previous !== null && n - previous > 1) {
-      html += '<span class="page-ellipsis">...</span>';
-    }
-    html += `<button class="page-btn ${n === currentPage ? 'active' : ''}" onclick="goPage(${n})">${n}</button>`;
-    previous = n;
-  });
-
-  return html;
-}
-
-function goPage(page) {
-  const totalPages = Math.max(1, Math.ceil(rows.length / pageSize));
-  if (page < 1 || page > totalPages) return;
-
-  currentPage = page;
-  renderTable();
-}
-
-function changePageSize() {
-  pageSize = parseInt($('pageSize').value, 10) || 10;
-  currentPage = 1;
-  renderTable();
 }
 
 function baru() {
@@ -542,10 +349,7 @@ async function simpan(e) {
     fd = new FormData(e.target);
   fd.append('action', 'save');
   try {
-    let d = await jsonRequest(api, {
-      method: 'POST',
-      body: fd
-    });
+    let d = await jsonRequest(api, { method: 'POST', body: fd });
     if (!d.success) {
       await Swal.fire({
         icon: 'error',
@@ -591,10 +395,7 @@ async function hapus(id) {
     let fd = new FormData();
     fd.append('action', 'delete');
     fd.append('id', id);
-    let d = await jsonRequest(api, {
-      method: 'POST',
-      body: fd
-    });
+    let d = await jsonRequest(api, { method: 'POST', body: fd });
     if (!d.success) {
       Swal.fire({
         icon: 'error',
@@ -619,6 +420,6 @@ async function hapus(id) {
     })
   }
 }
-load(false);
+load();
 </script>
 <?php include __DIR__ . '/../../includes/footer.php'; ?>
