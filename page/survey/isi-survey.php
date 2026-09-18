@@ -1,207 +1,111 @@
 <?php
-if(session_status()!==PHP_SESSION_ACTIVE) session_start();
+if (session_status() !== PHP_SESSION_ACTIVE) session_start();
 require_once __DIR__ . '/../../admin/config/database.php';
-function survey_e($v){return htmlspecialchars((string)$v,ENT_QUOTES,'UTF-8');}
-function survey_defaults($tipe){if($tipe==='skala')return [['Sangat Tidak Puas',1],['Tidak Puas',2],['Cukup',3],['Puas',4],['Sangat Puas',5]];if($tipe==='ya_tidak')return [['Ya',1],['Tidak',0]];return [];}
-$slug=trim($_GET['slug']??'');
-$st=$pdo->prepare("SELECT * FROM survey WHERE slug=? AND status='aktif' AND (tanggal_mulai IS NULL OR tanggal_mulai<=CURDATE()) AND (tanggal_selesai IS NULL OR tanggal_selesai>=CURDATE()) LIMIT 1");$st->execute([$slug]);$survey=$st->fetch(PDO::FETCH_ASSOC);
-if(!$survey){http_response_code(404);exit('Survey tidak ditemukan atau sudah ditutup.');}
-$st=$pdo->prepare("SELECT * FROM survey_pertanyaan WHERE survey_id=? AND status='aktif' ORDER BY nomor_urut,id");$st->execute([$survey['id']]);$questions=$st->fetchAll(PDO::FETCH_ASSOC);
-$ids=array_column($questions,'id');$choices=[];
-if($ids){$in=implode(',',array_fill(0,count($ids),'?'));$q=$pdo->prepare("SELECT * FROM survey_pilihan WHERE pertanyaan_id IN($in) ORDER BY nomor_urut,id");$q->execute($ids);foreach($q->fetchAll(PDO::FETCH_ASSOC) as $c)$choices[$c['pertanyaan_id']][]=$c;}
-foreach($questions as $q){$qid=(int)$q['id'];if(!empty($choices[$qid]))continue;foreach(survey_defaults($q['tipe']) as $i=>$d)$choices[$qid][]= ['id'=>'default-'.$qid.'-'.$i,'pertanyaan_id'=>$qid,'label'=>$d[0],'nilai'=>$d[1],'nomor_urut'=>$i+1];}
-$success=false;$error='';
-if($_SERVER['REQUEST_METHOD']==='POST'){
- try{
-  if(!hash_equals($_SESSION['survey_token_'.$survey['id']]??'',$_POST['token']??''))throw new Exception('Sesi survey tidak valid. Silakan muat ulang halaman.');
-  $pdo->beginTransaction();
-  $st=$pdo->prepare("INSERT INTO survey_responden(survey_id,nama,email,kategori_responden,identitas,ip_address) VALUES(?,?,?,?,?,?)");$st->execute([$survey['id'],trim($_POST['nama']??''),trim($_POST['email']??''),trim($_POST['kategori_responden']??''),trim($_POST['identitas']??''),$_SERVER['REMOTE_ADDR']??null]);$rid=(int)$pdo->lastInsertId();
-  foreach($questions as $q){$v=$_POST['q'][$q['id']]??'';if((int)$q['wajib'] && trim((string)$v)==='')throw new Exception('Semua pertanyaan wajib harus diisi.');$pid=null;$nilai=null;$text=null;if(in_array($q['tipe'],['skala','pilihan_ganda','ya_tidak'],true)&&$v!==''){$sel=$pdo->prepare('SELECT id,nilai FROM survey_pilihan WHERE id=? AND pertanyaan_id=?');$sel->execute([(int)$v,$q['id']]);$row=$sel->fetch(PDO::FETCH_ASSOC);if($row){$pid=(int)$row['id'];$nilai=$row['nilai'];}else{$defaults=survey_defaults($q['tipe']);$idx=is_numeric($v)?(int)$v:-1;if(isset($defaults[$idx])){$nilai=$defaults[$idx][1];$pid=null;}}}else{$text=trim((string)$v);} $ins=$pdo->prepare('INSERT INTO survey_jawaban(responden_id,pertanyaan_id,pilihan_id,jawaban_text,nilai) VALUES(?,?,?,?,?)');$ins->execute([$rid,$q['id'],$pid,$text,$nilai]);}
-  $pdo->commit();$success=true;unset($_SESSION['survey_token_'.$survey['id']]);
- }catch(Throwable $ex){if($pdo->inTransaction())$pdo->rollBack();$error=$ex->getMessage();}
+function survey_e($v)
+{
+  return htmlspecialchars((string)$v, ENT_QUOTES, 'UTF-8');
 }
-if(empty($_SESSION['survey_token_'.$survey['id']]))$_SESSION['survey_token_'.$survey['id']]=bin2hex(random_bytes(24));$token=$_SESSION['survey_token_'.$survey['id']];
+function survey_defaults($tipe)
+{
+  if ($tipe === 'skala') return [['Sangat Tidak Puas', 1], ['Tidak Puas', 2], ['Cukup', 3], ['Puas', 4], ['Sangat Puas', 5]];
+  if ($tipe === 'ya_tidak') return [['Ya', 1], ['Tidak', 0]];
+  return [];
+}
+$slug = trim($_GET['slug'] ?? '');
+$st = $pdo->prepare("SELECT * FROM survey WHERE slug=? AND status='aktif' AND (tanggal_mulai IS NULL OR tanggal_mulai<=CURDATE()) AND (tanggal_selesai IS NULL OR tanggal_selesai>=CURDATE()) LIMIT 1");
+$st->execute([$slug]);
+$survey = $st->fetch(PDO::FETCH_ASSOC);
+if (!$survey) {
+  http_response_code(404);
+  exit('Survey tidak ditemukan atau sudah ditutup.');
+}
+$st = $pdo->prepare("SELECT * FROM survey_pertanyaan WHERE survey_id=? AND status='aktif' ORDER BY nomor_urut,id");
+$st->execute([$survey['id']]);
+$questions = $st->fetchAll(PDO::FETCH_ASSOC);
+$ids = array_column($questions, 'id');
+$choices = [];
+if ($ids) {
+  $in = implode(',', array_fill(0, count($ids), '?'));
+  $q = $pdo->prepare("SELECT * FROM survey_pilihan WHERE pertanyaan_id IN($in) ORDER BY nomor_urut,id");
+  $q->execute($ids);
+  foreach ($q->fetchAll(PDO::FETCH_ASSOC) as $c) $choices[$c['pertanyaan_id']][] = $c;
+}
+foreach ($questions as $q) {
+  $qid = (int)$q['id'];
+  if (!empty($choices[$qid])) continue;
+  foreach (survey_defaults($q['tipe']) as $i => $d) $choices[$qid][] = ['id' => 'default-' . $qid . '-' . $i, 'pertanyaan_id' => $qid, 'label' => $d[0], 'nilai' => $d[1], 'nomor_urut' => $i + 1];
+}
+$success = false;
+$error = '';
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+  try {
+    if (!hash_equals($_SESSION['survey_token_' . $survey['id']] ?? '', $_POST['token'] ?? '')) throw new Exception('Sesi survey tidak valid. Silakan muat ulang halaman.');
+    $pdo->beginTransaction();
+    $st = $pdo->prepare("INSERT INTO survey_responden(survey_id,nama,email,kategori_responden,identitas,ip_address) VALUES(?,?,?,?,?,?)");
+    $st->execute([$survey['id'], trim($_POST['nama'] ?? ''), trim($_POST['email'] ?? ''), trim($_POST['kategori_responden'] ?? ''), trim($_POST['identitas'] ?? ''), $_SERVER['REMOTE_ADDR'] ?? null]);
+    $rid = (int)$pdo->lastInsertId();
+    foreach ($questions as $q) {
+      $v = $_POST['q'][$q['id']] ?? '';
+      if ((int)$q['wajib'] && trim((string)$v) === '') throw new Exception('Semua pertanyaan wajib harus diisi.');
+      $pid = null;
+      $nilai = null;
+      $text = null;
+      if (in_array($q['tipe'], ['skala', 'pilihan_ganda', 'ya_tidak'], true) && $v !== '') {
+        $sel = $pdo->prepare('SELECT id,nilai FROM survey_pilihan WHERE id=? AND pertanyaan_id=?');
+        $sel->execute([(int)$v, $q['id']]);
+        $row = $sel->fetch(PDO::FETCH_ASSOC);
+        if ($row) {
+          $pid = (int)$row['id'];
+          $nilai = $row['nilai'];
+        } else {
+          $defaults = survey_defaults($q['tipe']);
+          $idx = is_numeric($v) ? (int)$v : -1;
+          if (isset($defaults[$idx])) {
+            $nilai = $defaults[$idx][1];
+            $pid = null;
+          }
+        }
+      } else {
+        $text = trim((string)$v);
+      }
+      $ins = $pdo->prepare('INSERT INTO survey_jawaban(responden_id,pertanyaan_id,pilihan_id,jawaban_text,nilai) VALUES(?,?,?,?,?)');
+      $ins->execute([$rid, $q['id'], $pid, $text, $nilai]);
+    }
+    $pdo->commit();
+    $success = true;
+    unset($_SESSION['survey_token_' . $survey['id']]);
+  } catch (Throwable $ex) {
+    if ($pdo->inTransaction()) $pdo->rollBack();
+    $error = $ex->getMessage();
+  }
+}
+if (empty($_SESSION['survey_token_' . $survey['id']])) $_SESSION['survey_token_' . $survey['id']] = bin2hex(random_bytes(24));
+$token = $_SESSION['survey_token_' . $survey['id']];
 ?>
 <!doctype html>
 <html lang="id">
 
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Isi Survey | FIKES - Fakultas Ilmu Kesehatan</title>
+  <title>Isi Survey | FIKES - Fakultas Ilmu Kesehatan</title>
 
-    <meta name="description"
-      content="Website resmi Fakultas Ilmu Kesehatan - Informasi akademik, program studi, kemahasiswaan, pelayanan dan informasi FIKES." />
+  <meta name="description"
+    content="Website resmi Fakultas Ilmu Kesehatan - Informasi akademik, program studi, kemahasiswaan, pelayanan dan informasi FIKES." />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
-      rel="stylesheet" />
-    <link rel="stylesheet" href="/fikes/assets/css/style.css" />
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/fikes/assets/css/style.css" />
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap");
 
-    :root {
-      --primary: #087f5b;
-      --primary-dark: #056044;
-      --primary-light: #e7f7f1;
-      --secondary: #f4b942;
-      --dark: #12372a;
-      --text: #52635d;
-      --light: #f7faf9;
-      --white: #fff;
-      --border: #e5ece9;
-      --shadow: 0 20px 60px rgba(18, 55, 42, .1);
-      --radius: 18px;
-      --transition: .3s ease
-    }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0
-    }
-
-    html {
-      scroll-behavior: smooth
-    }
-
-    body {
-      font-family: Inter, sans-serif;
-      color: var(--text);
-      background: #fff;
-      line-height: 1.7;
-      overflow-x: hidden
-    }
-
-    h1,
-    h2,
-    h3,
-    h4 {
-      font-family: "Plus Jakarta Sans", sans-serif;
-      color: var(--dark);
-      line-height: 1.3
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit
-    }
-
-    .container {
-      width: min(1180px, calc(100% - 40px));
-      margin: auto
-    }
-
-    .section {
-      padding: 90px 0
-    }
-
-    .topbar {
-      background: var(--dark);
-      color: #d9e8e2;
-      font-size: 13px
-    }
-
-    .topbar-inner {
-      min-height: 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px
-    }
-
-    .topbar-info,
-    .topbar-social {
-      display: flex;
-      gap: 22px;
-      align-items: center
-    }
-
-    .navbar {
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: rgba(255, 255, 255, .95);
-      backdrop-filter: blur(15px);
-      border-bottom: 1px solid var(--border)
-    }
-
-    .nav-inner {
-      min-height: 82px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 25px
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px
-    }
-
-    .logo-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--primary), #13a878);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 17px
-    }
-
-    .logo-text strong {
-      display: block;
-      color: var(--dark);
-      font-size: 17px
-    }
-
-    .logo-text small {
-      display: block;
-      font-size: 10px;
-      color: var(--primary);
-      font-weight: 700
-    }
-
-    .nav-menu {
-      display: flex;
-      gap: 3px
-    }
-
-    .nav-link {
-      min-height: 82px;
-      padding: 0 13px;
-      display: flex;
-      align-items: center;
-      font-size: 13px;
-      font-weight: 600;
-      color: #344b43
-    }
-
-    .nav-link:hover {
-      color: var(--primary)
-    }
-
-    .nav-cta {
-      padding: 12px 19px;
-      border-radius: 10px;
-      background: var(--primary);
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700
-    }
-
-    .menu-toggle {
-      display: none
-    }
 
     /* =========================
    HERO SLIDER - CENTER
@@ -1562,106 +1466,30 @@ if(empty($_SESSION['survey_token_'.$survey['id']]))$_SESSION['survey_token_'.$su
         font-size: 28px
       }
     }
-    </style>
-  </head>
+  </style>
+</head>
 
-  <body>
+<body>
+  <!-- TOPBAR REUSABLE -->
+  <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
 
-    <!-- =========================================================
-     TOP BAR
-========================================================= -->
-
-    <div class="topbar">
-      <div class="container topbar-inner">
-        <div class="topbar-info">
-          <span>📍 Kampus FIKES</span>
-
-          <span>✉️ info@fikes.ac.id</span>
-
-          <span>📞 (021) 1234567</span>
-        </div>
-
-        <div class="topbar-social">
-          <a href="#">Instagram</a>
-          <a href="#">Facebook</a>
-          <a href="#">YouTube</a>
-        </div>
+  <!-- NAVBAR REUSABLE -->
+  <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
+  <main>
+    <section class="page-hero survey-hero">
+      <div class="container">
+        <div class="breadcrumb">⌂ <span>Beranda</span><b>›</b><span>Survey</span><b>›</b><span>Isi Survey</span></div>
+        <span class="eyebrow">FORMULIR SURVEY FIKES</span>
+        <h1><?= survey_e($survey['judul']) ?></h1>
+        <p>
+          <?= survey_e($survey['deskripsi'] ?: 'Silakan isi survey berikut dengan jawaban yang sesuai berdasarkan pengalaman Anda.') ?>
+        </p>
       </div>
-    </div>
-
-    <!-- =========================================================
-     NAVBAR
-========================================================= -->
-
-    <header class="navbar" id="navbar">
-      <div class="container nav-inner">
-        <a href="/fikes/" class="logo">
-          <div class="logo-icon">F</div>
-          <div class="logo-text"><strong>FIKES</strong><small>FAKULTAS ILMU KESEHATAN</small></div>
-        </a>
-        <button class="menu-toggle" id="menuToggle">☰</button>
-        <nav class="nav-menu" id="navMenu">
-          <div class="nav-item has-dropdown">
-            <a href="#" class="nav-link">Tentang FIKES <span class="arrow">▾</span></a>
-            <div class="dropdown">
-              <div class="dropdown-item"><a href="/fikes/tentang/visi-misi" class="dropdown-link">Visi
-                  Misi</a></div>
-              <div class="dropdown-item"><a href="/fikes/tentang/struktur-organisasi"
-                  class="dropdown-link">Struktur Organisasi</a></div>
-              <div class="dropdown-item"><a href="/fikes/tentang/sertifikat-akreditasi"
-                  class="dropdown-link">Sertifikat Akreditasi</a></div>
-              <div class="dropdown-item"><a href="/fikes/tentang/unduh-logo" class="dropdown-link">Unduh
-                  Logo</a></div>
-            </div>
-          </div>
-          <div class="nav-item has-dropdown">
-            <a href="#" class="nav-link">Kemahasiswaan <span class="arrow">▾</span></a>
-            <div class="dropdown">
-              <div class="dropdown-item"><a href="/fikes/kemahasiswaan/himpunan-mahasiswa" class="dropdown-link">Unit
-                  Himpunan Mahasiswa</a></div>
-              <div class="dropdown-item"><a href="/fikes/kemahasiswaan/ukm" class="dropdown-link">UKM
-                  Kemahasiswaan</a></div>
-            </div>
-          </div>
-          <div class="nav-item"><a href="/fikes/program-studi" class="nav-link">Program</a></div>
-          <div class="nav-item has-dropdown">
-            <a href="/fikes/akademik" class="nav-link">Akademik <span class="arrow">▾</span></a>
-            <div class="dropdown">
-              <div class="dropdown-item"><a href="/fikes/akademik#kurikulum"
-                  class="dropdown-link">Kurikulum &amp; Silabus</a></div>
-              <div class="dropdown-item"><a href="/fikes/akademik#kalender"
-                  class="dropdown-link">Kalender Pendidikan</a></div>
-              <div class="dropdown-item"><a href="/fikes/akademik#jadwal" class="dropdown-link">Jadwal
-                  Kuliah &amp; Ujian</a></div>
-              <div class="dropdown-item"><a href="/fikes/akademik#registrasi"
-                  class="dropdown-link">Jadwal Registrasi</a></div>
-              <div class="dropdown-item"><a href="/fikes/akademik#dokumen"
-                  class="dropdown-link">Administrasi &amp; Dokumen Mahasiswa</a></div>
-              <div class="dropdown-item"><a href="/fikes/akademik#penilaian"
-                  class="dropdown-link">Sistem Penilaian</a></div>
-            </div>
-          </div>
-          <!-- <div class="nav-item"><a href="#pelayanan" class="nav-link">Pelayanan FIKES</a></div> -->
-          <div class="nav-item"><a href="/fikes/survey" class="nav-link">Survey</a></div>
-        </nav>
-        <a href="/fikes/program-studi" class="nav-cta">Jelajahi Program <span>→</span></a>
-      </div>
-    </header>
-    <main>
-      <section class="page-hero survey-hero">
-        <div class="container">
-          <div class="breadcrumb">⌂ <span>Beranda</span><b>›</b><span>Survey</span><b>›</b><span>Isi Survey</span></div>
-          <span class="eyebrow">FORMULIR SURVEY FIKES</span>
-          <h1><?=survey_e($survey['judul'])?></h1>
-          <p>
-            <?=survey_e($survey['deskripsi'] ?: 'Silakan isi survey berikut dengan jawaban yang sesuai berdasarkan pengalaman Anda.')?>
-          </p>
-        </div>
-      </section>
-      <section class="survey-form-section">
-        <div class="container">
-          <div class="survey-form-card">
-            <?php if($success): ?>
+    </section>
+    <section class="survey-form-section">
+      <div class="container">
+        <div class="survey-form-card">
+          <?php if ($success): ?>
             <div class="success-panel">
               <div class="success-icon">✓</div>
               <h2>Survey Berhasil Dikirim</h2>
@@ -1670,301 +1498,86 @@ if(empty($_SESSION['survey_token_'.$survey['id']]))$_SESSION['survey_token_'.$su
                   Daftar Survey</a><a class="success-secondary" href="/fikes/">Kembali ke Beranda</a></div>
             </div>
             <script>
-            document.addEventListener('DOMContentLoaded', function() {
-              Swal.fire({
-                icon: 'success',
-                title: 'Berhasil!',
-                text: 'Jawaban survey Anda berhasil disimpan.',
-                confirmButtonText: 'OK',
-                confirmButtonColor: '#087f5b',
-                allowOutsideClick: false
+              document.addEventListener('DOMContentLoaded', function() {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Berhasil!',
+                  text: 'Jawaban survey Anda berhasil disimpan.',
+                  confirmButtonText: 'OK',
+                  confirmButtonColor: '#087f5b',
+                  allowOutsideClick: false
+                });
               });
-            });
             </script>
-            <?php else: ?>
-            <?php if($error): ?><div class="survey-alert err"><?=survey_e($error)?></div><?php endif; ?>
+          <?php else: ?>
+            <?php if ($error): ?><div class="survey-alert err"><?= survey_e($error) ?></div><?php endif; ?>
             <h2>Isi Formulir Survey</h2>
             <p class="desc">Lengkapi data responden dan jawab seluruh pertanyaan sesuai pengalaman Anda. Pertanyaan
               bertanda <strong>*</strong> wajib diisi.</p>
             <div class="survey-info">
               <div class="survey-info-item"><span>Target
-                  Responden</span><strong><?=survey_e($survey['target_responden'])?></strong></div>
-              <div class="survey-info-item"><span>Jumlah Pertanyaan</span><strong><?=count($questions)?>
+                  Responden</span><strong><?= survey_e($survey['target_responden']) ?></strong></div>
+              <div class="survey-info-item"><span>Jumlah Pertanyaan</span><strong><?= count($questions) ?>
                   Pertanyaan</strong></div>
               <div class="survey-info-item">
-                <span>Periode</span><strong><?=survey_e($survey['tanggal_mulai'] ?: 'Terbuka')?> —
-                  <?=survey_e($survey['tanggal_selesai'] ?: 'Tidak ditentukan')?></strong>
+                <span>Periode</span><strong><?= survey_e($survey['tanggal_mulai'] ?: 'Terbuka') ?> —
+                  <?= survey_e($survey['tanggal_selesai'] ?: 'Tidak ditentukan') ?></strong>
               </div>
             </div>
             <form method="post" id="surveyForm">
-              <input type="hidden" name="token" value="<?=survey_e($token)?>">
+              <input type="hidden" name="token" value="<?= survey_e($token) ?>">
               <div class="respondent-box">
                 <h3>Data Responden</h3>
                 <p>Data identitas digunakan hanya untuk kebutuhan pengelolaan hasil survey.</p>
                 <div class="respondent-grid">
                   <div class="survey-field"><label>Nama</label><input name="nama"
-                      value="<?=survey_e($_POST['nama']??'')?>" placeholder="Masukkan nama"></div>
+                      value="<?= survey_e($_POST['nama'] ?? '') ?>" placeholder="Masukkan nama"></div>
                   <div class="survey-field"><label>Email</label><input type="email" name="email"
-                      value="<?=survey_e($_POST['email']??'')?>" placeholder="nama@email.com"></div>
+                      value="<?= survey_e($_POST['email'] ?? '') ?>" placeholder="nama@email.com"></div>
                   <div class="survey-field"><label>Kategori Responden</label><select name="kategori_responden">
                       <option value="">Pilih kategori</option>
-                      <?php foreach(['Mahasiswa','Karyawan/Pegawai','Dosen','Alumni','Masyarakat','Umum'] as $v): ?>
-                      <option value="<?=survey_e($v)?>" <?=($_POST['kategori_responden']??'')===$v?'selected':''?>>
-                        <?=survey_e($v)?></option><?php endforeach;?>
+                      <?php foreach (['Mahasiswa', 'Karyawan/Pegawai', 'Dosen', 'Alumni', 'Masyarakat', 'Umum'] as $v): ?>
+                        <option value="<?= survey_e($v) ?>"
+                          <?= ($_POST['kategori_responden'] ?? '') === $v ? 'selected' : '' ?>>
+                          <?= survey_e($v) ?></option><?php endforeach; ?>
                     </select></div>
                   <div class="survey-field"><label>Identitas/NIM/NIP <small>(opsional)</small></label><input
-                      name="identitas" value="<?=survey_e($_POST['identitas']??'')?>"
+                      name="identitas" value="<?= survey_e($_POST['identitas'] ?? '') ?>"
                       placeholder="Masukkan identitas bila diperlukan"></div>
                 </div>
               </div>
-              <?php if(!$questions): ?><div class="empty-choice">Survey ini belum memiliki pertanyaan aktif.</div>
+              <?php if (!$questions): ?><div class="empty-choice">Survey ini belum memiliki pertanyaan aktif.</div>
               <?php else: ?>
-              <div class="question-list">
-                <?php foreach($questions as $i=>$q): ?><article class="survey-question">
-                  <div class="question-title"><span
-                      class="question-number"><?=($i+1)?></span><?=survey_e($q['pertanyaan'])?><?php if((int)$q['wajib']): ?><span
-                      class="required">*</span><?php endif;?></div>
-                  <?php if(in_array($q['tipe'],['skala','pilihan_ganda','ya_tidak'],true)): ?><div
-                    class="survey-options"><?php foreach(($choices[$q['id']]??[]) as $c): ?><label
-                      class="survey-opt"><input type="radio" name="q[<?=$q['id']?>]" value="<?=survey_e($c['id'])?>"
-                        <?=((string)($_POST['q'][$q['id']]??'')===(string)$c['id'])?'checked':''?>><span><?=survey_e($c['label'])?></span></label><?php endforeach; if(empty($choices[$q['id']])): ?>
-                    <div class="empty-choice">Pilihan jawaban belum dibuat untuk pertanyaan ini.</div><?php endif;?>
-                  </div>
-                  <?php elseif($q['tipe']==='isian'): ?><div class="survey-field"><input type="text"
-                      name="q[<?=$q['id']?>]" value="<?=survey_e($_POST['q'][$q['id']]??'')?>"
-                      placeholder="Tulis jawaban Anda..."></div>
-                  <?php else: ?><div class="survey-field"><textarea name="q[<?=$q['id']?>]"
-                      placeholder="Tulis jawaban Anda..."><?=survey_e($_POST['q'][$q['id']]??'')?></textarea></div>
-                  <?php endif; ?>
-                </article><?php endforeach; ?></div>
-              <div class="survey-submit-row"><a class="survey-back" href="/fikes/survey">← Kembali ke
-                  Survey</a><button class="survey-submit" type="submit">Kirim Jawaban Survey</button></div>
+                <div class="question-list">
+                  <?php foreach ($questions as $i => $q): ?><article class="survey-question">
+                      <div class="question-title"><span
+                          class="question-number"><?= ($i + 1) ?></span><?= survey_e($q['pertanyaan']) ?><?php if ((int)$q['wajib']): ?><span
+                          class="required">*</span><?php endif; ?></div>
+                      <?php if (in_array($q['tipe'], ['skala', 'pilihan_ganda', 'ya_tidak'], true)): ?><div
+                          class="survey-options"><?php foreach (($choices[$q['id']] ?? []) as $c): ?><label
+                              class="survey-opt"><input type="radio" name="q[<?= $q['id'] ?>]" value="<?= survey_e($c['id']) ?>"
+                                <?= ((string)($_POST['q'][$q['id']] ?? '') === (string)$c['id']) ? 'checked' : '' ?>><span><?= survey_e($c['label']) ?></span></label><?php endforeach;
+                                                                                                                                                                    if (empty($choices[$q['id']])): ?>
+                            <div class="empty-choice">Pilihan jawaban belum dibuat untuk pertanyaan ini.</div><?php endif; ?>
+                        </div>
+                      <?php elseif ($q['tipe'] === 'isian'): ?><div class="survey-field"><input type="text"
+                            name="q[<?= $q['id'] ?>]" value="<?= survey_e($_POST['q'][$q['id']] ?? '') ?>"
+                            placeholder="Tulis jawaban Anda..."></div>
+                      <?php else: ?><div class="survey-field"><textarea name="q[<?= $q['id'] ?>]"
+                            placeholder="Tulis jawaban Anda..."><?= survey_e($_POST['q'][$q['id']] ?? '') ?></textarea></div>
+                      <?php endif; ?>
+                    </article><?php endforeach; ?></div>
+                <div class="survey-submit-row"><a class="survey-back" href="/fikes/survey">← Kembali ke
+                    Survey</a><button class="survey-submit" type="submit">Kirim Jawaban Survey</button></div>
               <?php endif; ?>
             </form>
-            <?php endif; ?>
-          </div>
+          <?php endif; ?>
         </div>
-      </section>
-    </main>
-    <footer>
-      <div class="container footer-main">
-        <div class="footer-brand">
-          <div class="logo footer-logo">
-            <div class="logo-icon">F</div>
-
-            <div class="logo-text">
-              <strong style="color: white"> FIKES </strong>
-
-              <small> FAKULTAS ILMU KESEHATAN </small>
-            </div>
-          </div>
-
-          <p>
-            Membangun generasi kesehatan yang profesional, berintegritas,
-            inovatif, dan berorientasi kepada masyarakat.
-          </p>
-        </div>
-
-        <div>
-          <h4 class="footer-title">Tentang FIKES</h4>
-
-          <div class="footer-links">
-            <a href="#"> Visi Misi </a>
-
-            <a href="#"> Struktur Organisasi </a>
-
-            <a href="#"> Akreditasi </a>
-
-            <a href="#"> Daftar Dosen </a>
-          </div>
-        </div>
-
-        <div>
-          <h4 class="footer-title">Program Studi</h4>
-
-          <div class="footer-links">
-            <a href="#"> Profesi Ners </a>
-
-            <a href="#"> Ilmu Keperawatan </a>
-
-            <a href="#"> Farmasi </a>
-
-            <a href="#"> Kebidanan </a>
-
-            <a href="#"> K3 </a>
-          </div>
-        </div>
-
-        <div>
-          <h4 class="footer-title">Informasi</h4>
-
-          <div class="footer-links">
-            <a href="/fikes/akademik"> Akademik </a>
-
-            <a href="#"> Kemahasiswaan </a>
-
-            <a href="#"> Pelayanan FIKES </a>
-
-            <a href="/fikes/survey"> Survey </a>
-          </div>
-        </div>
-
-        <!--MAP PETA-->
-        <!-- =========================================================
-     LOKASI & PETA
-========================================================== -->
-
-        <div class="footer-location">
-          <div class="location-header">
-            <div class="location-icon">
-              <i class="fa-solid fa-location-dot"></i>
-            </div>
-
-            <div>
-              <h3>Lokasi Kampus</h3>
-
-              <p>Fakultas Ilmu Kesehatan</p>
-            </div>
-          </div>
-
-          <!-- PETA -->
-
-          <div class="map-card">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.1515727139526!2d109.11806027499709!3d-6.991421893009626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fbef42471658d%3A0x883656d1325ef066!2sUniversitas%20Bhamada%20Slawi!5e0!3m2!1sid!2sid!4v1787544396003!5m2!1sid!2sid"
-              width="600" height="450" style="border: 0" allowfullscreen="" loading="lazy"
-              referrerpolicy="strict-origin-when-cross-origin" title="Lokasi Fakultas Ilmu Kesehatan" loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
-            </iframe>
-
-            <div class="map-overlay">
-              <div class="map-info">
-                <div class="map-info-icon">
-                  <i class="fa-solid fa-location-dot"></i>
-                </div>
-
-                <div>
-                  <strong> Fakultas Ilmu Kesehatan </strong>
-
-                  <span> Lihat lokasi kampus </span>
-                </div>
-              </div>
-
-              <a href="#" target="_blank" class="map-direction">
-                <i class="fa-solid fa-diamond-turn-right"></i>
-
-                Petunjuk Arah
-              </a>
-            </div>
-          </div>
-
-          <!-- ALAMAT -->
-
-          <div class="footer-contact location-contact">
-            <i class="fa-solid fa-location-dot"></i>
-
-            <span>
-              Alamat Fakultas Ilmu Kesehatan, silakan sesuaikan dengan alamat
-              kampus.
-            </span>
-          </div>
-
-          <div class="footer-contact">
-            <i class="fa-solid fa-phone"></i>
-
-            <span> Nomor Telepon FIKES </span>
-          </div>
-
-          <div class="footer-contact">
-            <i class="fa-solid fa-envelope"></i>
-
-            <span> email@fikes.ac.id </span>
-          </div>
-        </div>
-        <!--MAP PETA-->
       </div>
+    </section>
+  </main>
+  <?php require_once __DIR__ . '/../menu/footer.php'; ?>
 
-      <div class="container footer-bottom">
-        <span>
-          © <span id="year"></span> Fakultas Ilmu Kesehatan. All Rights
-          Reserved.
-        </span>
-
-        <span> Website FIKES </span>
-      </div>
-    </footer>
-
-    <!-- BACK TO TOP -->
-
-    <button class="back-top" id="backTop">↑</button>
-    <!-- <script src="assets/js/main.js"></script> -->
-    <script>
-    let current = 0;
-    let slides = [];
-    let dots = [];
-
-    function showSlide(n) {
-      if (!slides.length) return;
-      current = (n + slides.length) % slides.length;
-      slides.forEach((s, i) => s.classList.toggle("active", i === current));
-      dots.forEach((d, i) => d.classList.toggle("active", i === current));
-    }
-
-    function changeSlide(n) {
-      showSlide(current + n);
-    }
-
-    function currentSlide(n) {
-      showSlide(n - 1);
-    }
-    document.addEventListener("DOMContentLoaded", () => {
-      slides = [...document.querySelectorAll(".slide")];
-      dots = [...document.querySelectorAll(".slider-dot")];
-      showSlide(0);
-      if (slides.length > 1) setInterval(() => changeSlide(1), 7000);
-      const t = document.getElementById("menuToggle"),
-        m = document.getElementById("navMenu");
-      if (t && m) t.onclick = () => m.classList.toggle("active");
-      const nav = document.getElementById("navbar");
-      window.addEventListener("scroll", () => {
-        if (nav) nav.classList.toggle("scrolled", scrollY > 20);
-        const b = document.getElementById("backTop");
-        if (b) b.classList.toggle("show", scrollY > 500)
-      });
-      const b = document.getElementById("backTop");
-      if (b) b.onclick = () => scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    });
-    </script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Label kolom otomatis untuk mode kartu di HP.
-      document.querySelectorAll('.ak-table').forEach(function(table) {
-        const headers = Array.from(table.querySelectorAll('thead th')).map(function(th) {
-          return th.textContent.trim();
-        });
-        table.querySelectorAll('tbody tr').forEach(function(row) {
-          Array.from(row.children).forEach(function(cell, index) {
-            if (headers[index]) cell.setAttribute('data-label', headers[index]);
-          });
-        });
-      });
-
-      const f = document.getElementById('prodiFilter');
-      if (f) {
-        f.addEventListener('change', function() {
-          document.querySelectorAll('#kurTable tbody tr').forEach(r => {
-            r.style.display = !this.value || r.dataset.prodi === this.value ? '' : 'none';
-          });
-        });
-      }
-      document.querySelectorAll('.ak-side a').forEach(a => a.addEventListener('click', () => document
-        .querySelectorAll('.ak-side a').forEach(x => x.classList.remove('active'))));
-    });
-    </script>
-
-  </body>
+</body>
 
 </html>
