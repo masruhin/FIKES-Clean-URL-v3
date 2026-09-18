@@ -31,17 +31,18 @@ $prodi = $pdo->query("SELECT id,kode_prodi,nama,jenjang,gelar FROM program_studi
 <!doctype html>
 <html lang="id">
 
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1">
-    <title>Sertifikat Akreditasi | FIKES</title>
-    <meta name="description" content="Sertifikat akreditasi Program Studi Fakultas Ilmu Kesehatan">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
-      rel="stylesheet">
-    <style>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Sertifikat Akreditasi | FIKES</title>
+  <meta name="description" content="Sertifikat akreditasi Program Studi Fakultas Ilmu Kesehatan">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/fikes/assets/css/style.css">
+  <style>
     :root {
       --primary: #087f5b;
       --primary-dark: #056044;
@@ -89,166 +90,6 @@ $prodi = $pdo->query("SELECT id,kode_prodi,nama,jenjang,gelar FROM program_studi
       margin: auto
     }
 
-    .topbar {
-      background: var(--dark);
-      color: #d9e8e2;
-      font-size: 13px
-    }
-
-    .topbar-inner {
-      min-height: 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px
-    }
-
-    .topbar-info,
-    .topbar-social {
-      display: flex;
-      gap: 22px;
-      align-items: center
-    }
-
-    .topbar-info span {
-      display: flex;
-      align-items: center;
-      gap: 7px
-    }
-
-    .topbar-social a:hover {
-      color: var(--secondary)
-    }
-
-    .navbar {
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: rgba(255, 255, 255, .95);
-      backdrop-filter: blur(15px);
-      border-bottom: 1px solid var(--border)
-    }
-
-    .nav-inner {
-      min-height: 82px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 25px
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px
-    }
-
-    .logo-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--primary), #13a878);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 17px;
-      box-shadow: 0 10px 25px rgba(8, 127, 91, .25)
-    }
-
-    .logo-text strong {
-      display: block;
-      color: var(--dark);
-      font-size: 17px
-    }
-
-    .logo-text small {
-      display: block;
-      font-size: 10px;
-      color: var(--primary);
-      font-weight: 700;
-      letter-spacing: .5px
-    }
-
-    .nav-menu {
-      display: flex;
-      align-items: center;
-      gap: 3px
-    }
-
-    .nav-item {
-      position: relative
-    }
-
-    .nav-link {
-      min-height: 82px;
-      padding: 0 13px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #344b43;
-      white-space: nowrap
-    }
-
-    .nav-link:hover {
-      color: var(--primary)
-    }
-
-    .arrow {
-      font-size: 11px
-    }
-
-    .dropdown {
-      position: absolute;
-      top: calc(100% + 5px);
-      left: 0;
-      width: 250px;
-      padding: 10px;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(10px);
-      transition: var(--transition)
-    }
-
-    .nav-item:hover>.dropdown {
-      opacity: 1;
-      visibility: visible;
-      transform: none
-    }
-
-    .dropdown-link {
-      display: flex;
-      justify-content: space-between;
-      padding: 10px 13px;
-      border-radius: 9px;
-      color: #40544d;
-      font-size: 13px
-    }
-
-    .dropdown-link:hover {
-      color: var(--primary);
-      background: var(--primary-light)
-    }
-
-    .nav-cta {
-      padding: 12px 19px;
-      border-radius: 10px;
-      background: var(--primary);
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700
-    }
-
-    .menu-toggle {
-      display: none
-    }
 
     .page-hero {
       padding: 55px 0 75px;
@@ -553,128 +394,6 @@ $prodi = $pdo->query("SELECT id,kode_prodi,nama,jenjang,gelar FROM program_studi
       font-weight: 800
     }
 
-    footer {
-      background: #0d2b21;
-      color: #b7cec5
-    }
-
-    .footer-main {
-      padding: 70px 0 45px;
-      display: grid;
-      grid-template-columns: 1.4fr 1fr 1fr 1fr;
-      gap: 45px
-    }
-
-    .footer-title {
-      color: #fff;
-      font-size: 14px;
-      margin-bottom: 17px
-    }
-
-    .footer-links {
-      display: grid;
-      gap: 10px
-    }
-
-    .footer-links a {
-      font-size: 12px
-    }
-
-    .footer-links a:hover {
-      color: var(--secondary)
-    }
-
-    .footer-location {
-      grid-column: 1/-1
-    }
-
-    .location-header {
-      display: flex;
-      gap: 12px;
-      align-items: center;
-      margin-bottom: 18px
-    }
-
-    .location-icon {
-      width: 42px;
-      height: 42px;
-      border-radius: 12px;
-      background: var(--secondary);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--dark)
-    }
-
-    .location-header h3 {
-      color: #fff;
-      font-size: 13px
-    }
-
-    .location-header p {
-      font-size: 9px;
-      color: rgba(255, 255, 255, .5)
-    }
-
-    .map-card {
-      position: relative;
-      width: 100%;
-      height: 210px;
-      overflow: hidden;
-      border-radius: 16px;
-      border: 1px solid rgba(255, 255, 255, .1);
-      margin-bottom: 20px
-    }
-
-    .map-card iframe {
-      width: 100%;
-      height: 100%;
-      border: 0
-    }
-
-    .map-overlay {
-      position: absolute;
-      left: 12px;
-      right: 12px;
-      bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px
-    }
-
-    .map-info {
-      padding: 9px 11px;
-      border-radius: 10px;
-      background: rgba(5, 35, 26, .78);
-      color: #fff;
-      font-size: 10px
-    }
-
-    .map-direction {
-      background: #fff;
-      color: var(--dark);
-      padding: 10px 12px;
-      border-radius: 9px;
-      font-size: 9px;
-      font-weight: 800
-    }
-
-    .footer-contact {
-      display: flex;
-      gap: 9px;
-      align-items: center;
-      font-size: 11px;
-      margin-top: 10px
-    }
-
-    .footer-bottom {
-      border-top: 1px solid rgba(255, 255, 255, .08);
-      padding: 20px 0;
-      display: flex;
-      justify-content: space-between;
-      font-size: 11px
-    }
 
     @media(max-width:1000px) {
       .nav-menu {
@@ -733,139 +452,100 @@ $prodi = $pdo->query("SELECT id,kode_prodi,nama,jenjang,gelar FROM program_studi
         text-align: center
       }
     }
-    </style>
-  </head>
+  </style>
+</head>
 
-  <body>
-    <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
+<body>
+  <!-- TOPBAR REUSABLE -->
+  <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
 
-    <!-- NAVBAR REUSABLE -->
-    <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
-    <main>
-      <section class="page-hero">
-        <div class="container">
-          <div class="breadcrumb"><a href="/fikes/">Beranda</a><span>›</span><span>Tentang
-              FIKES</span><span>›</span><span>Sertifikat Akreditasi</span></div>
-          <div class="hero-label">MUTU & AKREDITASI</div>
-          <h1>Sertifikat <span>Akreditasi</span></h1>
-          <p>Informasi dan dokumen sertifikat akreditasi yang terhubung langsung dengan data Program Studi FIKES.</p>
+  <!-- NAVBAR REUSABLE -->
+  <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
+  <main>
+    <section class="page-hero">
+      <div class="container">
+        <div class="breadcrumb"><a href="/fikes/">Beranda</a><span>›</span><span>Tentang
+            FIKES</span><span>›</span><span>Sertifikat Akreditasi</span></div>
+        <div class="hero-label">MUTU & AKREDITASI</div>
+        <h1>Sertifikat <span>Akreditasi</span></h1>
+        <p>Informasi dan dokumen sertifikat akreditasi yang terhubung langsung dengan data Program Studi FIKES.</p>
+      </div>
+    </section>
+    <section class="section">
+      <div class="container">
+        <div class="section-header"><span class="section-label">DOKUMEN AKREDITASI</span>
+          <h2 class="section-title">Sertifikat Berdasarkan Program Studi</h2>
+          <p class="section-description">Setiap kartu di bawah mengambil nama, jenjang, dan gelar dari tabel
+            <strong>program_studi</strong>.
+          </p>
         </div>
-      </section>
-      <section class="section">
-        <div class="container">
-          <div class="section-header"><span class="section-label">DOKUMEN AKREDITASI</span>
-            <h2 class="section-title">Sertifikat Berdasarkan Program Studi</h2>
-            <p class="section-description">Setiap kartu di bawah mengambil nama, jenjang, dan gelar dari tabel
-              <strong>program_studi</strong>.
-            </p>
-          </div>
-          <div class="filter"><button class="active"
-              data-filter="all">Semua</button><?php foreach ($prodi as $p): ?><button
+        <div class="filter"><button class="active"
+            data-filter="all">Semua</button><?php foreach ($prodi as $p): ?><button
               data-filter="prodi-<?= e(prodi_key($p['nama'])) ?>"><?= e($p['nama']) ?></button><?php endforeach; ?>
-          </div>
-          <div class="certificate-grid" id="certificateGrid"><?php if (!$sertifikat): ?><div class="empty"
+        </div>
+        <div class="certificate-grid" id="certificateGrid"><?php if (!$sertifikat): ?><div class="empty"
               style="grid-column:1/-1">
               <h3>Belum ada sertifikat aktif</h3>
               <p>Tambahkan sertifikat dari halaman admin.</p>
             </div><?php else: foreach ($sertifikat as $s): ?><article class="certificate-card"
-              data-prodi="prodi-<?= e(prodi_key($s['nama_prodi'] ?? '')) ?>">
-              <div class="cert-head"><span class="status">TERAKREDITASI</span>
-                <div class="cert-icon"><?= e(file_icon($s['file_sertifikat'] ?? '')) ?></div>
-              </div>
-              <div class="cert-body">
-                <div class="cert-category"><?= e($s['jenjang'] ?? 'Program Studi') ?></div>
-                <h3><?= e($s['nama_prodi'] ?? 'Program Studi tidak ditemukan') ?></h3>
-                <p>
-                  <?= e(($s['gelar'] ? 'Gelar ' . $s['gelar'] . '. ' : '') . 'Dokumen sertifikat akreditasi Program Studi.') ?>
-                </p>
-                <div class="meta">
-                  <div><small>Peringkat</small><strong><?= e($s['peringkat'] ?? '-') ?></strong></div>
-                  <div><small>Status</small><strong>Aktif</strong></div>
-                  <div><small>Nomor SK</small><strong><?= e($s['nomor_sk'] ?? '-') ?></strong></div>
-                  <div><small>Berlaku</small><strong><?= e(tanggal_id($s['tanggal_kadaluarsa'] ?? '')) ?></strong></div>
+                data-prodi="prodi-<?= e(prodi_key($s['nama_prodi'] ?? '')) ?>">
+                <div class="cert-head"><span class="status">TERAKREDITASI</span>
+                  <div class="cert-icon"><?= e(file_icon($s['file_sertifikat'] ?? '')) ?></div>
                 </div>
-                <div class="cert-actions"><?php if (!empty($s['file_sertifikat'])): ?><a class="btn btn-primary"
-                    href="/fikes/admin/uploads/upload-sertifikat/<?= rawurlencode(basename($s['file_sertifikat'])) ?>"
-                    target="_blank">Lihat Dokumen</a><a class="btn"
-                    href="/fikes/admin/uploads/upload-sertifikat/<?= rawurlencode(basename($s['file_sertifikat'])) ?>"
-                    download>Download</a><?php endif; ?></div>
-              </div>
-            </article><?php endforeach;
+                <div class="cert-body">
+                  <div class="cert-category"><?= e($s['jenjang'] ?? 'Program Studi') ?></div>
+                  <h3><?= e($s['nama_prodi'] ?? 'Program Studi tidak ditemukan') ?></h3>
+                  <p>
+                    <?= e(($s['gelar'] ? 'Gelar ' . $s['gelar'] . '. ' : '') . 'Dokumen sertifikat akreditasi Program Studi.') ?>
+                  </p>
+                  <div class="meta">
+                    <div><small>Peringkat</small><strong><?= e($s['peringkat'] ?? '-') ?></strong></div>
+                    <div><small>Status</small><strong>Aktif</strong></div>
+                    <div><small>Nomor SK</small><strong><?= e($s['nomor_sk'] ?? '-') ?></strong></div>
+                    <div><small>Berlaku</small><strong><?= e(tanggal_id($s['tanggal_kadaluarsa'] ?? '')) ?></strong></div>
+                  </div>
+                  <div class="cert-actions"><?php if (!empty($s['file_sertifikat'])): ?><a class="btn btn-primary"
+                        href="/fikes/admin/uploads/upload-sertifikat/<?= rawurlencode(basename($s['file_sertifikat'])) ?>"
+                        target="_blank">Lihat Dokumen</a><a class="btn"
+                        href="/fikes/admin/uploads/upload-sertifikat/<?= rawurlencode(basename($s['file_sertifikat'])) ?>"
+                        download>Download</a><?php endif; ?></div>
+                </div>
+              </article><?php endforeach;
                                                             endif; ?></div>
+      </div>
+    </section>
+    <section class="section info-section">
+      <div class="container">
+        <div class="section-header"><span class="section-label">INFORMASI</span>
+          <h2 class="section-title">Tentang Akreditasi</h2>
+          <p class="section-description">Data sertifikat sekarang dapat mengikuti perubahan Program Studi dari
+            database tanpa mengubah HTML kartu satu per satu.</p>
         </div>
-      </section>
-      <section class="section info-section">
-        <div class="container">
-          <div class="section-header"><span class="section-label">INFORMASI</span>
-            <h2 class="section-title">Tentang Akreditasi</h2>
-            <p class="section-description">Data sertifikat sekarang dapat mengikuti perubahan Program Studi dari
-              database tanpa mengubah HTML kartu satu per satu.</p>
+        <div class="info-grid">
+          <div class="info-card">
+            <div class="info-icon">🎓</div>
+            <h3>Terhubung Program Studi</h3>
+            <p>Nama program, kode, jenjang, dan gelar diambil dari tabel program_studi.</p>
           </div>
-          <div class="info-grid">
-            <div class="info-card">
-              <div class="info-icon">🎓</div>
-              <h3>Terhubung Program Studi</h3>
-              <p>Nama program, kode, jenjang, dan gelar diambil dari tabel program_studi.</p>
-            </div>
-            <div class="info-card">
-              <div class="info-icon">📄</div>
-              <h3>Dokumen Resmi</h3>
-              <p>Dokumen yang diunggah admin dapat dibuka dan diunduh langsung dari halaman publik.</p>
-            </div>
-            <div class="info-card">
-              <div class="info-icon">🔎</div>
-              <h3>Data Lebih Konsisten</h3>
-              <p>Perubahan nama Program Studi di database otomatis tercermin pada sertifikat.</p>
-            </div>
+          <div class="info-card">
+            <div class="info-icon">📄</div>
+            <h3>Dokumen Resmi</h3>
+            <p>Dokumen yang diunggah admin dapat dibuka dan diunduh langsung dari halaman publik.</p>
           </div>
-        </div>
-      </section>
-    </main>
-    <footer>
-      <div class="container footer-main">
-        <div>
-          <h4 class="footer-title">FIKES</h4>
-          <p style="font-size:12px;max-width:320px">Membangun generasi kesehatan yang profesional, berintegritas,
-            inovatif, dan berorientasi kepada masyarakat.</p>
-        </div>
-        <div>
-          <h4 class="footer-title">Tentang FIKES</h4>
-          <div class="footer-links"><a href="/fikes/tentang/visi-misi">Visi Misi</a><a href="/fikes/tentang/struktur-organisasi">Struktur
-              Organisasi</a><a href="/fikes/tentang/sertifikat-akreditasi">Akreditasi</a></div>
-        </div>
-        <div>
-          <h4 class="footer-title">Program Studi</h4>
-          <div class="footer-links"><a href="/fikes/program-studi">Daftar Program Studi</a></div>
-        </div>
-        <div>
-          <h4 class="footer-title">Informasi</h4>
-          <div class="footer-links"><a href="#">Akademik</a><a href="#">Kemahasiswaan</a><a href="#">Survey</a></div>
-        </div>
-        <div class="footer-location">
-          <div class="location-header">
-            <div class="location-icon">📍</div>
-            <div>
-              <h3>Lokasi Kampus</h3>
-              <p>Fakultas Ilmu Kesehatan</p>
-            </div>
+          <div class="info-card">
+            <div class="info-icon">🔎</div>
+            <h3>Data Lebih Konsisten</h3>
+            <p>Perubahan nama Program Studi di database otomatis tercermin pada sertifikat.</p>
           </div>
-          <div class="map-card"><iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.1515727139526!2d109.11806027499709!3d-6.991421893009626"
-              loading="lazy" title="Lokasi Fakultas Ilmu Kesehatan"></iframe>
-            <div class="map-overlay">
-              <div class="map-info"><strong>Fakultas Ilmu Kesehatan</strong><br><span>Lihat lokasi kampus</span></div><a
-                class="map-direction" href="https://www.google.com/maps" target="_blank">Petunjuk Arah</a>
-            </div>
-          </div>
-          <div class="footer-contact">📍 Alamat Fakultas Ilmu Kesehatan</div>
-          <div class="footer-contact">☎ (021) 1234567</div>
-          <div class="footer-contact">✉ info@fikes.ac.id</div>
         </div>
       </div>
-      <div class="container footer-bottom"><span>© <span id="year"></span> Fakultas Ilmu Kesehatan. All Rights
-          Reserved.</span><span>Website FIKES</span></div>
-    </footer>
-    <script>
+    </section>
+  </main>
+  <!-- =========================================================
+     FOOTER
+========================================================= -->
+  <?php require_once __DIR__ . '/../menu/footer.php'; ?>
+  <script>
     (function() {
       const buttons = document.querySelectorAll('.filter button');
       const cards = document.querySelectorAll('.certificate-card');
@@ -896,8 +576,7 @@ $prodi = $pdo->query("SELECT id,kode_prodi,nama,jenjang,gelar FROM program_studi
       }));
       applyFilter('all');
     })();
-    document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
-  </body>
+  </script>
+</body>
 
 </html>

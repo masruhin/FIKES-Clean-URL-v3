@@ -33,384 +33,22 @@ $total = count($dosen);
 <!doctype html>
 <html lang="id">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1.0">
-  <title>Daftar Dosen | FIKES</title>
-  <meta name="description" content="Daftar dosen Fakultas Ilmu Kesehatan FIKES.">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
-    rel="stylesheet">
-  <style>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>Daftar Dosen | FIKES</title>
+    <meta name="description" content="Daftar dosen Fakultas Ilmu Kesehatan FIKES.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" href="/fikes/assets/css/style.css">
+    <style>
     /* =========================================================
    ROOT
 ========================================================= */
 
-    :root {
-      --primary: #087f5b;
-      --primary-dark: #056044;
-      --primary-light: #e7f7f1;
-
-      --secondary: #f4b942;
-
-      --dark: #12372a;
-      --text: #52635d;
-      --muted: #84928d;
-
-      --white: #ffffff;
-      --light: #f7faf9;
-
-      --border: #e5ece9;
-
-      --shadow: 0 20px 60px rgba(18, 55, 42, 0.09);
-
-      --shadow-hover: 0 25px 70px rgba(18, 55, 42, 0.15);
-
-      --radius: 20px;
-
-      --transition: 0.3s ease;
-    }
-
-    /* =========================================================
-   RESET
-========================================================= */
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: "Inter", sans-serif;
-
-      color: var(--text);
-
-      background: var(--white);
-
-      line-height: 1.7;
-
-      overflow-x: hidden;
-    }
-
-    h1,
-    h2,
-    h3,
-    h4 {
-      font-family: "Plus Jakarta Sans", sans-serif;
-
-      color: var(--dark);
-
-      line-height: 1.3;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    button {
-      font-family: inherit;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    ul {
-      list-style: none;
-    }
-
-    .container {
-      width: min(1180px, calc(100% - 40px));
-
-      margin: auto;
-    }
-
-    /* =========================================================
-   TOPBAR
-========================================================= */
-
-    .topbar {
-      background: var(--dark);
-
-      color: #d9e8e2;
-
-      font-size: 13px;
-    }
-
-    .topbar-inner {
-      min-height: 40px;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-    }
-
-    .topbar-info {
-      display: flex;
-
-      align-items: center;
-
-      gap: 25px;
-    }
-
-    .topbar-info span {
-      display: flex;
-
-      align-items: center;
-
-      gap: 7px;
-    }
-
-    .topbar-social {
-      display: flex;
-
-      gap: 15px;
-    }
-
-    .topbar-social a {
-      transition: var(--transition);
-    }
-
-    .topbar-social a:hover {
-      color: var(--secondary);
-    }
-
-    /* =========================================================
-   NAVBAR
-========================================================= */
-
-    .navbar {
-      position: sticky;
-
-      top: 0;
-
-      z-index: 999;
-
-      background: rgba(255, 255, 255, 0.95);
-
-      backdrop-filter: blur(15px);
-
-      border-bottom: 1px solid var(--border);
-
-      transition: var(--transition);
-    }
-
-    .navbar.scrolled {
-      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-    }
-
-    .nav-inner {
-      min-height: 82px;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      gap: 25px;
-    }
-
-    /* =========================================================
-   LOGO NAVBAR
-========================================================= */
-
-    .logo {
-      display: flex;
-
-      align-items: center;
-
-      gap: 12px;
-
-      flex-shrink: 0;
-    }
-
-    .logo-icon {
-      width: 48px;
-
-      height: 48px;
-
-      border-radius: 14px;
-
-      background: linear-gradient(135deg, var(--primary), #13a878);
-
-      color: white;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      font-weight: 800;
-
-      font-size: 17px;
-
-      box-shadow: 0 10px 25px rgba(8, 127, 91, 0.25);
-    }
-
-    .logo-text strong {
-      display: block;
-
-      color: var(--dark);
-
-      font-size: 17px;
-
-      line-height: 1.2;
-    }
-
-    .logo-text small {
-      display: block;
-
-      font-size: 10px;
-
-      color: var(--primary);
-
-      font-weight: 700;
-
-      letter-spacing: 0.5px;
-    }
-
-    /* =========================================================
-   NAVIGATION
-========================================================= */
-
-    .nav-menu {
-      display: flex;
-
-      align-items: center;
-
-      gap: 3px;
-    }
-
-    .nav-item {
-      position: relative;
-    }
-
-    .nav-link {
-      min-height: 82px;
-
-      padding: 0 12px;
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 5px;
-
-      font-size: 13px;
-
-      font-weight: 600;
-
-      color: #344b43;
-
-      white-space: nowrap;
-
-      transition: var(--transition);
-    }
-
-    .nav-link:hover {
-      color: var(--primary);
-    }
-
-    .arrow {
-      font-size: 10px;
-
-      transition: var(--transition);
-    }
-
-    /* =========================================================
-   DROPDOWN
-========================================================= */
-
-    .dropdown {
-      position: absolute;
-
-      top: calc(100% + 5px);
-
-      left: 0;
-
-      width: 250px;
-
-      padding: 10px;
-
-      background: white;
-
-      border: 1px solid var(--border);
-
-      border-radius: 14px;
-
-      box-shadow: var(--shadow);
-
-      opacity: 0;
-
-      visibility: hidden;
-
-      transform: translateY(10px);
-
-      transition: var(--transition);
-    }
-
-    .nav-item:hover>.dropdown {
-      opacity: 1;
-
-      visibility: visible;
-
-      transform: translateY(0);
-    }
-
-    .dropdown-item {
-      position: relative;
-    }
-
-    .dropdown-link {
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      padding: 10px 13px;
-
-      border-radius: 9px;
-
-      font-size: 13px;
-
-      color: #40544d;
-
-      transition: var(--transition);
-    }
-
-    .dropdown-link:hover {
-      color: var(--primary);
-
-      background: var(--primary-light);
-    }
-
-    .dropdown-item>.dropdown {
-      top: -10px;
-
-      left: calc(100% + 5px);
-    }
-
-    .dropdown-item:hover>.dropdown {
-      opacity: 1;
-
-      visibility: visible;
-
-      transform: translateY(0);
-    }
 
     /* =========================================================
    NAV CTA
@@ -1374,266 +1012,6 @@ $total = count($dosen);
    FOOTER LOCATION
 ========================================================== */
 
-    .footer-location {
-      grid-column: 1 / -1;
-    }
-
-    /* =========================================================
-   LOCATION HEADER
-========================================================== */
-
-    .location-header {
-      display: flex;
-
-      align-items: center;
-
-      gap: 12px;
-
-      margin-bottom: 18px;
-    }
-
-    .location-icon {
-      width: 42px;
-
-      height: 42px;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      flex-shrink: 0;
-
-      border-radius: 12px;
-
-      color: var(--dark);
-
-      background: var(--secondary);
-
-      font-size: 16px;
-    }
-
-    .location-header h3 {
-      margin: 0 0 3px;
-
-      color: white;
-
-      font-size: 13px;
-
-      font-weight: 800;
-    }
-
-    .location-header p {
-      margin: 0;
-
-      color: rgba(255, 255, 255, 0.5);
-
-      font-size: 9px;
-    }
-
-    /* =========================================================
-   MAP CARD
-========================================================== */
-
-    .map-card {
-      position: relative;
-
-      width: 100%;
-
-      height: 210px;
-
-      overflow: hidden;
-
-      margin-bottom: 20px;
-
-      border: 1px solid rgba(255, 255, 255, 0.1);
-
-      border-radius: 16px;
-
-      background: rgba(255, 255, 255, 0.05);
-
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-    }
-
-    /* =========================================================
-   GOOGLE MAP
-========================================================== */
-
-    .map-card iframe {
-      position: absolute;
-
-      inset: 0;
-
-      width: 100%;
-
-      height: 100%;
-
-      border: 0;
-
-      filter: saturate(0.85) contrast(1.02);
-    }
-
-    /* =========================================================
-   MAP GRADIENT
-========================================================== */
-
-    .map-card::after {
-      content: "";
-
-      position: absolute;
-
-      inset: 0;
-
-      pointer-events: none;
-
-      background: linear-gradient(180deg,
-          rgba(3, 25, 18, 0.05) 35%,
-          rgba(3, 25, 18, 0.75) 100%);
-    }
-
-    /* =========================================================
-   MAP INFO
-========================================================== */
-
-    .map-overlay {
-      position: absolute;
-
-      left: 12px;
-
-      right: 12px;
-
-      bottom: 12px;
-
-      z-index: 5;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      gap: 10px;
-    }
-
-    /* =========================================================
-   MAP INFO CARD
-========================================================== */
-
-    .map-info {
-      display: flex;
-
-      align-items: center;
-
-      gap: 9px;
-
-      min-width: 0;
-
-      padding: 9px 11px;
-
-      border: 1px solid rgba(255, 255, 255, 0.16);
-
-      border-radius: 10px;
-
-      background: rgba(5, 35, 26, 0.78);
-
-      backdrop-filter: blur(10px);
-    }
-
-    .map-info-icon {
-      width: 30px;
-
-      height: 30px;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      flex-shrink: 0;
-
-      border-radius: 8px;
-
-      color: var(--dark);
-
-      background: var(--secondary);
-
-      font-size: 11px;
-    }
-
-    .map-info strong {
-      display: block;
-
-      max-width: 150px;
-
-      overflow: hidden;
-
-      color: white;
-
-      font-size: 9px;
-
-      font-weight: 800;
-
-      white-space: nowrap;
-
-      text-overflow: ellipsis;
-    }
-
-    .map-info span {
-      display: block;
-
-      margin-top: 2px;
-
-      color: rgba(255, 255, 255, 0.55);
-
-      font-size: 7px;
-    }
-
-    /* =========================================================
-   MAP DIRECTION BUTTON
-========================================================== */
-
-    .map-direction {
-      display: inline-flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      gap: 6px;
-
-      flex-shrink: 0;
-
-      padding: 10px 12px;
-
-      border-radius: 9px;
-
-      color: var(--dark);
-
-      background: white;
-
-      font-size: 8px;
-
-      font-weight: 800;
-
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-
-      transition: all 0.3s ease;
-    }
-
-    .map-direction:hover {
-      color: white;
-
-      background: var(--primary);
-
-      transform: translateY(-2px);
-    }
-
-    .map-direction i {
-      font-size: 9px;
-    }
-
     /* =========================================================
    LOCATION CONTACT
 ========================================================== */
@@ -2065,47 +1443,48 @@ $total = count($dosen);
         gap: 8px
       }
     }
-  </style>
-</head>
+    </style>
+  </head>
 
-<body>
-  <!-- TOPBAR REUSABLE -->
-  <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
+  <body>
+    <!-- TOPBAR REUSABLE -->
+    <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
 
-  <!-- NAVBAR REUSABLE -->
-  <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
+    <!-- NAVBAR REUSABLE -->
+    <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
 
-  <main>
-    <section class="hero">
-      <div class="container">
-        <div class="hero-content">
-          <div class="breadcrumb"><a href="/fikes/">Beranda</a><span>›</span><span>Tentang
-              FIKES</span><span>›</span><span>Daftar Dosen</span></div>
-          <div class="hero-label"><span class="hero-dot"></span>TENAGA PENGAJAR FIKES</div>
-          <h1>Daftar Dosen <span>FIKES</span></h1>
-          <p>Kenali dosen Fakultas Ilmu Kesehatan yang mendampingi mahasiswa dalam proses pendidikan dan pengembangan
-            keilmuan.</p>
+    <main>
+      <section class="hero">
+        <div class="container">
+          <div class="hero-content">
+            <div class="breadcrumb"><a href="/fikes/">Beranda</a><span>›</span><span>Tentang
+                FIKES</span><span>›</span><span>Daftar Dosen</span></div>
+            <div class="hero-label"><span class="hero-dot"></span>TENAGA PENGAJAR FIKES</div>
+            <h1>Daftar Dosen <span>FIKES</span></h1>
+            <p>Kenali dosen Fakultas Ilmu Kesehatan yang mendampingi mahasiswa dalam proses pendidikan dan pengembangan
+              keilmuan.</p>
+          </div>
         </div>
-      </div>
-    </section>
-    <section class="section dosen-section">
-      <div class="container">
-        <div class="section-header"><span class="section-label">TENAGA PENGAJAR</span>
-          <h2 class="section-title"><?= $prodi ? 'Dosen ' . e($prodi) : 'Dosen FIKES' ?></h2>
-          <p class="section-description">Temukan dosen berdasarkan program studi atau nama.</p>
-        </div>
-        <div class="dosen-toolbar">
-          <div class="dosen-filters"><a class="dosen-filter <?= $prodi === '' ? 'active' : '' ?>"
-              href="/fikes/dosen">Semua</a><?php foreach ($programs as $program): ?><a
+      </section>
+      <section class="section dosen-section">
+        <div class="container">
+          <div class="section-header"><span class="section-label">TENAGA PENGAJAR</span>
+            <h2 class="section-title"><?= $prodi ? 'Dosen ' . e($prodi) : 'Dosen FIKES' ?></h2>
+            <p class="section-description">Temukan dosen berdasarkan program studi atau nama.</p>
+          </div>
+          <div class="dosen-toolbar">
+            <div class="dosen-filters"><a class="dosen-filter <?= $prodi === '' ? 'active' : '' ?>"
+                href="/fikes/dosen">Semua</a><?php foreach ($programs as $program): ?><a
                 class="dosen-filter <?= $prodi === $program ? 'active' : '' ?>"
-                href="/fikes/dosen/<?= strtolower(rawurlencode($program)) ?>"><?= e($program) ?></a><?php endforeach; ?></div>
-          <form class="dosen-search" method="get"><?php if ($prodi): ?><input type="hidden" name="prodi"
+                href="/fikes/dosen/<?= strtolower(rawurlencode($program)) ?>"><?= e($program) ?></a><?php endforeach; ?>
+            </div>
+            <form class="dosen-search" method="get"><?php if ($prodi): ?><input type="hidden" name="prodi"
                 value="<?= e($prodi) ?>"><?php endif; ?><span>⌕</span><input type="search" name="search"
-              value="<?= e($search) ?>" placeholder="Cari nama dosen..."><button type="submit">Cari</button></form>
-        </div>
-        <div class="dosen-summary"><span>Menampilkan <strong><?= $total ?></strong> profil
-            dosen</span><?php if ($prodi || $search): ?><a href="/fikes/dosen">Reset filter ×</a><?php endif; ?></div>
-        <?php if (!$dosen): ?><div class="dosen-empty">
+                value="<?= e($search) ?>" placeholder="Cari nama dosen..."><button type="submit">Cari</button></form>
+          </div>
+          <div class="dosen-summary"><span>Menampilkan <strong><?= $total ?></strong> profil
+              dosen</span><?php if ($prodi || $search): ?><a href="/fikes/dosen">Reset filter ×</a><?php endif; ?></div>
+          <?php if (!$dosen): ?><div class="dosen-empty">
             <div class="empty-icon">⌕</div>
             <h3>Dosen tidak ditemukan</h3>
             <p>Silakan coba kata kunci atau program studi lainnya.</p><a href="/fikes/dosen">Tampilkan semua dosen</a>
@@ -2113,188 +1492,43 @@ $total = count($dosen);
             <?php foreach ($dosen as $d): $foto = trim($d['foto'] ?? '');
                   $fotoUrl = $foto !== '' ? '/fikes/admin/uploads/dosen/' . rawurlencode($foto) : '';
                   $initial = strtoupper(substr(trim($d['nama'] ?? 'D'), 0, 1)); ?>
-              <article class="dosen-card">
-                <div class="dosen-photo"><?php if ($fotoUrl): ?><img src="<?= e($fotoUrl) ?>" alt="<?= e($d['nama']) ?>"
-                      loading="lazy"><?php else: ?><div class="dosen-avatar"><?= e($initial) ?></div><?php endif; ?><div
-                    class="dosen-photo-shade"></div><span
-                    class="dosen-program"><?= e($d['program_studi']) ?></span><?php if ($d['status'] !== ''): ?><span
-                      class="dosen-status"><i></i><?= e(ucfirst($d['status'])) ?></span><?php endif; ?></div>
-                <div class="dosen-card-body"><span class="dosen-role"><?= e($d['jabatan'] ?: 'Dosen') ?></span>
-                  <h3><?= e($d['nama']) ?></h3>
-                  <div class="dosen-info">
-                    <div><span class="info-key">NIDN</span><span><?= e($d['nidn'] ?: '—') ?></span></div>
-                    <div><span class="info-key">EMAIL</span><span><?= e($d['email'] ?: '—') ?></span></div>
-                  </div>
-                  <div class="dosen-actions"><a class="dosen-profile-btn"
-                      href="/fikes/dosen/profil/<?= (int)$d['id'] ?>">Lihat Profil
-                      <span>→</span></a><?php if (!empty($d['email'])): ?><a class="dosen-mail-btn"
-                        href="mailto:<?= e($d['email']) ?>" title="Kirim email">✉</a><?php endif; ?></div>
+            <article class="dosen-card">
+              <div class="dosen-photo"><?php if ($fotoUrl): ?><img src="<?= e($fotoUrl) ?>" alt="<?= e($d['nama']) ?>"
+                  loading="lazy"><?php else: ?><div class="dosen-avatar"><?= e($initial) ?></div><?php endif; ?><div
+                  class="dosen-photo-shade"></div><span
+                  class="dosen-program"><?= e($d['program_studi']) ?></span><?php if ($d['status'] !== ''): ?><span
+                  class="dosen-status"><i></i><?= e(ucfirst($d['status'])) ?></span><?php endif; ?></div>
+              <div class="dosen-card-body"><span class="dosen-role"><?= e($d['jabatan'] ?: 'Dosen') ?></span>
+                <h3><?= e($d['nama']) ?></h3>
+                <div class="dosen-info">
+                  <div><span class="info-key">NIDN</span><span><?= e($d['nidn'] ?: '—') ?></span></div>
+                  <div><span class="info-key">EMAIL</span><span><?= e($d['email'] ?: '—') ?></span></div>
                 </div>
-              </article><?php endforeach; ?>
+                <div class="dosen-actions"><a class="dosen-profile-btn"
+                    href="/fikes/dosen/profil/<?= (int)$d['id'] ?>">Lihat Profil
+                    <span>→</span></a><?php if (!empty($d['email'])): ?><a class="dosen-mail-btn"
+                    href="mailto:<?= e($d['email']) ?>" title="Kirim email">✉</a><?php endif; ?></div>
+              </div>
+            </article><?php endforeach; ?>
           </div><?php endif; ?>
-      </div>
-    </section>
-    <section class="cta-section">
-      <div class="container">
-        <div class="cta">
-          <div class="cta-content">
-            <h2>Kenali Tenaga Pengajar FIKES</h2>
-            <p>Temukan informasi dosen berdasarkan program studi untuk membantu Anda mengenal lingkungan akademik
-              FIKES.</p><a href="/fikes/dosen" class="btn">Lihat Semua Dosen →</a>
-          </div>
         </div>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container footer-main">
-      <div class="footer-brand">
-        <div class="logo footer-logo">
-          <div class="logo-icon">F</div>
-
-          <div class="logo-text">
-            <strong style="color: white"> FIKES </strong>
-
-            <small> FAKULTAS ILMU KESEHATAN </small>
-          </div>
-        </div>
-
-        <p>
-          Membangun generasi kesehatan yang profesional, berintegritas,
-          inovatif, dan berorientasi kepada masyarakat.
-        </p>
-      </div>
-
-      <div>
-        <h4 class="footer-title">Tentang FIKES</h4>
-
-        <div class="footer-links">
-          <a href="#"> Visi Misi </a>
-
-          <a href="#"> Struktur Organisasi </a>
-
-          <a href="#"> Akreditasi </a>
-
-          <a href="#"> Daftar Dosen </a>
-        </div>
-      </div>
-
-      <div>
-        <h4 class="footer-title">Program Studi</h4>
-
-        <div class="footer-links">
-          <a href="#"> Profesi Ners </a>
-
-          <a href="#"> Ilmu Keperawatan </a>
-
-          <a href="#"> Farmasi </a>
-
-          <a href="#"> Kebidanan </a>
-
-          <a href="#"> K3 </a>
-        </div>
-      </div>
-
-      <div>
-        <h4 class="footer-title">Informasi</h4>
-
-        <div class="footer-links">
-          <a href="#"> Akademik </a>
-
-          <a href="#"> Kemahasiswaan </a>
-
-          <a href="#"> Pelayanan FIKES </a>
-
-          <a href="#"> Survey </a>
-        </div>
-      </div>
-
-      <!--MAP PETA-->
-      <!-- =========================================================
-     LOKASI & PETA
-========================================================== -->
-
-      <div class="footer-location">
-        <div class="location-header">
-          <div class="location-icon">
-            <i class="fa-solid fa-location-dot"></i>
-          </div>
-
-          <div>
-            <h3>Lokasi Kampus</h3>
-
-            <p>Fakultas Ilmu Kesehatan</p>
-          </div>
-        </div>
-
-        <!-- PETA -->
-
-        <div class="map-card">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.1515727139526!2d109.11806027499709!3d-6.991421893009626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fbef42471658d%3A0x883656d1325ef066!2sUniversitas%20Bhamada%20Slawi!5e0!3m2!1sid!2sid!4v1787544396003!5m2!1sid!2sid"
-            width="600" height="450" style="border: 0" allowfullscreen="" loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin" title="Lokasi Fakultas Ilmu Kesehatan" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
-          </iframe>
-
-          <div class="map-overlay">
-            <div class="map-info">
-              <div class="map-info-icon">
-                <i class="fa-solid fa-location-dot"></i>
-              </div>
-
-              <div>
-                <strong> Fakultas Ilmu Kesehatan </strong>
-
-                <span> Lihat lokasi kampus </span>
-              </div>
+      </section>
+      <section class="cta-section">
+        <div class="container">
+          <div class="cta">
+            <div class="cta-content">
+              <h2>Kenali Tenaga Pengajar FIKES</h2>
+              <p>Temukan informasi dosen berdasarkan program studi untuk membantu Anda mengenal lingkungan akademik
+                FIKES.</p><a href="/fikes/dosen" class="btn">Lihat Semua Dosen →</a>
             </div>
-
-            <a href="#" target="_blank" class="map-direction">
-              <i class="fa-solid fa-diamond-turn-right"></i>
-
-              Petunjuk Arah
-            </a>
           </div>
         </div>
+      </section>
+    </main>
 
-        <!-- ALAMAT -->
+    <?php require_once __DIR__ . '/../menu/footer.php'; ?>
 
-        <div class="footer-contact location-contact">
-          <i class="fa-solid fa-location-dot"></i>
-
-          <span>
-            Alamat Fakultas Ilmu Kesehatan, silakan sesuaikan dengan alamat
-            kampus.
-          </span>
-        </div>
-
-        <div class="footer-contact">
-          <i class="fa-solid fa-phone"></i>
-
-          <span> Nomor Telepon FIKES </span>
-        </div>
-
-        <div class="footer-contact">
-          <i class="fa-solid fa-envelope"></i>
-
-          <span> email@fikes.ac.id </span>
-        </div>
-      </div>
-      <!--MAP PETA-->
-    </div>
-
-    <div class="container footer-bottom">
-      <span>
-        © <span id="year"></span> Fakultas Ilmu Kesehatan. All Rights
-        Reserved.
-      </span>
-
-      <span> Website FIKES </span>
-    </div>
-  </footer>
-  <script>
+    <script>
     (function() {
       const n = document.getElementById('navMenu'),
         b = document.getElementById('menuToggle'),
@@ -2312,9 +1546,8 @@ $total = count($dosen);
         }));
       addEventListener('scroll', () => bar && bar.classList.toggle('scrolled', scrollY > 20));
       const y = document.getElementById('year');
-      if (y) y.textContent = new Date().getFullYear()
     })();
-  </script>
-</body>
+    </script>
+  </body>
 
 </html>

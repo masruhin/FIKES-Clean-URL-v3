@@ -24,6 +24,11 @@ function menu_active($path)
     href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
     rel="stylesheet">
   <link rel="stylesheet" href="<?= $project_url ?>/admin/assets/css/admin.css">
+  <?php if (!empty($page_styles) && is_array($page_styles)): ?>
+<?php foreach ($page_styles as $style): ?>
+  <link rel="stylesheet" href="<?= $project_url ?>/<?= e(ltrim($style, '/')) ?>?v=20260918">
+<?php endforeach; ?>
+  <?php endif; ?>
 </head>
 
 <body>

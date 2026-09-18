@@ -78,373 +78,19 @@ $initial = strtoupper(substr(trim($prodi['nama']), 0, 1));
 <!doctype html>
 <html lang="id">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title><?= e($prodi['nama']) ?> | FIKES</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
-    rel="stylesheet">
-
-  <style>
-    :root {
-      --primary: #087f5b;
-      --primary-dark: #056044;
-      --primary-light: #e7f7f1;
-
-      --secondary: #f4b942;
-      --dark: #12372a;
-      --text: #52635d;
-      --light: #f7faf9;
-      --white: #ffffff;
-
-      --border: #e5ece9;
-      --shadow: 0 20px 60px rgba(18, 55, 42, 0.1);
-
-      --radius: 18px;
-      --transition: 0.3s ease;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: "Inter", sans-serif;
-      color: var(--text);
-      background: var(--white);
-      line-height: 1.7;
-      overflow-x: hidden;
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5 {
-      font-family: "Plus Jakarta Sans", sans-serif;
-      color: var(--dark);
-      line-height: 1.3;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    ul {
-      list-style: none;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    .container {
-      width: min(1180px, calc(100% - 40px));
-      margin: auto;
-    }
-
-    .section {
-      padding: 100px 0;
-    }
-
-    .section-header {
-      max-width: 700px;
-      margin: 0 auto 55px;
-      text-align: center;
-    }
-
-    .section-label {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 8px 15px;
-      border-radius: 50px;
-      background: var(--primary-light);
-      color: var(--primary);
-      font-size: 13px;
-      font-weight: 700;
-      margin-bottom: 15px;
-    }
-
-    .section-title {
-      font-size: clamp(30px, 4vw, 45px);
-      margin-bottom: 15px;
-    }
-
-    .section-description {
-      color: var(--text);
-    }
-
-    /* =========================================================
-           TOP BAR
-        ========================================================= */
-
-    .topbar {
-      background: var(--dark);
-      color: #d9e8e2;
-      font-size: 13px;
-    }
-
-    .topbar-inner {
-      min-height: 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .topbar-info {
-      display: flex;
-      gap: 25px;
-      align-items: center;
-    }
-
-    .topbar-info span {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .topbar-social {
-      display: flex;
-      gap: 15px;
-    }
-
-    .topbar-social a {
-      transition: var(--transition);
-    }
-
-    .topbar-social a:hover {
-      color: var(--secondary);
-    }
-
-    /* =========================================================
-           NAVBAR
-        ========================================================= */
-
-    .navbar {
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(15px);
-      border-bottom: 1px solid rgba(229, 236, 233, 0.8);
-      transition: var(--transition);
-    }
-
-    .navbar.scrolled {
-      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-    }
-
-    .nav-inner {
-      min-height: 82px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 30px;
-    }
-
-    /* LOGO */
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
-    }
-
-    .logo-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--primary), #13a878);
-
-      color: white;
-
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      font-weight: 800;
-      font-size: 17px;
-
-      box-shadow: 0 10px 25px rgba(8, 127, 91, 0.25);
-    }
-
-    .logo-text strong {
-      display: block;
-      color: var(--dark);
-      font-size: 17px;
-      line-height: 1.2;
-    }
-
-    .logo-text small {
-      display: block;
-      font-size: 10px;
-      color: var(--primary);
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-
-    /* NAV MENU */
-
-    .nav-menu {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-    }
-
-    .nav-item {
-      position: relative;
-    }
-
-    .nav-link {
-      min-height: 82px;
-      padding: 0 13px;
-
-      display: flex;
-      align-items: center;
-      gap: 5px;
-
-      font-size: 13px;
-      font-weight: 600;
-      color: #344b43;
-
-      transition: var(--transition);
-      white-space: nowrap;
-    }
-
-    .nav-link:hover {
-      color: var(--primary);
-    }
-
-    .arrow {
-      font-size: 11px;
-      transition: var(--transition);
-    }
-
-    .nav-item:hover>.nav-link .arrow {
-      transform: rotate(180deg);
-    }
-
-    /* DROPDOWN */
-
-    .dropdown {
-      position: absolute;
-      top: calc(100% + 5px);
-      left: 0;
-
-      width: 250px;
-
-      padding: 10px;
-
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-
-      box-shadow: var(--shadow);
-
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(10px);
-
-      transition: var(--transition);
-    }
-
-    .nav-item:hover>.dropdown {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .dropdown-item {
-      position: relative;
-    }
-
-    .dropdown-link {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      padding: 10px 13px;
-      border-radius: 9px;
-
-      color: #40544d;
-      font-size: 13px;
-      font-weight: 500;
-
-      transition: var(--transition);
-    }
-
-    .dropdown-link:hover {
-      color: var(--primary);
-      background: var(--primary-light);
-    }
-
-    /* SUB DROPDOWN */
-
-    .dropdown-item>.dropdown {
-      left: calc(100% + 5px);
-      top: -10px;
-    }
-
-    .dropdown-item:hover>.dropdown {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    /* NAV BUTTON */
-
-    .nav-cta {
-      padding: 12px 19px;
-      border-radius: 10px;
-      background: var(--primary);
-      color: white;
-
-      font-size: 13px;
-      font-weight: 700;
-
-      transition: var(--transition);
-      white-space: nowrap;
-    }
-
-    .nav-cta:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(8, 127, 91, 0.22);
-    }
-
-    /* MOBILE MENU */
-
-    .menu-toggle {
-      display: none;
-
-      width: 44px;
-      height: 44px;
-
-      border: none;
-      border-radius: 10px;
-
-      background: var(--primary-light);
-      color: var(--primary);
-
-      font-size: 22px;
-      cursor: pointer;
-    }
-
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?= e($prodi['nama']) ?> | FIKES</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" href="/fikes/assets/css/style.css">
+
+    <style>
     /* =========================================================
            HERO
         ========================================================= */
@@ -2396,101 +2042,6 @@ $initial = strtoupper(substr(trim($prodi['nama']), 0, 1));
       color: #d5e9e2;
     }
 
-    /* =========================================================
-           FOOTER
-        ========================================================= */
-
-    footer {
-      background: #0d2b21;
-      color: #b7cec5;
-    }
-
-    .footer-main {
-      padding: 70px 0 45px;
-
-      display: grid;
-      grid-template-columns: 1.4fr 1fr 1fr 1fr;
-      gap: 45px;
-    }
-
-    .footer-brand p {
-      max-width: 320px;
-      font-size: 13px;
-      margin: 17px 0;
-    }
-
-    .footer-logo strong {
-      color: white;
-    }
-
-    .footer-title {
-      color: white;
-      font-size: 14px;
-      margin-bottom: 17px;
-    }
-
-    .footer-links {
-      display: grid;
-      gap: 10px;
-    }
-
-    .footer-links a {
-      font-size: 12px;
-      transition: var(--transition);
-    }
-
-    .footer-links a:hover {
-      color: var(--secondary);
-      transform: translateX(3px);
-    }
-
-    .footer-bottom {
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 20px 0;
-
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-
-      font-size: 11px;
-    }
-
-    /* =========================================================
-           BACK TO TOP
-        ========================================================= */
-
-    .back-top {
-      position: fixed;
-
-      right: 25px;
-      bottom: 25px;
-
-      width: 45px;
-      height: 45px;
-
-      border: none;
-      border-radius: 12px;
-
-      background: var(--primary);
-      color: white;
-
-      cursor: pointer;
-
-      opacity: 0;
-      visibility: hidden;
-
-      transform: translateY(10px);
-
-      transition: var(--transition);
-
-      z-index: 900;
-    }
-
-    .back-top.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
 
     /* =========================================================
            RESPONSIVE
@@ -4683,208 +4234,208 @@ $initial = strtoupper(substr(trim($prodi['nama']), 0, 1));
         font-size: 11.5px;
       }
     }
-  </style>
-</head>
+    </style>
+  </head>
 
-<body class="prodi-mockup">
-  <!-- TOPBAR REUSABLE -->
-  <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
+  <body class="prodi-mockup">
+    <!-- TOPBAR REUSABLE -->
+    <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
 
-  <!-- NAVBAR REUSABLE -->
-  <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
+    <!-- NAVBAR REUSABLE -->
+    <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
 
-  <main>
+    <main>
 
-    <section class="prodi-hero">
-      <div class="container">
-        <div class="prodi-breadcrumb">
-          <a href="/fikes/">⌂ &nbsp; Beranda</a>
-          <span>›</span>
-          <a href="/fikes/program-studi">Program Studi</a>
-          <span>›</span>
-          <span><?= e($prodi['nama']) ?></span>
+      <section class="prodi-hero">
+        <div class="container">
+          <div class="prodi-breadcrumb">
+            <a href="/fikes/">⌂ &nbsp; Beranda</a>
+            <span>›</span>
+            <a href="/fikes/program-studi">Program Studi</a>
+            <span>›</span>
+            <span><?= e($prodi['nama']) ?></span>
+          </div>
+
+          <div class="prodi-code"><?= e($prodi['jenjang']) ?> &nbsp;•&nbsp; <?= e($prodi['kode_prodi']) ?></div>
+          <h1>Program Studi <?= e($prodi['nama']) ?></h1>
+          <p>Mencetak tenaga profesional, beretika, dan berkompeten dalam memberikan pelayanan kesehatan yang
+            berkualitas.</p>
         </div>
+      </section>
 
-        <div class="prodi-code"><?= e($prodi['jenjang']) ?> &nbsp;•&nbsp; <?= e($prodi['kode_prodi']) ?></div>
-        <h1>Program Studi <?= e($prodi['nama']) ?></h1>
-        <p>Mencetak tenaga profesional, beretika, dan berkompeten dalam memberikan pelayanan kesehatan yang
-          berkualitas.</p>
-      </div>
-    </section>
+      <section class="prodi-wrap">
+        <div class="container">
 
-    <section class="prodi-wrap">
-      <div class="container">
+          <div class="prodi-back-wrap">
+            <a href="/fikes/program-studi" class="prodi-back-btn" aria-label="Kembali ke halaman Program Studi">
+              <span class="back-icon">←</span>
+              <span>Kembali ke Program Studi</span>
+            </a>
+          </div>
 
-        <div class="prodi-back-wrap">
-          <a href="/fikes/program-studi" class="prodi-back-btn" aria-label="Kembali ke halaman Program Studi">
-            <span class="back-icon">←</span>
-            <span>Kembali ke Program Studi</span>
-          </a>
-        </div>
+          <div class="prodi-profile">
 
-        <div class="prodi-profile">
-
-          <div class="prodi-photo-box">
-            <?php if ($foto): ?>
+            <div class="prodi-photo-box">
+              <?php if ($foto): ?>
               <img src="<?= e($foto) ?>" alt="<?= e($prodi['nama']) ?>">
-            <?php else: ?>
+              <?php else: ?>
               <div class="prodi-photo-placeholder">
                 <b><?= e($initial) ?></b>
                 <span>FIKES</span>
               </div>
-            <?php endif; ?>
-            <span class="prodi-badge">● <?= $status === 'aktif' ? 'Aktif' : e($status) ?></span>
-          </div>
-
-          <div class="prodi-main">
-            <div class="prodi-title-row">
-              <span class="prodi-title-icon">♟</span>
-              <div>
-                <h2>Program Studi <?= e($prodi['nama']) ?></h2>
-                <div class="prodi-subtitle">Fakultas Ilmu Kesehatan - Universitas Indonesia</div>
-              </div>
+              <?php endif; ?>
+              <span class="prodi-badge">● <?= $status === 'aktif' ? 'Aktif' : e($status) ?></span>
             </div>
 
-            <p class="prodi-desc">
-              <?= $deskripsi
-                ? nl2br(e($deskripsi))
-                : 'Program studi ini merupakan bagian dari Fakultas Ilmu Kesehatan yang berfokus pada pengembangan kompetensi akademik dan profesional mahasiswa.' ?>
-            </p>
-
-            <div class="prodi-facts">
-              <div class="prodi-fact">
-                <span class="prodi-fact-icon">🎓</span>
+            <div class="prodi-main">
+              <div class="prodi-title-row">
+                <span class="prodi-title-icon">♟</span>
                 <div>
-                  <small>Jenjang</small><strong><?= e($prodi['jenjang']) ?><?= $gelar ? ' (' . e($gelar) . ')' : '' ?></strong>
+                  <h2>Program Studi <?= e($prodi['nama']) ?></h2>
+                  <div class="prodi-subtitle">Fakultas Ilmu Kesehatan - Universitas Indonesia</div>
                 </div>
               </div>
-              <div class="prodi-fact">
-                <span class="prodi-fact-icon">◷</span>
-                <div><small>Durasi Studi</small><strong><?= e($durasi) ?></strong></div>
-              </div>
-              <div class="prodi-fact">
-                <span class="prodi-fact-icon">✓</span>
-                <div><small>Akreditasi</small><strong><?= e($akreditasi) ?></strong></div>
-              </div>
-            </div>
 
-            <div class="prodi-actions">
-              <?php if ($email !== 'Belum tersedia'): ?>
+              <p class="prodi-desc">
+                <?= $deskripsi
+                ? nl2br(e($deskripsi))
+                : 'Program studi ini merupakan bagian dari Fakultas Ilmu Kesehatan yang berfokus pada pengembangan kompetensi akademik dan profesional mahasiswa.' ?>
+              </p>
+
+              <div class="prodi-facts">
+                <div class="prodi-fact">
+                  <span class="prodi-fact-icon">🎓</span>
+                  <div>
+                    <small>Jenjang</small><strong><?= e($prodi['jenjang']) ?><?= $gelar ? ' (' . e($gelar) . ')' : '' ?></strong>
+                  </div>
+                </div>
+                <div class="prodi-fact">
+                  <span class="prodi-fact-icon">◷</span>
+                  <div><small>Durasi Studi</small><strong><?= e($durasi) ?></strong></div>
+                </div>
+                <div class="prodi-fact">
+                  <span class="prodi-fact-icon">✓</span>
+                  <div><small>Akreditasi</small><strong><?= e($akreditasi) ?></strong></div>
+                </div>
+              </div>
+
+              <div class="prodi-actions">
+                <?php if ($email !== 'Belum tersedia'): ?>
                 <a class="prodi-btn prodi-btn-primary" href="mailto:<?= e($email) ?>">Daftar Sekarang →</a>
-              <?php else: ?>
+                <?php else: ?>
                 <a class="prodi-btn prodi-btn-primary" href="/fikes/program-studi">Lihat Program →</a>
-              <?php endif; ?>
+                <?php endif; ?>
 
-              <?php if ($brosur): ?>
+                <?php if ($brosur): ?>
                 <a class="prodi-btn prodi-btn-outline" href="<?= e($brosur) ?>" target="_blank" rel="noopener">↓ &nbsp;
                   Unduh Brosur</a>
-              <?php endif; ?>
+                <?php endif; ?>
+              </div>
             </div>
-          </div>
 
-          <aside class="prodi-side">
-            <h3><span>▣</span> Informasi Singkat</h3>
-            <div class="info-item">
-              <span>Kaprodi</span>
-              <strong>
-                <?= e($prodi['kaprodi_nama'] ?? '-') ?>
-              </strong>
+            <aside class="prodi-side">
+              <h3><span>▣</span> Informasi Singkat</h3>
+              <div class="info-item">
+                <span>Kaprodi</span>
+                <strong>
+                  <?= e($prodi['kaprodi_nama'] ?? '-') ?>
+                </strong>
 
-              <?php if (!empty($prodi['kaprodi_nidn'])): ?>
+                <?php if (!empty($prodi['kaprodi_nidn'])): ?>
                 <small>
                   NIDN: <?= e($prodi['kaprodi_nidn']) ?>
                 </small>
-              <?php endif; ?>
+                <?php endif; ?>
 
-              <?php if (!empty($prodi['kaprodi_email'])): ?>
+                <?php if (!empty($prodi['kaprodi_email'])): ?>
                 <small>
                   <?= e($prodi['kaprodi_email']) ?>
                 </small>
-              <?php endif; ?>
-            </div>
-            <div class="info-item">
-              <span>Sekretaris Prodi</span>
+                <?php endif; ?>
+              </div>
+              <div class="info-item">
+                <span>Sekretaris Prodi</span>
 
-              <strong>
-                <?= e($prodi['sekretaris_nama'] ?? '-') ?>
-              </strong>
+                <strong>
+                  <?= e($prodi['sekretaris_nama'] ?? '-') ?>
+                </strong>
 
-              <?php if (!empty($prodi['sekretaris_nidn'])): ?>
+                <?php if (!empty($prodi['sekretaris_nidn'])): ?>
                 <small>
                   NIDN: <?= e($prodi['sekretaris_nidn']) ?>
                 </small>
-              <?php endif; ?>
-            </div>
-            <div class="prodi-side-item">
-              <div class="prodi-side-icon">🎓</div>
-              <div><small>Program Studi</small><strong><?= e($prodi['nama']) ?> (<?= e($prodi['jenjang']) ?>)</strong>
+                <?php endif; ?>
               </div>
-            </div>
-            <div class="prodi-side-item">
-              <div class="prodi-side-icon">●</div>
-              <div><small>Kontak</small><strong><?= e($telepon) ?></strong></div>
-            </div>
-            <div class="prodi-side-item">
-              <div class="prodi-side-icon">✉</div>
-              <div><small>Email</small><strong><?= e($email) ?></strong></div>
-            </div>
-            <div class="prodi-side-item">
-              <div class="prodi-side-icon">♟</div>
-              <div><small>Dosen</small><strong><?= (int)($prodi['jumlah_dosen'] ?? 0) ?> Orang</strong></div>
-            </div>
-            <div class="prodi-side-item">
-              <div class="prodi-side-icon">▣</div>
-              <div><small>Tenaga Kependidikan</small><strong><?= (int)$jumlah_tendik ?> Orang</strong></div>
-            </div>
-          </aside>
+              <div class="prodi-side-item">
+                <div class="prodi-side-icon">🎓</div>
+                <div><small>Program Studi</small><strong><?= e($prodi['nama']) ?> (<?= e($prodi['jenjang']) ?>)</strong>
+                </div>
+              </div>
+              <div class="prodi-side-item">
+                <div class="prodi-side-icon">●</div>
+                <div><small>Kontak</small><strong><?= e($telepon) ?></strong></div>
+              </div>
+              <div class="prodi-side-item">
+                <div class="prodi-side-icon">✉</div>
+                <div><small>Email</small><strong><?= e($email) ?></strong></div>
+              </div>
+              <div class="prodi-side-item">
+                <div class="prodi-side-icon">♟</div>
+                <div><small>Dosen</small><strong><?= (int)($prodi['jumlah_dosen'] ?? 0) ?> Orang</strong></div>
+              </div>
+              <div class="prodi-side-item">
+                <div class="prodi-side-icon">▣</div>
+                <div><small>Tenaga Kependidikan</small><strong><?= (int)$jumlah_tendik ?> Orang</strong></div>
+              </div>
+            </aside>
 
-        </div>
+          </div>
 
-        <div class="prodi-grid">
+          <div class="prodi-grid">
 
-          <section class="prodi-card">
-            <div class="prodi-card-head">
-              <div class="icon">✥</div>
-              <h3>Visi &amp; Misi</h3>
-            </div>
+            <section class="prodi-card">
+              <div class="prodi-card-head">
+                <div class="icon">✥</div>
+                <h3>Visi &amp; Misi</h3>
+              </div>
 
-            <div class="prodi-visi-box">
-              <span class="prodi-label">◉ &nbsp; Visi</span>
-              <p><?= !empty($prodi['visi']) ? nl2br(e($prodi['visi'])) : 'Visi program studi belum tersedia.' ?></p>
-            </div>
+              <div class="prodi-visi-box">
+                <span class="prodi-label">◉ &nbsp; Visi</span>
+                <p><?= !empty($prodi['visi']) ? nl2br(e($prodi['visi'])) : 'Visi program studi belum tersedia.' ?></p>
+              </div>
 
-            <div class="prodi-misi-title"><span class="gear">✿</span><strong>Misi</strong></div>
+              <div class="prodi-misi-title"><span class="gear">✿</span><strong>Misi</strong></div>
 
-            <?php if ($misi): ?>
+              <?php if ($misi): ?>
               <div class="prodi-misi">
                 <?php foreach ($misi as $i => $item): ?>
-                  <div class="prodi-misi-row">
-                    <span class="prodi-misi-no"><?= $i + 1 ?></span>
-                    <p><?= nl2br(e($item['isi'])) ?></p>
-                  </div>
+                <div class="prodi-misi-row">
+                  <span class="prodi-misi-no"><?= $i + 1 ?></span>
+                  <p><?= nl2br(e($item['isi'])) ?></p>
+                </div>
                 <?php endforeach; ?>
               </div>
-            <?php else: ?>
+              <?php else: ?>
               <div class="prodi-empty">Data misi belum tersedia.</div>
-            <?php endif; ?>
-          </section>
+              <?php endif; ?>
+            </section>
 
 
-          <section class="prodi-card" id="kurikulum">
-            <div class="prodi-card-head">
-              <div class="icon">▤</div>
-              <div>
-                <h3>Kurikulum</h3>
-                <p>Struktur mata kuliah program studi</p>
+            <section class="prodi-card" id="kurikulum">
+              <div class="prodi-card-head">
+                <div class="icon">▤</div>
+                <div>
+                  <h3>Kurikulum</h3>
+                  <p>Struktur mata kuliah program studi</p>
+                </div>
               </div>
-            </div>
 
-            <p class="prodi-kurikulum-intro">
-              Kurikulum program studi dirancang untuk menghasilkan lulusan dengan kompetensi sesuai bidang pelayanan
-              dan kebutuhan dunia kerja.
-            </p>
+              <p class="prodi-kurikulum-intro">
+                Kurikulum program studi dirancang untuk menghasilkan lulusan dengan kompetensi sesuai bidang pelayanan
+                dan kebutuhan dunia kerja.
+              </p>
 
-            <?php if ($kurikulum): ?>
+              <?php if ($kurikulum): ?>
               <div class="prodi-table-wrap">
                 <table class="prodi-table">
                   <thead>
@@ -4897,77 +4448,77 @@ $initial = strtoupper(substr(trim($prodi['nama']), 0, 1));
                   </thead>
                   <tbody>
                     <?php foreach (array_slice($kurikulum, 0, 5) as $i => $item): ?>
-                      <tr>
-                        <td><?= $i + 1 ?></td>
-                        <td><strong><?= e($item['nama_mk']) ?></strong></td>
-                        <td><?= e($item['semester'] ?? '-') ?></td>
-                        <td><?= e($item['sks'] ?? '-') ?></td>
-                      </tr>
+                    <tr>
+                      <td><?= $i + 1 ?></td>
+                      <td><strong><?= e($item['nama_mk']) ?></strong></td>
+                      <td><?= e($item['semester'] ?? '-') ?></td>
+                      <td><?= e($item['sks'] ?? '-') ?></td>
+                    </tr>
                     <?php endforeach; ?>
                   </tbody>
                 </table>
               </div>
               <a class="prodi-more" href="#detail-kurikulum">Lihat Semua Mata Kuliah →</a>
-            <?php else: ?>
+              <?php else: ?>
               <div class="prodi-empty">Data kurikulum belum tersedia.</div>
-            <?php endif; ?>
-          </section>
+              <?php endif; ?>
+            </section>
 
 
-          <section class="prodi-card">
-            <div class="prodi-card-head">
-              <div class="icon">♟</div>
-              <div>
-                <h3>Dosen &amp; Tenaga Kependidikan</h3>
-                <p>SDM pendukung program studi</p>
+            <section class="prodi-card">
+              <div class="prodi-card-head">
+                <div class="icon">♟</div>
+                <div>
+                  <h3>Dosen &amp; Tenaga Kependidikan</h3>
+                  <p>SDM pendukung program studi</p>
+                </div>
               </div>
-            </div>
 
-            <p>Didukung oleh dosen profesional dan tenaga kependidikan untuk menunjang kegiatan akademik dan pelayanan
-              mahasiswa.</p>
+              <p>Didukung oleh dosen profesional dan tenaga kependidikan untuk menunjang kegiatan akademik dan pelayanan
+                mahasiswa.</p>
 
-            <div class="prodi-person-grid">
-              <div class="prodi-person">
-                <div class="ico">♙</div>
-                <div><small>Dosen Tetap</small><strong><?= (int)($prodi['jumlah_dosen'] ?? 0) ?></strong></div>
+              <div class="prodi-person-grid">
+                <div class="prodi-person">
+                  <div class="ico">♙</div>
+                  <div><small>Dosen Tetap</small><strong><?= (int)($prodi['jumlah_dosen'] ?? 0) ?></strong></div>
+                </div>
+                <div class="prodi-person">
+                  <div class="ico">♟</div>
+                  <div><small>Tenaga Kependidikan</small><strong><?= (int)$jumlah_tendik ?></strong></div>
+                </div>
               </div>
-              <div class="prodi-person">
-                <div class="ico">♟</div>
-                <div><small>Tenaga Kependidikan</small><strong><?= (int)$jumlah_tendik ?></strong></div>
+
+              <div class="prodi-actions">
+                <a class="prodi-btn prodi-btn-primary" href="/fikes/dosen">Lihat Daftar Dosen →</a>
               </div>
-            </div>
-
-            <div class="prodi-actions">
-              <a class="prodi-btn prodi-btn-primary" href="/fikes/dosen">Lihat Daftar Dosen →</a>
-            </div>
-          </section>
+            </section>
 
 
-          <section class="prodi-card">
-            <div class="prodi-card-head">
-              <div class="icon">▥</div>
-              <div>
-                <h3>Fasilitas</h3>
-                <p>Fasilitas pendukung pembelajaran</p>
+            <section class="prodi-card">
+              <div class="prodi-card-head">
+                <div class="icon">▥</div>
+                <div>
+                  <h3>Fasilitas</h3>
+                  <p>Fasilitas pendukung pembelajaran</p>
+                </div>
               </div>
-            </div>
 
-            <div class="prodi-facility-wrap">
-              <div>
-                <p>Didukung dengan fasilitas yang menunjang proses pembelajaran dan kegiatan akademik mahasiswa.</p>
-                <?php if ($fasilitas): ?>
+              <div class="prodi-facility-wrap">
+                <div>
+                  <p>Didukung dengan fasilitas yang menunjang proses pembelajaran dan kegiatan akademik mahasiswa.</p>
+                  <?php if ($fasilitas): ?>
                   <div class="prodi-list">
                     <?php foreach (array_slice($fasilitas, 0, 5) as $item): ?>
-                      <div class="prodi-list-row"><span
-                          class="prodi-check">✓</span><span><?= e($item['nama_fasilitas']) ?></span></div>
+                    <div class="prodi-list-row"><span
+                        class="prodi-check">✓</span><span><?= e($item['nama_fasilitas']) ?></span></div>
                     <?php endforeach; ?>
                   </div>
-                <?php else: ?>
+                  <?php else: ?>
                   <div class="prodi-empty" style="margin-top:10px;">Data fasilitas belum tersedia.</div>
-                <?php endif; ?>
-              </div>
+                  <?php endif; ?>
+                </div>
 
-              <?php
+                <?php
               $facilityImage = '';
               $facilityCaption = 'Fasilitas Pembelajaran';
               if (!empty($fasilitas[0]['gambar'])) {
@@ -4976,55 +4527,55 @@ $initial = strtoupper(substr(trim($prodi['nama']), 0, 1));
               }
               ?>
 
-              <div class="prodi-facility-image">
-                <?php if ($facilityImage): ?>
+                <div class="prodi-facility-image">
+                  <?php if ($facilityImage): ?>
                   <img src="<?= e($facilityImage) ?>" alt="<?= e($facilityCaption) ?>">
-                <?php else: ?>
+                  <?php else: ?>
                   <div
                     style="height:100%;display:flex;align-items:center;justify-content:center;color:#078b72;font-weight:800;font-size:22px;">
                     F</div>
-                <?php endif; ?>
-                <div class="prodi-facility-caption"><?= e($facilityCaption) ?> &nbsp;⌕</div>
+                  <?php endif; ?>
+                  <div class="prodi-facility-caption"><?= e($facilityCaption) ?> &nbsp;⌕</div>
+                </div>
               </div>
-            </div>
-          </section>
+            </section>
 
 
-          <section class="prodi-card prodi-cpl-card">
-            <div class="prodi-card-head">
-              <div class="icon">◎</div>
-              <div>
-                <h3>Capaian Pembelajaran</h3>
-                <p>Lulusan program studi diharapkan memiliki kemampuan sebagai berikut:</p>
+            <section class="prodi-card prodi-cpl-card">
+              <div class="prodi-card-head">
+                <div class="icon">◎</div>
+                <div>
+                  <h3>Capaian Pembelajaran</h3>
+                  <p>Lulusan program studi diharapkan memiliki kemampuan sebagai berikut:</p>
+                </div>
               </div>
-            </div>
 
-            <?php if ($cpl): ?>
+              <?php if ($cpl): ?>
               <div class="prodi-cpl-grid">
                 <?php foreach (array_slice($cpl, 0, 5) as $item): ?>
-                  <div class="prodi-cpl">
-                    <div class="ico">♧</div><strong><?= e($item['isi']) ?></strong>
-                  </div>
+                <div class="prodi-cpl">
+                  <div class="ico">♧</div><strong><?= e($item['isi']) ?></strong>
+                </div>
                 <?php endforeach; ?>
               </div>
-            <?php else: ?>
+              <?php else: ?>
               <div class="prodi-empty">Data capaian pembelajaran belum tersedia.</div>
-            <?php endif; ?>
-          </section>
+              <?php endif; ?>
+            </section>
 
-        </div>
-
-
-        <section class="prodi-card" id="detail-kurikulum" style="margin-top:14px;">
-          <div class="prodi-card-head">
-            <div class="icon">▤</div>
-            <div>
-              <h3>Detail Kurikulum</h3>
-              <p>Seluruh mata kuliah yang tersedia pada program studi</p>
-            </div>
           </div>
 
-          <?php if ($kurikulum): ?>
+
+          <section class="prodi-card" id="detail-kurikulum" style="margin-top:14px;">
+            <div class="prodi-card-head">
+              <div class="icon">▤</div>
+              <div>
+                <h3>Detail Kurikulum</h3>
+                <p>Seluruh mata kuliah yang tersedia pada program studi</p>
+              </div>
+            </div>
+
+            <?php if ($kurikulum): ?>
             <div class="prodi-table-wrap">
               <table class="prodi-table">
                 <thead>
@@ -5039,291 +4590,45 @@ $initial = strtoupper(substr(trim($prodi['nama']), 0, 1));
                 </thead>
                 <tbody>
                   <?php foreach ($kurikulum as $i => $item): ?>
-                    <tr>
-                      <td><?= $i + 1 ?></td>
-                      <td><?= e($item['kode_mk'] ?? '-') ?></td>
-                      <td><strong><?= e($item['nama_mk']) ?></strong></td>
-                      <td><?= e($item['semester'] ?? '-') ?></td>
-                      <td><?= e($item['sks'] ?? '-') ?></td>
-                      <td><?= e($item['jenis'] ?? '-') ?></td>
-                    </tr>
+                  <tr>
+                    <td><?= $i + 1 ?></td>
+                    <td><?= e($item['kode_mk'] ?? '-') ?></td>
+                    <td><strong><?= e($item['nama_mk']) ?></strong></td>
+                    <td><?= e($item['semester'] ?? '-') ?></td>
+                    <td><?= e($item['sks'] ?? '-') ?></td>
+                    <td><?= e($item['jenis'] ?? '-') ?></td>
+                  </tr>
                   <?php endforeach; ?>
                 </tbody>
               </table>
             </div>
-          <?php else: ?>
+            <?php else: ?>
             <div class="prodi-empty">Data kurikulum belum tersedia.</div>
-          <?php endif; ?>
-        </section>
+            <?php endif; ?>
+          </section>
 
 
-        <div class="prodi-cta">
-          <div class="prodi-cta-left">
-            <div class="prodi-cta-icon">♟</div>
-            <div>
-              <h3>Tertarik Bergabung?</h3>
-              <p>Jadilah bagian dari keluarga besar Program Studi <?= e($prodi['nama']) ?> FIKES</p>
-            </div>
-          </div>
-          <a href="<?= $email !== 'Belum tersedia' ? 'mailto:' . e($email) : '/fikes/program-studi' ?>">Daftar Sekarang
-            →</a>
-        </div>
-
-      </div>
-    </section>
-
-  </main>
-
-  <footer>
-    <div class="container footer-main">
-      <div class="footer-brand">
-        <div class="logo footer-logo">
-          <div class="logo-icon">F</div>
-
-          <div class="logo-text">
-            <strong style="color: white"> FIKES </strong>
-
-            <small> FAKULTAS ILMU KESEHATAN </small>
-          </div>
-        </div>
-
-        <p>
-          Membangun generasi kesehatan yang profesional, berintegritas,
-          inovatif, dan berorientasi kepada masyarakat.
-        </p>
-      </div>
-
-      <div>
-        <h4 class="footer-title">Tentang FIKES</h4>
-
-        <div class="footer-links">
-          <a href="#"> Visi Misi </a>
-
-          <a href="#"> Struktur Organisasi </a>
-
-          <a href="#"> Akreditasi </a>
-
-          <a href="#"> Daftar Dosen </a>
-        </div>
-      </div>
-
-      <div>
-        <h4 class="footer-title">Program Studi</h4>
-
-        <div class="footer-links">
-          <a href="#"> Profesi Ners </a>
-
-          <a href="#"> Ilmu Keperawatan </a>
-
-          <a href="#"> Farmasi </a>
-
-          <a href="#"> Kebidanan </a>
-
-          <a href="#"> K3 </a>
-        </div>
-      </div>
-
-      <div>
-        <h4 class="footer-title">Informasi</h4>
-
-        <div class="footer-links">
-          <a href="#"> Akademik </a>
-
-          <a href="#"> Kemahasiswaan </a>
-
-          <a href="#"> Pelayanan FIKES </a>
-
-          <a href="#"> Survey </a>
-        </div>
-      </div>
-
-      <!--MAP PETA-->
-      <!-- =========================================================
-     LOKASI & PETA
-========================================================== -->
-
-      <div class="footer-location">
-        <div class="location-header">
-          <div class="location-icon">
-            <i class="fa-solid fa-location-dot"></i>
-          </div>
-
-          <div>
-            <h3>Lokasi Kampus</h3>
-
-            <p>Fakultas Ilmu Kesehatan</p>
-          </div>
-        </div>
-
-        <!-- PETA -->
-
-        <div class="map-card">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.1515727139526!2d109.11806027499709!3d-6.991421893009626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fbef42471658d%3A0x883656d1325ef066!2sUniversitas%20Bhamada%20Slawi!5e0!3m2!1sid!2sid!4v1787544396003!5m2!1sid!2sid"
-            width="600" height="450" style="border: 0" allowfullscreen="" loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin" title="Lokasi Fakultas Ilmu Kesehatan" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
-          </iframe>
-
-          <div class="map-overlay">
-            <div class="map-info">
-              <div class="map-info-icon">
-                <i class="fa-solid fa-location-dot"></i>
-              </div>
-
+          <div class="prodi-cta">
+            <div class="prodi-cta-left">
+              <div class="prodi-cta-icon">♟</div>
               <div>
-                <strong> Fakultas Ilmu Kesehatan </strong>
-
-                <span> Lihat lokasi kampus </span>
+                <h3>Tertarik Bergabung?</h3>
+                <p>Jadilah bagian dari keluarga besar Program Studi <?= e($prodi['nama']) ?> FIKES</p>
               </div>
             </div>
-
-            <a href="#" target="_blank" class="map-direction">
-              <i class="fa-solid fa-diamond-turn-right"></i>
-
-              Petunjuk Arah
-            </a>
+            <a href="<?= $email !== 'Belum tersedia' ? 'mailto:' . e($email) : '/fikes/program-studi' ?>">Daftar
+              Sekarang
+              →</a>
           </div>
+
         </div>
+      </section>
 
-        <!-- ALAMAT -->
+    </main>
 
-        <div class="footer-contact location-contact">
-          <i class="fa-solid fa-location-dot"></i>
+    <?php require_once __DIR__ . '/../menu/footer.php'; ?>
 
-          <span>
-            Alamat Fakultas Ilmu Kesehatan, silakan sesuaikan dengan alamat
-            kampus.
-          </span>
-        </div>
 
-        <div class="footer-contact">
-          <i class="fa-solid fa-phone"></i>
-
-          <span> Nomor Telepon FIKES </span>
-        </div>
-
-        <div class="footer-contact">
-          <i class="fa-solid fa-envelope"></i>
-
-          <span> email@fikes.ac.id </span>
-        </div>
-      </div>
-      <!--MAP PETA-->
-    </div>
-
-    <div class="container footer-bottom">
-      <span>
-        © <span id="year"></span> Fakultas Ilmu Kesehatan. All Rights
-        Reserved.
-      </span>
-
-      <span> Website FIKES </span>
-    </div>
-  </footer>
-
-  <!-- BACK TO TOP -->
-
-  <button class="back-top" id="backTop">↑</button>
-
-  <script>
-    /* =========================================================
-   NAVBAR SCROLL EFFECT
-========================================================= */
-
-    /* NAVBAR SCROLL */
-
-    const navbar = document.getElementById("navbar");
-
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 20) {
-        navbar.classList.add("scrolled");
-      } else {
-        navbar.classList.remove("scrolled");
-      }
-    });
-
-    /* MOBILE MENU */
-
-    const menuToggle = document.getElementById("menuToggle");
-
-    const navMenu = document.getElementById("navMenu");
-
-    menuToggle.addEventListener("click", () => {
-      navMenu.classList.toggle("active");
-
-      menuToggle.innerHTML = navMenu.classList.contains("active") ?
-        "✕" :
-        "☰";
-    });
-
-    /* MOBILE DROPDOWN */
-
-    document
-      .querySelectorAll(
-        ".has-dropdown > .nav-link, .has-dropdown > .dropdown-link",
-      )
-      .forEach((link) => {
-        link.addEventListener("click", function(e) {
-          if (window.innerWidth <= 900) {
-            e.preventDefault();
-
-            const parent = this.parentElement;
-
-            parent.classList.toggle("open");
-          }
-        });
-      });
-
-    /* CLOSE MOBILE MENU */
-
-    document.querySelectorAll(".nav-menu a").forEach((link) => {
-      link.addEventListener("click", function() {
-        if (
-          window.innerWidth <= 900 &&
-          !this.parentElement.classList.contains("has-dropdown")
-        ) {
-          navMenu.classList.remove("active");
-
-          menuToggle.innerHTML = "☰";
-        }
-      });
-    });
-
-    /* BACK TO TOP */
-
-    const backTop = document.getElementById("backTop");
-
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 500) {
-        backTop.classList.add("show");
-      } else {
-        backTop.classList.remove("show");
-      }
-    });
-
-    backTop.addEventListener("click", () => {
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    });
-
-    /* YEAR */
-
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-    /* CLOSE DROPDOWN */
-
-    document.addEventListener("click", (event) => {
-      if (!event.target.closest(".navbar")) {
-        document.querySelectorAll(".nav-item.open").forEach((item) => {
-          item.classList.remove("open");
-        });
-      }
-    });
-  </script>
-
-</body>
+  </body>
 
 </html>

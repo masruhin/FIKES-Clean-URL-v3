@@ -1,0 +1,858 @@
+/* =========================================================
+   HALAMAN AKUN ADMIN
+   ========================================================= */
+
+.akun-page {
+    width: 100%;
+    max-width: 1500px;
+    margin: 0 auto;
+}
+
+.akun-page-head {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 22px;
+}
+
+.akun-eyebrow,
+.akun-section-label {
+    display: block;
+    color: #1677ed;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 1.3px;
+}
+
+.akun-page-head h1 {
+    margin: 5px 0 5px;
+    font-size: 25px;
+    line-height: 1.2;
+}
+
+.akun-page-head p,
+.akun-panel-head p {
+    margin: 0;
+    color: #7d8798;
+    font-size: 12px;
+    line-height: 1.6;
+}
+
+.akun-btn {
+    min-height: 40px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border: 1px solid #dfe4ec;
+    border-radius: 9px;
+    padding: 9px 14px;
+    background: #fff;
+    color: #526075;
+    font: 700 12px Inter, Arial, sans-serif;
+    text-decoration: none;
+    cursor: pointer;
+    transition: .2s ease;
+}
+
+.akun-btn:hover {
+    transform: translateY(-1px);
+}
+
+.akun-btn-primary {
+    color: #fff;
+    background: #1677ed;
+    border-color: #1677ed;
+    box-shadow: 0 7px 18px rgba(22, 119, 237, .18);
+}
+
+.akun-btn-primary:hover {
+    background: #0969dc;
+}
+
+.akun-btn-outline:hover {
+    border-color: #1677ed;
+    color: #1677ed;
+}
+
+.akun-btn-light {
+    background: #f5f7fa;
+}
+
+/* =========================================================
+   PROFILE CARD
+   ========================================================= */
+
+.akun-profile-card {
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 20px;
+    border: 1px solid #e6ebf2;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 6px 25px rgba(31, 41, 55, .04);
+}
+
+.akun-profile-cover {
+    position: relative;
+    height: 100px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #0c71dc, #1677ed 55%, #35a1ff);
+}
+
+.akun-cover-pattern {
+    position: absolute;
+    inset: 0;
+    opacity: .35;
+    background-image: radial-gradient(rgba(255, 255, 255, .22) 1px, transparent 1px);
+    background-size: 18px 18px;
+}
+
+.akun-profile-body {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 20px;
+    padding: 0 24px 22px;
+}
+
+.akun-profile-avatar {
+    width: 92px;
+    height: 92px;
+    display: grid;
+    place-items: center;
+    margin-top: -45px;
+    border: 5px solid #fff;
+    border-radius: 50%;
+    background: #eaf4ff;
+    color: #1677ed;
+    font-size: 31px;
+    font-weight: 800;
+    box-shadow: 0 7px 20px rgba(15, 23, 42, .12);
+    position: relative;
+    z-index: 2;
+}
+
+.akun-profile-main {
+    min-width: 0;
+    padding-top: 17px;
+}
+
+.akun-profile-name-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.akun-profile-name-row h2 {
+    margin: 0;
+    color: #172033;
+    font-size: 19px;
+}
+
+.akun-profile-name-row p {
+    margin: 4px 0 0;
+    color: #8993a5;
+    font-size: 12px;
+}
+
+.akun-role-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 62px;
+    padding: 5px 9px;
+    border-radius: 999px;
+    background: #f0f3f7;
+    color: #697587;
+    font-size: 9px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: .4px;
+}
+
+.akun-role-badge.admin {
+    background: #eaf4ff;
+    color: #1677ed;
+}
+
+.akun-role-badge.editor {
+    background: #eafaf2;
+    color: #159363;
+}
+
+.akun-profile-info {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 22px;
+    margin-top: 15px;
+}
+
+.akun-profile-info div {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.akun-profile-info span {
+    color: #929bab;
+    font-size: 10px;
+}
+
+.akun-profile-info strong {
+    color: #344054;
+    font-size: 11px;
+}
+
+.akun-status-active {
+    color: #159363 !important;
+}
+
+.akun-status-active i {
+    width: 6px;
+    height: 6px;
+    display: inline-block;
+    border-radius: 50%;
+    background: #16a568;
+}
+
+.akun-profile-action {
+    align-self: center;
+}
+
+/* =========================================================
+   PANEL DAFTAR AKUN
+   ========================================================= */
+
+.akun-panel {
+    overflow: hidden;
+    border: 1px solid #e6ebf2;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 6px 25px rgba(31, 41, 55, .04);
+}
+
+.akun-panel-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 21px 22px;
+    border-bottom: 1px solid #edf1f5;
+}
+
+.akun-panel-head h2 {
+    margin: 4px 0 4px;
+    color: #172033;
+    font-size: 17px;
+}
+
+.akun-total {
+    min-width: 88px;
+    padding: 9px 13px;
+    border: 1px solid #e7edf5;
+    border-radius: 10px;
+    text-align: center;
+    background: #fafbfd;
+}
+
+.akun-total strong,
+.akun-total span {
+    display: block;
+}
+
+.akun-total strong {
+    color: #1677ed;
+    font-size: 20px;
+}
+
+.akun-total span {
+    margin-top: 1px;
+    color: #8d97a7;
+    font-size: 9px;
+}
+
+.akun-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 15px 22px;
+    border-bottom: 1px solid #edf1f5;
+}
+
+.akun-search {
+    width: min(410px, 100%);
+    position: relative;
+}
+
+.akun-search span {
+    position: absolute;
+    top: 50%;
+    left: 12px;
+    transform: translateY(-50%);
+    color: #98a2b1;
+    font-size: 17px;
+}
+
+.akun-search input {
+    width: 100%;
+    height: 39px;
+    margin: 0;
+    padding: 9px 12px 9px 34px;
+    border: 1px solid #dfe4ec;
+    border-radius: 9px;
+    background: #fff;
+    color: #273246;
+    font-size: 11px;
+    outline: none;
+}
+
+.akun-search input:focus {
+    border-color: #62aaf9;
+    box-shadow: 0 0 0 3px rgba(22, 119, 237, .08);
+}
+
+.akun-page-size {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.akun-page-size label {
+    margin: 0;
+    color: #8993a5;
+    font-size: 10px;
+    font-weight: 600;
+}
+
+.akun-page-size select {
+    width: 70px;
+    height: 37px;
+    margin: 0;
+    padding: 6px 8px;
+    font-size: 11px;
+}
+
+.akun-table-wrap {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.akun-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: collapse;
+}
+
+.akun-table th {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e9edf3;
+    background: #fafbfd;
+    color: #8993a5;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: .6px;
+    text-align: left;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+.akun-table td {
+    padding: 13px 14px;
+    border-bottom: 1px solid #eef1f5;
+    color: #566174;
+    font-size: 11px;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.akun-table tbody tr:hover {
+    background: #fbfdff;
+}
+
+.akun-no {
+    color: #a0a8b7 !important;
+    font-size: 10px !important;
+}
+
+.akun-user-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.akun-mini-avatar {
+    width: 32px;
+    height: 32px;
+    flex: 0 0 32px;
+    display: grid;
+    place-items: center;
+    border-radius: 9px;
+    background: #eaf4ff;
+    color: #1677ed;
+    font-size: 11px;
+    font-weight: 800;
+}
+
+.akun-user-cell strong {
+    display: block;
+    color: #344054;
+    font-size: 11px;
+}
+
+.akun-you {
+    display: inline-block;
+    margin-top: 2px;
+    color: #1677ed;
+    font-size: 8px;
+    font-weight: 800;
+    text-transform: uppercase;
+}
+
+.akun-username {
+    color: #667085;
+    font-family: Consolas, monospace;
+    font-size: 10px;
+}
+
+.akun-actions {
+    text-align: right;
+}
+
+.akun-icon-btn {
+    width: 30px;
+    height: 30px;
+    display: inline-grid;
+    place-items: center;
+    margin-left: 4px;
+    border: 1px solid #e1e6ee;
+    border-radius: 8px;
+    background: #fff;
+    color: #6d788a;
+    cursor: pointer;
+    font-size: 13px;
+    transition: .2s ease;
+}
+
+.akun-icon-btn.edit:hover {
+    border-color: #8fc4ff;
+    background: #eef7ff;
+    color: #1677ed;
+}
+
+.akun-icon-btn.delete:hover {
+    border-color: #ffc1c1;
+    background: #fff2f2;
+    color: #d64747;
+}
+
+.akun-icon-btn.disabled,
+.akun-icon-btn:disabled {
+    opacity: .38;
+    cursor: not-allowed;
+}
+
+.akun-no-result {
+    display: none;
+    padding: 45px 20px;
+    text-align: center;
+}
+
+.akun-no-result.show {
+    display: block;
+}
+
+.akun-no-result div {
+    margin-bottom: 7px;
+    color: #a2abba;
+    font-size: 27px;
+}
+
+.akun-no-result strong,
+.akun-no-result span {
+    display: block;
+}
+
+.akun-no-result strong {
+    color: #344054;
+    font-size: 13px;
+}
+
+.akun-no-result span {
+    margin-top: 4px;
+    color: #98a2b1;
+    font-size: 10px;
+}
+
+.akun-empty {
+    padding: 50px 20px;
+    text-align: center;
+}
+
+.akun-empty div {
+    color: #1677ed;
+    font-size: 32px;
+}
+
+.akun-empty h3 {
+    margin: 8px 0 4px;
+    color: #344054;
+    font-size: 14px;
+}
+
+.akun-empty p {
+    margin: 0;
+    color: #929aaa;
+    font-size: 10px;
+}
+
+.akun-table-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 14px 22px;
+    color: #8c96a6;
+    font-size: 10px;
+}
+
+.akun-pagination {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.akun-page-btn {
+    min-width: 29px;
+    height: 29px;
+    display: inline-grid;
+    place-items: center;
+    border: 1px solid #e0e5ed;
+    border-radius: 7px;
+    background: #fff;
+    color: #697587;
+    font-size: 10px;
+    cursor: pointer;
+}
+
+.akun-page-btn:hover:not(:disabled),
+.akun-page-btn.active {
+    border-color: #1677ed;
+    background: #1677ed;
+    color: #fff;
+}
+
+.akun-page-btn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+/* =========================================================
+   MODAL
+   ========================================================= */
+
+.akun-modal {
+    position: fixed;
+    z-index: 100;
+    inset: 0;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(15, 23, 42, .58);
+}
+
+.akun-modal.show {
+    display: flex;
+}
+
+.akun-modal-box {
+    width: min(680px, 100%);
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+    border: 1px solid #e5eaf1;
+    border-radius: 16px;
+    background: #fff;
+    box-shadow: 0 28px 80px rgba(15, 23, 42, .25);
+    animation: akunModalIn .18s ease-out;
+}
+
+@keyframes akunModalIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px) scale(.99);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.akun-modal-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+    padding: 21px 22px 17px;
+    border-bottom: 1px solid #edf1f5;
+}
+
+.akun-modal-head h2 {
+    margin: 5px 0 4px;
+    color: #172033;
+    font-size: 18px;
+}
+
+.akun-modal-head p {
+    margin: 0;
+    color: #8993a5;
+    font-size: 10px;
+}
+
+.akun-modal-close {
+    width: 31px;
+    height: 31px;
+    flex: 0 0 31px;
+    border: 0;
+    border-radius: 50%;
+    background: #f2f4f7;
+    color: #667085;
+    font-size: 20px;
+    line-height: 1;
+    cursor: pointer;
+}
+
+.akun-modal-close:hover {
+    background: #e9edf2;
+}
+
+.akun-modal-box form {
+    padding: 0;
+}
+
+.akun-form-section {
+    padding: 20px 22px;
+    border-bottom: 1px solid #edf1f5;
+}
+
+.akun-form-section-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.akun-form-section-title > span {
+    width: 27px;
+    height: 27px;
+    display: grid;
+    place-items: center;
+    border-radius: 8px;
+    background: #eef6ff;
+    color: #1677ed;
+    font-size: 9px;
+    font-weight: 800;
+}
+
+.akun-form-section-title strong,
+.akun-form-section-title small {
+    display: block;
+}
+
+.akun-form-section-title strong {
+    color: #344054;
+    font-size: 12px;
+}
+
+.akun-form-section-title small {
+    margin-top: 2px;
+    color: #98a2b1;
+    font-size: 9px;
+}
+
+.akun-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+}
+
+.akun-field.full {
+    grid-column: 1 / -1;
+}
+
+.akun-field label {
+    display: block;
+    margin: 0 0 6px;
+    color: #657083;
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.akun-field label b {
+    color: #e04f4f;
+}
+
+.akun-field input,
+.akun-field select {
+    width: 100%;
+    height: 40px;
+    margin: 0;
+    padding: 9px 11px;
+    border: 1px solid #dfe4ec;
+    border-radius: 8px;
+    background: #fff;
+    color: #273246;
+    font-size: 11px;
+    outline: none;
+}
+
+.akun-field input:focus,
+.akun-field select:focus {
+    border-color: #62aaf9;
+    box-shadow: 0 0 0 3px rgba(22, 119, 237, .08);
+}
+
+.akun-field small {
+    display: block;
+    margin-top: 5px;
+    color: #98a2b1;
+    font-size: 8px;
+    line-height: 1.5;
+}
+
+.akun-password-wrap {
+    position: relative;
+}
+
+.akun-password-wrap input {
+    padding-right: 42px;
+}
+
+.akun-password-wrap button {
+    position: absolute;
+    top: 50%;
+    right: 7px;
+    width: 28px;
+    height: 28px;
+    transform: translateY(-50%);
+    border: 0;
+    border-radius: 6px;
+    background: #f4f6f8;
+    color: #7b8798;
+    cursor: pointer;
+    font-size: 11px;
+}
+
+.akun-modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 22px 20px;
+}
+
+.akun-hidden-form {
+    display: none;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 850px) {
+    .akun-profile-body {
+        grid-template-columns: auto minmax(0, 1fr);
+    }
+
+    .akun-profile-action {
+        grid-column: 1 / -1;
+        padding-top: 2px;
+    }
+
+    .akun-profile-action .akun-btn {
+        width: 100%;
+    }
+}
+
+@media (max-width: 650px) {
+    .akun-page-head {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .akun-page-head .akun-btn {
+        width: 100%;
+    }
+
+    .akun-profile-body {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding: 0 16px 18px;
+    }
+
+    .akun-profile-avatar {
+        margin: -45px auto 0;
+    }
+
+    .akun-profile-name-row {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .akun-profile-info {
+        justify-content: center;
+    }
+
+    .akun-profile-action {
+        grid-column: auto;
+    }
+
+    .akun-panel-head,
+    .akun-toolbar,
+    .akun-table-footer {
+        align-items: stretch;
+        flex-direction: column;
+    }
+
+    .akun-total {
+        width: 100%;
+    }
+
+    .akun-search {
+        width: 100%;
+    }
+
+    .akun-page-size {
+        justify-content: space-between;
+    }
+
+    .akun-pagination {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .akun-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .akun-field.full {
+        grid-column: auto;
+    }
+
+    .akun-modal {
+        padding: 10px;
+    }
+
+    .akun-modal-box {
+        max-height: calc(100vh - 20px);
+    }
+
+    .akun-modal-actions {
+        flex-direction: column-reverse;
+    }
+
+    .akun-modal-actions .akun-btn {
+        width: 100%;
+    }
+}

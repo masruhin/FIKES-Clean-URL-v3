@@ -38,388 +38,26 @@ function desc($x)
 <!doctype html>
 <html lang="id">
 
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Unduh Logo | FIKES</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
-    rel="stylesheet">
-  <!-- <link rel="stylesheet" href="../assets/css/unduh.css" /> -->
-  <!-- <link rel="stylesheet" href="../assets/css/unduh.css" /> -->
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Unduh Logo | FIKES</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" href="/fikes/assets/css/style.css">
+
+    <!-- <link rel="stylesheet" href="../assets/css/unduh.css" /> -->
+    <!-- <link rel="stylesheet" href="../assets/css/unduh.css" /> -->
 
 
 
-  <style>
+    <style>
     /* =========================================================
    ROOT
 ========================================================= */
-
-    :root {
-      --primary: #087f5b;
-      --primary-dark: #056044;
-      --primary-light: #e7f7f1;
-
-      --secondary: #f4b942;
-
-      --dark: #12372a;
-      --text: #52635d;
-      --muted: #84928d;
-
-      --white: #ffffff;
-      --light: #f7faf9;
-
-      --border: #e5ece9;
-
-      --shadow: 0 20px 60px rgba(18, 55, 42, 0.09);
-
-      --shadow-hover: 0 25px 70px rgba(18, 55, 42, 0.15);
-
-      --radius: 20px;
-
-      --transition: 0.3s ease;
-    }
-
-    /* =========================================================
-   RESET
-========================================================= */
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: "Inter", sans-serif;
-
-      color: var(--text);
-
-      background: var(--white);
-
-      line-height: 1.7;
-
-      overflow-x: hidden;
-    }
-
-    h1,
-    h2,
-    h3,
-    h4 {
-      font-family: "Plus Jakarta Sans", sans-serif;
-
-      color: var(--dark);
-
-      line-height: 1.3;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-
-    button {
-      font-family: inherit;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    ul {
-      list-style: none;
-    }
-
-    .container {
-      width: min(1180px, calc(100% - 40px));
-
-      margin: auto;
-    }
-
-    /* =========================================================
-   TOPBAR
-========================================================= */
-
-    .topbar {
-      background: var(--dark);
-
-      color: #d9e8e2;
-
-      font-size: 13px;
-    }
-
-    .topbar-inner {
-      min-height: 40px;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-    }
-
-    .topbar-info {
-      display: flex;
-
-      align-items: center;
-
-      gap: 25px;
-    }
-
-    .topbar-info span {
-      display: flex;
-
-      align-items: center;
-
-      gap: 7px;
-    }
-
-    .topbar-social {
-      display: flex;
-
-      gap: 15px;
-    }
-
-    .topbar-social a {
-      transition: var(--transition);
-    }
-
-    .topbar-social a:hover {
-      color: var(--secondary);
-    }
-
-    /* =========================================================
-   NAVBAR
-========================================================= */
-
-    .navbar {
-      position: sticky;
-
-      top: 0;
-
-      z-index: 999;
-
-      background: rgba(255, 255, 255, 0.95);
-
-      backdrop-filter: blur(15px);
-
-      border-bottom: 1px solid var(--border);
-
-      transition: var(--transition);
-    }
-
-    .navbar.scrolled {
-      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-    }
-
-    .nav-inner {
-      min-height: 82px;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      gap: 25px;
-    }
-
-    /* =========================================================
-   LOGO NAVBAR
-========================================================= */
-
-    .logo {
-      display: flex;
-
-      align-items: center;
-
-      gap: 12px;
-
-      flex-shrink: 0;
-    }
-
-    .logo-icon {
-      width: 48px;
-
-      height: 48px;
-
-      border-radius: 14px;
-
-      background: linear-gradient(135deg, var(--primary), #13a878);
-
-      color: white;
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: center;
-
-      font-weight: 800;
-
-      font-size: 17px;
-
-      box-shadow: 0 10px 25px rgba(8, 127, 91, 0.25);
-    }
-
-    .logo-text strong {
-      display: block;
-
-      color: var(--dark);
-
-      font-size: 17px;
-
-      line-height: 1.2;
-    }
-
-    .logo-text small {
-      display: block;
-
-      font-size: 10px;
-
-      color: var(--primary);
-
-      font-weight: 700;
-
-      letter-spacing: 0.5px;
-    }
-
-    /* =========================================================
-   NAVIGATION
-========================================================= */
-
-    .nav-menu {
-      display: flex;
-
-      align-items: center;
-
-      gap: 3px;
-    }
-
-    .nav-item {
-      position: relative;
-    }
-
-    .nav-link {
-      min-height: 82px;
-
-      padding: 0 12px;
-
-      display: flex;
-
-      align-items: center;
-
-      gap: 5px;
-
-      font-size: 13px;
-
-      font-weight: 600;
-
-      color: #344b43;
-
-      white-space: nowrap;
-
-      transition: var(--transition);
-    }
-
-    .nav-link:hover {
-      color: var(--primary);
-    }
-
-    .arrow {
-      font-size: 10px;
-
-      transition: var(--transition);
-    }
-
-    /* =========================================================
-   DROPDOWN
-========================================================= */
-
-    .dropdown {
-      position: absolute;
-
-      top: calc(100% + 5px);
-
-      left: 0;
-
-      width: 250px;
-
-      padding: 10px;
-
-      background: white;
-
-      border: 1px solid var(--border);
-
-      border-radius: 14px;
-
-      box-shadow: var(--shadow);
-
-      opacity: 0;
-
-      visibility: hidden;
-
-      transform: translateY(10px);
-
-      transition: var(--transition);
-    }
-
-    .nav-item:hover>.dropdown {
-      opacity: 1;
-
-      visibility: visible;
-
-      transform: translateY(0);
-    }
-
-    .dropdown-item {
-      position: relative;
-    }
-
-    .dropdown-link {
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      padding: 10px 13px;
-
-      border-radius: 9px;
-
-      font-size: 13px;
-
-      color: #40544d;
-
-      transition: var(--transition);
-    }
-
-    .dropdown-link:hover {
-      color: var(--primary);
-
-      background: var(--primary-light);
-    }
-
-    .dropdown-item>.dropdown {
-      top: -10px;
-
-      left: calc(100% + 5px);
-    }
-
-    .dropdown-item:hover>.dropdown {
-      opacity: 1;
-
-      visibility: visible;
-
-      transform: translateY(0);
-    }
 
     /* =========================================================
    NAV CTA
@@ -1067,69 +705,6 @@ function desc($x)
    FOOTER
 ========================================================= */
 
-    footer {
-      background: #0d2b21;
-
-      color: #b7cec5;
-    }
-
-    .footer-main {
-      padding: 70px 0 45px;
-
-      display: grid;
-
-      grid-template-columns: 1.4fr 1fr 1fr 1fr;
-
-      gap: 45px;
-    }
-
-    .footer-brand p {
-      max-width: 320px;
-
-      margin-top: 17px;
-
-      font-size: 13px;
-    }
-
-    .footer-title {
-      color: white;
-
-      font-size: 14px;
-
-      margin-bottom: 17px;
-    }
-
-    .footer-links {
-      display: grid;
-
-      gap: 10px;
-    }
-
-    .footer-links a {
-      font-size: 12px;
-
-      transition: var(--transition);
-    }
-
-    .footer-links a:hover {
-      color: var(--secondary);
-
-      transform: translateX(3px);
-    }
-
-    .footer-bottom {
-      padding: 20px 0;
-
-      border-top: 1px solid rgba(255, 255, 255, 0.08);
-
-      display: flex;
-
-      align-items: center;
-
-      justify-content: space-between;
-
-      font-size: 11px;
-    }
 
     /* =========================================================
    LIGHTBOX
@@ -1698,290 +1273,144 @@ function desc($x)
     }
 
     /*MAP PETA*/
-  </style>
-</head>
+    </style>
+  </head>
 
-<body>
+  <body>
 
-  <?php
-  if (file_exists(__DIR__ . "/../menu/topbar.php")) require_once __DIR__ . "/../menu/topbar.php";
-  if (file_exists(__DIR__ . "/../menu/navbar.php")) require_once __DIR__ . "/../menu/navbar.php";
-  ?>
+    <!-- TOPBAR REUSABLE -->
+    <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
 
-  <main>
-    <section class="hero">
-      <div class="container">
-        <div class="hero-content">
-          <div class="breadcrumb">
-            <a href="/fikes/">Beranda</a><span>›</span><span>Tentang FIKES</span><span>›</span><span>Unduh
-              Logo</span>
+    <!-- NAVBAR REUSABLE -->
+    <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
+    <main>
+      <section class="hero">
+        <div class="container">
+          <div class="hero-content">
+            <div class="breadcrumb">
+              <a href="/fikes/">Beranda</a><span>›</span><span>Tentang FIKES</span><span>›</span><span>Unduh
+                Logo</span>
+            </div>
+            <div class="hero-label"><span class="hero-dot"></span> IDENTITAS VISUAL</div>
+            <h1>Unduh <span>Logo FIKES</span></h1>
+            <p>Download logo resmi Fakultas Ilmu Kesehatan dalam berbagai format untuk kebutuhan website, dokumen,
+              desain, dan publikasi.</p>
           </div>
-          <div class="hero-label"><span class="hero-dot"></span> IDENTITAS VISUAL</div>
-          <h1>Unduh <span>Logo FIKES</span></h1>
-          <p>Download logo resmi Fakultas Ilmu Kesehatan dalam berbagai format untuk kebutuhan website, dokumen,
-            desain, dan publikasi.</p>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="section">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-label">LOGO RESMI</span>
-          <h2 class="section-title">Logo FIKES</h2>
-          <p class="section-description">File logo pada halaman ini berasal langsung dari folder upload logo pada
-            sistem administrasi FIKES.</p>
-        </div>
+      <section class="section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-label">LOGO RESMI</span>
+            <h2 class="section-title">Logo FIKES</h2>
+            <p class="section-description">File logo pada halaman ini berasal langsung dari folder upload logo pada
+              sistem administrasi FIKES.</p>
+          </div>
 
-        <?php if ($logos): ?>
+          <?php if ($logos): ?>
           <div class="logo-grid">
             <?php foreach ($logos as $logo):
               $ext = strtolower(pathinfo($logo, PATHINFO_EXTENSION));
               $fileUrl = $url . rawurlencode($logo);
             ?>
-              <article class="logo-card">
-                <span class="format-badge"><?= e(fmt($logo)) ?></span>
-                <div class="logo-preview" onclick="previewLogo('<?= e($fileUrl) ?>','<?= e($logo) ?>')">
-                  <img src="<?= e($fileUrl) ?>" alt="<?= e($logo) ?>" loading="lazy">
+            <article class="logo-card">
+              <span class="format-badge"><?= e(fmt($logo)) ?></span>
+              <div class="logo-preview" onclick="previewLogo('<?= e($fileUrl) ?>','<?= e($logo) ?>')">
+                <img src="<?= e($fileUrl) ?>" alt="<?= e($logo) ?>" loading="lazy">
+              </div>
+              <div class="logo-content">
+                <h3>Logo FIKES <?= e(fmt($logo)) ?></h3>
+                <p><?= e(desc($ext)) ?></p>
+                <div class="logo-meta">
+                  <span class="meta"><?= e(fmt($logo)) ?></span>
+                  <span class="meta">Logo Resmi</span>
+                  <span class="meta">FIKES</span>
                 </div>
-                <div class="logo-content">
-                  <h3>Logo FIKES <?= e(fmt($logo)) ?></h3>
-                  <p><?= e(desc($ext)) ?></p>
-                  <div class="logo-meta">
-                    <span class="meta"><?= e(fmt($logo)) ?></span>
-                    <span class="meta">Logo Resmi</span>
-                    <span class="meta">FIKES</span>
-                  </div>
-                  <div class="card-buttons">
-                    <button type="button" class="btn btn-preview"
-                      onclick="previewLogo('<?= e($fileUrl) ?>','<?= e($logo) ?>')">👁 Preview</button>
-                    <a href="<?= e($fileUrl) ?>" download="<?= e($logo) ?>" class="btn btn-download">↓ Download</a>
-                  </div>
+                <div class="card-buttons">
+                  <button type="button" class="btn btn-preview"
+                    onclick="previewLogo('<?= e($fileUrl) ?>','<?= e($logo) ?>')">👁 Preview</button>
+                  <a href="<?= e($fileUrl) ?>" download="<?= e($logo) ?>" class="btn btn-download">↓ Download</a>
                 </div>
-              </article>
+              </div>
+            </article>
             <?php endforeach; ?>
           </div>
-        <?php else: ?>
+          <?php else: ?>
           <div class="empty-state">
             <div class="empty-icon">▧</div>
             <h3>Logo belum tersedia</h3>
             <p>Belum ada file logo yang diupload melalui halaman administrasi FIKES.</p>
           </div>
-        <?php endif; ?>
-      </div>
-    </section>
+          <?php endif; ?>
+        </div>
+      </section>
 
-    <section class="section download-section">
-      <div class="container">
-        <div class="download-box">
-          <div class="download-box-content">
-            <div class="download-icon">📦</div>
-            <h2>Butuh Semua File Logo?</h2>
-            <p>Download seluruh logo FIKES yang tersedia dalam satu file ZIP.</p>
-            <?php if ($logos): ?><a href="/fikes/tentang/download-logo" class="download-all">📦 Download Semua
+      <section class="section download-section">
+        <div class="container">
+          <div class="download-box">
+            <div class="download-box-content">
+              <div class="download-icon">📦</div>
+              <h2>Butuh Semua File Logo?</h2>
+              <p>Download seluruh logo FIKES yang tersedia dalam satu file ZIP.</p>
+              <?php if ($logos): ?><a href="/fikes/tentang/download-logo" class="download-all">📦 Download Semua
                 Logo</a>
-            <?php else: ?><span class="download-disabled">Belum ada file logo</span><?php endif; ?>
+              <?php else: ?><span class="download-disabled">Belum ada file logo</span><?php endif; ?>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
 
-    <section class="section info-section">
-      <div class="container">
-        <div class="section-header">
-          <span class="section-label">INFORMASI</span>
-          <h2 class="section-title">Penggunaan Logo</h2>
-          <p class="section-description">Gunakan logo FIKES secara proporsional dan tetap menjaga identitas visual
-            institusi.</p>
+      <section class="section info-section">
+        <div class="container">
+          <div class="section-header">
+            <span class="section-label">INFORMASI</span>
+            <h2 class="section-title">Penggunaan Logo</h2>
+            <p class="section-description">Gunakan logo FIKES secara proporsional dan tetap menjaga identitas visual
+              institusi.</p>
+          </div>
+          <div class="info-grid">
+            <div class="info-card">
+              <div class="info-icon">✓</div>
+              <h3>Logo Resmi</h3>
+              <p>Gunakan file yang tersedia sebagai sumber logo resmi FIKES.</p>
+            </div>
+            <div class="info-card">
+              <div class="info-icon">▣</div>
+              <h3>Pilih Format</h3>
+              <p>PNG cocok untuk website, sedangkan SVG cocok untuk desain.</p>
+            </div>
+            <div class="info-card">
+              <div class="info-icon">↗</div>
+              <h3>Kualitas</h3>
+              <p>Hindari mengubah logo secara tidak proporsional.</p>
+            </div>
+          </div>
         </div>
-        <div class="info-grid">
-          <div class="info-card">
-            <div class="info-icon">✓</div>
-            <h3>Logo Resmi</h3>
-            <p>Gunakan file yang tersedia sebagai sumber logo resmi FIKES.</p>
-          </div>
-          <div class="info-card">
-            <div class="info-icon">▣</div>
-            <h3>Pilih Format</h3>
-            <p>PNG cocok untuk website, sedangkan SVG cocok untuk desain.</p>
-          </div>
-          <div class="info-card">
-            <div class="info-icon">↗</div>
-            <h3>Kualitas</h3>
-            <p>Hindari mengubah logo secara tidak proporsional.</p>
-          </div>
-        </div>
-      </div>
-    </section>
-  </main>
+      </section>
+    </main>
 
-  <!-- =========================================================
+    <!-- =========================================================
      FOOTER
 ========================================================= -->
 
-  <footer>
-    <div class="container footer-main">
-      <div class="footer-brand">
-        <div class="logo footer-logo">
-          <div class="logo-icon">F</div>
-
-          <div class="logo-text">
-            <strong style="color: white"> FIKES </strong>
-
-            <small> FAKULTAS ILMU KESEHATAN </small>
-          </div>
-        </div>
-
-        <p>
-          Membangun generasi kesehatan yang profesional, berintegritas,
-          inovatif, dan berorientasi kepada masyarakat.
-        </p>
-      </div>
-
-      <div>
-        <h4 class="footer-title">Tentang FIKES</h4>
-
-        <div class="footer-links">
-          <a href="#"> Visi Misi </a>
-
-          <a href="#"> Struktur Organisasi </a>
-
-          <a href="#"> Akreditasi </a>
-
-          <a href="#"> Daftar Dosen </a>
-        </div>
-      </div>
-
-      <div>
-        <h4 class="footer-title">Program Studi</h4>
-
-        <div class="footer-links">
-          <a href="#"> Profesi Ners </a>
-
-          <a href="#"> Ilmu Keperawatan </a>
-
-          <a href="#"> Farmasi </a>
-
-          <a href="#"> Kebidanan </a>
-
-          <a href="#"> K3 </a>
-        </div>
-      </div>
-
-      <div>
-        <h4 class="footer-title">Informasi</h4>
-
-        <div class="footer-links">
-          <a href="#"> Akademik </a>
-
-          <a href="#"> Kemahasiswaan </a>
-
-          <a href="#"> Pelayanan FIKES </a>
-
-          <a href="#"> Survey </a>
-        </div>
-      </div>
-
-      <!--MAP PETA-->
-      <!-- =========================================================
-     LOKASI & PETA
-========================================================== -->
-
-      <div class="footer-location">
-        <div class="location-header">
-          <div class="location-icon">
-            <i class="fa-solid fa-location-dot"></i>
-          </div>
-
-          <div>
-            <h3>Lokasi Kampus</h3>
-
-            <p>Fakultas Ilmu Kesehatan</p>
-          </div>
-        </div>
-
-        <!-- PETA -->
-
-        <div class="map-card">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.1515727139526!2d109.11806027499709!3d-6.991421893009626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fbef42471658d%3A0x883656d1325ef066!2sUniversitas%20Bhamada%20Slawi!5e0!3m2!1sid!2sid!4v1787544396003!5m2!1sid!2sid"
-            width="600" height="450" style="border: 0" allowfullscreen="" loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin" title="Lokasi Fakultas Ilmu Kesehatan" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
-          </iframe>
-
-          <div class="map-overlay">
-            <div class="map-info">
-              <div class="map-info-icon">
-                <i class="fa-solid fa-location-dot"></i>
-              </div>
-
-              <div>
-                <strong> Fakultas Ilmu Kesehatan </strong>
-
-                <span> Lihat lokasi kampus </span>
-              </div>
-            </div>
-
-            <a href="#" target="_blank" class="map-direction">
-              <i class="fa-solid fa-diamond-turn-right"></i>
-
-              Petunjuk Arah
-            </a>
-          </div>
-        </div>
-
-        <!-- ALAMAT -->
-
-        <div class="footer-contact location-contact">
-          <i class="fa-solid fa-location-dot"></i>
-
-          <span>
-            Alamat Fakultas Ilmu Kesehatan, silakan sesuaikan dengan alamat
-            kampus.
-          </span>
-        </div>
-
-        <div class="footer-contact">
-          <i class="fa-solid fa-phone"></i>
-
-          <span> Nomor Telepon FIKES </span>
-        </div>
-
-        <div class="footer-contact">
-          <i class="fa-solid fa-envelope"></i>
-
-          <span> email@fikes.ac.id </span>
-        </div>
-      </div>
-      <!--MAP PETA-->
-    </div>
-
-    <div class="container footer-bottom">
-      <span>
-        © <span id="year"></span> Fakultas Ilmu Kesehatan. All Rights
-        Reserved.
-      </span>
-
-      <span> Website FIKES </span>
-    </div>
-  </footer>
-  <!-- =========================================================
+    <?php require_once __DIR__ . '/../menu/footer.php'; ?>
+    <!-- =========================================================
      LIGHTBOX
 ========================================================= -->
 
-  <div class="lightbox" id="lightbox">
-    <div class="lightbox-content">
-      <button type="button" class="lightbox-close" id="lightboxClose">
-        ✕
-      </button>
+    <div class="lightbox" id="lightbox">
+      <div class="lightbox-content">
+        <button type="button" class="lightbox-close" id="lightboxClose">
+          ✕
+        </button>
 
-      <img src="" alt="" id="lightboxImage" class="lightbox-image" />
+        <img src="" alt="" id="lightboxImage" class="lightbox-image" />
+      </div>
     </div>
-  </div>
 
-  <!-- <script src="../assets/js/unduh.js"></script> -->
-  <script>
+    <!-- <script src="../assets/js/unduh.js"></script> -->
+    <script>
     /* =========================================================
    NAVBAR SCROLL
 ========================================================= */
@@ -2071,14 +1500,8 @@ function desc($x)
         closeLightbox();
       }
     });
+    </script>
 
-    /* =========================================================
-   YEAR
-========================================================= */
-
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
-
-</body>
+  </body>
 
 </html>

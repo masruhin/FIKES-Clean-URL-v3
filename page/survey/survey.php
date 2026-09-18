@@ -11,236 +11,25 @@ $surveys = $pdo->query("SELECT s.*,(SELECT COUNT(*) FROM survey_pertanyaan p WHE
 <!doctype html>
 <html lang="id">
 
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <title>Survey | FIKES - Fakultas Ilmu Kesehatan</title>
+  <title>Survey | FIKES - Fakultas Ilmu Kesehatan</title>
 
-    <meta name="description"
-      content="Website resmi Fakultas Ilmu Kesehatan - Informasi akademik, program studi, kemahasiswaan, pelayanan dan informasi FIKES." />
+  <meta name="description"
+    content="Website resmi Fakultas Ilmu Kesehatan - Informasi akademik, program studi, kemahasiswaan, pelayanan dan informasi FIKES." />
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
-      rel="stylesheet" />
-    <link rel="stylesheet" href="/fikes/assets/css/style.css" />
-    <style>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet" />
+  <link rel="stylesheet" href="/fikes/assets/css/style.css" />
+  <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap");
 
-    :root {
-      --primary: #087f5b;
-      --primary-dark: #056044;
-      --primary-light: #e7f7f1;
-      --secondary: #f4b942;
-      --dark: #12372a;
-      --text: #52635d;
-      --light: #f7faf9;
-      --white: #fff;
-      --border: #e5ece9;
-      --shadow: 0 20px 60px rgba(18, 55, 42, .1);
-      --radius: 18px;
-      --transition: .3s ease
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0
-    }
-
-    html {
-      scroll-behavior: smooth
-    }
-
-    body {
-      font-family: Inter, sans-serif;
-      color: var(--text);
-      background: #fff;
-      line-height: 1.7;
-      overflow-x: hidden
-    }
-
-    h1,
-    h2,
-    h3,
-    h4 {
-      font-family: "Plus Jakarta Sans", sans-serif;
-      color: var(--dark);
-      line-height: 1.3
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit
-    }
-
-    .container {
-      width: min(1180px, calc(100% - 40px));
-      margin: auto
-    }
-
-    .section {
-      padding: 90px 0
-    }
-
-    .topbar {
-      background: var(--dark);
-      color: #d9e8e2;
-      font-size: 13px
-    }
-
-    .topbar-inner {
-      min-height: 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px
-    }
-
-    .topbar-info,
-    .topbar-social {
-      display: flex;
-      gap: 22px;
-      align-items: center
-    }
-
-    .navbar {
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: rgba(255, 255, 255, .95);
-      backdrop-filter: blur(15px);
-      border-bottom: 1px solid var(--border)
-    }
-
-    .nav-inner {
-      min-height: 82px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 25px
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px
-    }
-
-    .logo-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--primary), #13a878);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 17px
-    }
-
-    .logo-text strong {
-      display: block;
-      color: var(--dark);
-      font-size: 17px
-    }
-
-    .logo-text small {
-      display: block;
-      font-size: 10px;
-      color: var(--primary);
-      font-weight: 700
-    }
-
-    .nav-menu {
-      display: flex;
-      gap: 3px
-    }
-
-    .nav-link {
-      min-height: 82px;
-      padding: 0 13px;
-      display: flex;
-      align-items: center;
-      font-size: 13px;
-      font-weight: 600;
-      color: #344b43
-    }
-
-    .nav-link:hover {
-      color: var(--primary)
-    }
-
-    .nav-cta {
-      padding: 12px 19px;
-      border-radius: 10px;
-      background: var(--primary);
-      color: #fff;
-      font-size: 13px;
-      font-weight: 700
-    }
-
-    .menu-toggle {
-      display: none
-    }
-
-    /* =========================
-       NAVBAR DROPDOWN
-    ========================= */
-    .nav-item {
-      position: relative
-    }
-
-    .has-dropdown>.nav-link {
-      gap: 4px
-    }
-
-    .dropdown {
-      position: absolute;
-      top: calc(100% + 1px);
-      left: 0;
-      min-width: 235px;
-      padding: 10px;
-      background: #fff;
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      box-shadow: 0 18px 45px rgba(18, 55, 42, .14);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(8px);
-      transition: opacity .2s ease, transform .2s ease, visibility .2s ease;
-      z-index: 1001;
-    }
-
-    .has-dropdown:hover>.dropdown,
-    .has-dropdown:focus-within>.dropdown {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .dropdown-item {
-      display: block
-    }
-
-    .dropdown-link {
-      display: block;
-      padding: 10px 12px;
-      border-radius: 8px;
-      color: #40544d;
-      font-size: 12px;
-      line-height: 1.4;
-      white-space: nowrap;
-    }
-
-    .dropdown-link:hover {
-      background: var(--primary-light);
-      color: var(--primary);
-    }
 
     /* =========================
        SURVEY CARDS
@@ -1354,282 +1143,66 @@ $surveys = $pdo->query("SELECT s.*,(SELECT COUNT(*) FROM survey_pertanyaan p WHE
         font-size: 28px
       }
     }
-    </style>
-  </head>
+  </style>
+</head>
 
-  <body>
-    <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
+<body>
+  <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
 
-    <!-- NAVBAR REUSABLE -->
-    <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
-    <main>
-      <section class="page-hero survey-hero">
-        <div class="container">
-          <div class="breadcrumb">⌂ <span>Beranda</span><b>›</b><span>Survey</span></div>
-          <span class="eyebrow">PELAYANAN & MUTU FIKES</span>
-          <h1>Survey FIKES</h1>
-          <p>Berikan penilaian dan masukan Anda untuk membantu FIKES meningkatkan kualitas pendidikan, pelayanan,
-            sarana, dan prasarana.</p>
+  <!-- NAVBAR REUSABLE -->
+  <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
+  <main>
+    <section class="page-hero survey-hero">
+      <div class="container">
+        <div class="breadcrumb">⌂ <span>Beranda</span><b>›</b><span>Survey</span></div>
+        <span class="eyebrow">PELAYANAN & MUTU FIKES</span>
+        <h1>Survey FIKES</h1>
+        <p>Berikan penilaian dan masukan Anda untuk membantu FIKES meningkatkan kualitas pendidikan, pelayanan,
+          sarana, dan prasarana.</p>
+      </div>
+    </section>
+    <section class="survey-section">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow">PARTISIPASI ANDA</span>
+          <h2>Survey yang tersedia</h2>
+          <p>Silakan pilih survey sesuai dengan kategori Anda. Daftar ini terhubung langsung dengan database dan dapat
+            ditambah melalui Dashboard Admin.</p>
         </div>
-      </section>
-      <section class="survey-section">
-        <div class="container">
-          <div class="section-heading">
-            <span class="eyebrow">PARTISIPASI ANDA</span>
-            <h2>Survey yang tersedia</h2>
-            <p>Silakan pilih survey sesuai dengan kategori Anda. Daftar ini terhubung langsung dengan database dan dapat
-              ditambah melalui Dashboard Admin.</p>
-          </div>
-          <div class="survey-grid">
-            <?php if (!$surveys): ?>
+        <div class="survey-grid">
+          <?php if (!$surveys): ?>
             <div class="survey-empty">
               <div class="survey-icon">✓</div>
               <h3>Belum ada survey aktif</h3>
               <p>Silakan kembali lagi nanti untuk mengikuti survey FIKES.</p>
             </div>
             <?php else: foreach ($surveys as $s): ?>
-            <article class="survey-card">
-              <div class="survey-card-accent"></div>
-              <div class="survey-card-body">
-                <div class="survey-card-top">
-                  <div class="survey-icon">✓</div><span class="survey-status">Aktif</span>
+              <article class="survey-card">
+                <div class="survey-card-accent"></div>
+                <div class="survey-card-body">
+                  <div class="survey-card-top">
+                    <div class="survey-icon">✓</div><span class="survey-status">Aktif</span>
+                  </div>
+                  <h3><?= e($s['judul']) ?></h3>
+                  <div class="survey-meta"><span>👤 <?= e($s['target_responden']) ?></span><span>☑
+                      <?= e($s['jumlah_pertanyaan']) ?> Pertanyaan</span></div>
+                  <p><?= e($s['deskripsi'] ?: 'Silakan isi survey sesuai pengalaman dan penilaian Anda.') ?></p>
+                  <div class="survey-period"><strong>Periode
+                      Survey</strong><span><?= e($s['tanggal_mulai'] ?: 'Terbuka') ?>
+                      — <?= e($s['tanggal_selesai'] ?: 'Tidak ditentukan') ?></span></div>
+                  <a class="survey-btn" href="/fikes/survey/<?= rawurlencode($s['slug']) ?>">Isi
+                    Survey <span>→</span></a>
                 </div>
-                <h3><?= e($s['judul']) ?></h3>
-                <div class="survey-meta"><span>👤 <?= e($s['target_responden']) ?></span><span>☑
-                    <?= e($s['jumlah_pertanyaan']) ?> Pertanyaan</span></div>
-                <p><?= e($s['deskripsi'] ?: 'Silakan isi survey sesuai pengalaman dan penilaian Anda.') ?></p>
-                <div class="survey-period"><strong>Periode
-                    Survey</strong><span><?= e($s['tanggal_mulai'] ?: 'Terbuka') ?>
-                    — <?= e($s['tanggal_selesai'] ?: 'Tidak ditentukan') ?></span></div>
-                <a class="survey-btn" href="/fikes/survey/<?= rawurlencode($s['slug']) ?>">Isi
-                  Survey <span>→</span></a>
-              </div>
-            </article>
-            <?php endforeach;
+              </article>
+          <?php endforeach;
           endif; ?>
-          </div>
         </div>
-      </section>
-    </main>
-    <footer>
-      <div class="container footer-main">
-        <div class="footer-brand">
-          <div class="logo footer-logo">
-            <div class="logo-icon">F</div>
-
-            <div class="logo-text">
-              <strong style="color: white"> FIKES </strong>
-
-              <small> FAKULTAS ILMU KESEHATAN </small>
-            </div>
-          </div>
-
-          <p>
-            Membangun generasi kesehatan yang profesional, berintegritas,
-            inovatif, dan berorientasi kepada masyarakat.
-          </p>
-        </div>
-
-        <div>
-          <h4 class="footer-title">Tentang FIKES</h4>
-
-          <div class="footer-links">
-            <a href="#"> Visi Misi </a>
-
-            <a href="#"> Struktur Organisasi </a>
-
-            <a href="#"> Akreditasi </a>
-
-            <a href="#"> Daftar Dosen </a>
-          </div>
-        </div>
-
-        <div>
-          <h4 class="footer-title">Program Studi</h4>
-
-          <div class="footer-links">
-            <a href="#"> Profesi Ners </a>
-
-            <a href="#"> Ilmu Keperawatan </a>
-
-            <a href="#"> Farmasi </a>
-
-            <a href="#"> Kebidanan </a>
-
-            <a href="#"> K3 </a>
-          </div>
-        </div>
-
-        <div>
-          <h4 class="footer-title">Informasi</h4>
-
-          <div class="footer-links">
-            <a href="/fikes/akademik"> Akademik </a>
-
-            <a href="#"> Kemahasiswaan </a>
-
-            <a href="#"> Pelayanan FIKES </a>
-
-            <a href="/fikes/survey"> Survey </a>
-          </div>
-        </div>
-
-        <!--MAP PETA-->
-        <!-- =========================================================
-     LOKASI & PETA
-========================================================== -->
-
-        <div class="footer-location">
-          <div class="location-header">
-            <div class="location-icon">
-              <i class="fa-solid fa-location-dot"></i>
-            </div>
-
-            <div>
-              <h3>Lokasi Kampus</h3>
-
-              <p>Fakultas Ilmu Kesehatan</p>
-            </div>
-          </div>
-
-          <!-- PETA -->
-
-          <div class="map-card">
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.1515727139526!2d109.11806027499709!3d-6.991421893009626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fbef42471658d%3A0x883656d1325ef066!2sUniversitas%20Bhamada%20Slawi!5e0!3m2!1sid!2sid!4v1787544396003!5m2!1sid!2sid"
-              width="600" height="450" style="border: 0" allowfullscreen="" loading="lazy"
-              referrerpolicy="strict-origin-when-cross-origin" title="Lokasi Fakultas Ilmu Kesehatan" loading="lazy"
-              referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
-            </iframe>
-
-            <div class="map-overlay">
-              <div class="map-info">
-                <div class="map-info-icon">
-                  <i class="fa-solid fa-location-dot"></i>
-                </div>
-
-                <div>
-                  <strong> Fakultas Ilmu Kesehatan </strong>
-
-                  <span> Lihat lokasi kampus </span>
-                </div>
-              </div>
-
-              <a href="#" target="_blank" class="map-direction">
-                <i class="fa-solid fa-diamond-turn-right"></i>
-
-                Petunjuk Arah
-              </a>
-            </div>
-          </div>
-
-          <!-- ALAMAT -->
-
-          <div class="footer-contact location-contact">
-            <i class="fa-solid fa-location-dot"></i>
-
-            <span>
-              Alamat Fakultas Ilmu Kesehatan, silakan sesuaikan dengan alamat
-              kampus.
-            </span>
-          </div>
-
-          <div class="footer-contact">
-            <i class="fa-solid fa-phone"></i>
-
-            <span> Nomor Telepon FIKES </span>
-          </div>
-
-          <div class="footer-contact">
-            <i class="fa-solid fa-envelope"></i>
-
-            <span> email@fikes.ac.id </span>
-          </div>
-        </div>
-        <!--MAP PETA-->
       </div>
+    </section>
+  </main>
+  <?php require_once __DIR__ . '/../menu/footer.php'; ?>
 
-      <div class="container footer-bottom">
-        <span>
-          © <span id="year"></span> Fakultas Ilmu Kesehatan. All Rights
-          Reserved.
-        </span>
 
-        <span> Website FIKES </span>
-      </div>
-    </footer>
-
-    <!-- BACK TO TOP -->
-
-    <button class="back-top" id="backTop">↑</button>
-    <!-- <script src="assets/js/main.js"></script> -->
-    <script>
-    let current = 0;
-    let slides = [];
-    let dots = [];
-
-    function showSlide(n) {
-      if (!slides.length) return;
-      current = (n + slides.length) % slides.length;
-      slides.forEach((s, i) => s.classList.toggle("active", i === current));
-      dots.forEach((d, i) => d.classList.toggle("active", i === current));
-    }
-
-    function changeSlide(n) {
-      showSlide(current + n);
-    }
-
-    function currentSlide(n) {
-      showSlide(n - 1);
-    }
-    document.addEventListener("DOMContentLoaded", () => {
-      slides = [...document.querySelectorAll(".slide")];
-      dots = [...document.querySelectorAll(".slider-dot")];
-      showSlide(0);
-      if (slides.length > 1) setInterval(() => changeSlide(1), 7000);
-      const t = document.getElementById("menuToggle"),
-        m = document.getElementById("navMenu");
-      if (t && m) t.onclick = () => m.classList.toggle("active");
-      const nav = document.getElementById("navbar");
-      window.addEventListener("scroll", () => {
-        if (nav) nav.classList.toggle("scrolled", scrollY > 20);
-        const b = document.getElementById("backTop");
-        if (b) b.classList.toggle("show", scrollY > 500)
-      });
-      const b = document.getElementById("backTop");
-      if (b) b.onclick = () => scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-    });
-    </script>
-    <script>
-    document.addEventListener('DOMContentLoaded', function() {
-      // Label kolom otomatis untuk mode kartu di HP.
-      document.querySelectorAll('.ak-table').forEach(function(table) {
-        const headers = Array.from(table.querySelectorAll('thead th')).map(function(th) {
-          return th.textContent.trim();
-        });
-        table.querySelectorAll('tbody tr').forEach(function(row) {
-          Array.from(row.children).forEach(function(cell, index) {
-            if (headers[index]) cell.setAttribute('data-label', headers[index]);
-          });
-        });
-      });
-
-      const f = document.getElementById('prodiFilter');
-      if (f) {
-        f.addEventListener('change', function() {
-          document.querySelectorAll('#kurTable tbody tr').forEach(r => {
-            r.style.display = !this.value || r.dataset.prodi === this.value ? '' : 'none';
-          });
-        });
-      }
-      document.querySelectorAll('.ak-side a').forEach(a => a.addEventListener('click', () => document
-        .querySelectorAll('.ak-side a').forEach(x => x.classList.remove('active'))));
-    });
-    </script>
-
-  </body>
+</body>
 
 </html>

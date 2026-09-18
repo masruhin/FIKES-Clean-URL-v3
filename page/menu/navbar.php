@@ -214,6 +214,6 @@ $base = '../../';
       </div>
     </nav>
 
-    <a href="#program" class="nav-cta"> Jelajahi Program </a>
+    <a href="/fikes/program-studi" class="nav-cta"> Jelajahi Program </a>
   </div>
 </header>

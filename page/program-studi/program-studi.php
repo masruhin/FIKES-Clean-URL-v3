@@ -69,315 +69,24 @@ $totalProgram = count($programs);
 <!doctype html>
 <html lang="id">
 
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Program Studi | FIKES</title>
+  <title>Program Studi | FIKES</title>
 
-    <meta name="description"
-      content="Daftar Program Studi Fakultas Ilmu Kesehatan. Temukan program pendidikan yang sesuai dengan minat dan tujuan karier Anda.">
+  <meta name="description"
+    content="Daftar Program Studi Fakultas Ilmu Kesehatan. Temukan program pendidikan yang sesuai dengan minat dan tujuan karier Anda.">
 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
-      rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="/fikes/assets/css/style.css">
 
-    <style>
-    :root {
-      --primary: #087f5b;
-      --primary-dark: #056044;
-      --primary-light: #e7f7f1;
-      --secondary: #f4b942;
-      --dark: #12372a;
-      --text: #52635d;
-      --light: #f7faf9;
-      --white: #ffffff;
-      --border: #e5ece9;
-      --shadow: 0 20px 60px rgba(18, 55, 42, 0.1);
-      --radius: 18px;
-      --transition: 0.3s ease;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: "Inter", sans-serif;
-      color: var(--text);
-      background: var(--white);
-      line-height: 1.7;
-      overflow-x: hidden;
-    }
-
-    h1,
-    h2,
-    h3,
-    h4,
-    h5 {
-      font-family: "Plus Jakarta Sans", sans-serif;
-      color: var(--dark);
-      line-height: 1.3;
-    }
-
-    a {
-      color: inherit;
-      text-decoration: none;
-    }
-
-    button,
-    input {
-      font: inherit;
-    }
-
-    ul {
-      list-style: none;
-    }
-
-    img {
-      max-width: 100%;
-      display: block;
-    }
-
-    .container {
-      width: min(1180px, calc(100% - 40px));
-      margin: auto;
-    }
-
-    /* =========================================================
-           TOP BAR
-        ========================================================= */
-    .topbar {
-      background: var(--dark);
-      color: #d9e8e2;
-      font-size: 13px;
-    }
-
-    .topbar-inner {
-      min-height: 40px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 20px;
-    }
-
-    .topbar-info {
-      display: flex;
-      gap: 25px;
-      align-items: center;
-    }
-
-    .topbar-info span {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-    }
-
-    .topbar-social {
-      display: flex;
-      gap: 15px;
-    }
-
-    .topbar-social a {
-      transition: var(--transition);
-    }
-
-    .topbar-social a:hover {
-      color: var(--secondary);
-    }
-
-    /* =========================================================
-           NAVBAR
-        ========================================================= */
-    .navbar {
-      position: sticky;
-      top: 0;
-      z-index: 999;
-      background: rgba(255, 255, 255, 0.94);
-      backdrop-filter: blur(15px);
-      border-bottom: 1px solid rgba(229, 236, 233, 0.8);
-      transition: var(--transition);
-    }
-
-    .navbar.scrolled {
-      box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08);
-    }
-
-    .nav-inner {
-      min-height: 82px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 30px;
-    }
-
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      flex-shrink: 0;
-    }
-
-    .logo-icon {
-      width: 48px;
-      height: 48px;
-      border-radius: 14px;
-      background: linear-gradient(135deg, var(--primary), #13a878);
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      font-size: 17px;
-      box-shadow: 0 10px 25px rgba(8, 127, 91, 0.25);
-    }
-
-    .logo-text strong {
-      display: block;
-      color: var(--dark);
-      font-size: 17px;
-      line-height: 1.2;
-    }
-
-    .logo-text small {
-      display: block;
-      font-size: 10px;
-      color: var(--primary);
-      font-weight: 700;
-      letter-spacing: 0.5px;
-    }
-
-    .nav-menu {
-      display: flex;
-      align-items: center;
-      gap: 3px;
-    }
-
-    .nav-item {
-      position: relative;
-    }
-
-    .nav-link {
-      min-height: 82px;
-      padding: 0 13px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #344b43;
-      transition: var(--transition);
-      white-space: nowrap;
-      background: transparent;
-      border: 0;
-      cursor: pointer;
-    }
-
-    .nav-link:hover {
-      color: var(--primary);
-    }
-
-    .arrow {
-      font-size: 11px;
-      transition: var(--transition);
-    }
-
-    .nav-item:hover>.nav-link .arrow {
-      transform: rotate(180deg);
-    }
-
-    .dropdown {
-      position: absolute;
-      top: calc(100% + 5px);
-      left: 0;
-      width: 250px;
-      padding: 10px;
-      background: white;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      box-shadow: var(--shadow);
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(10px);
-      transition: var(--transition);
-    }
-
-    .nav-item:hover>.dropdown {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .dropdown-item {
-      position: relative;
-    }
-
-    .dropdown-link {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 13px;
-      border-radius: 9px;
-      color: #40544d;
-      font-size: 13px;
-      font-weight: 500;
-      transition: var(--transition);
-    }
-
-    .dropdown-link:hover {
-      color: var(--primary);
-      background: var(--primary-light);
-    }
-
-    .dropdown-item>.dropdown {
-      left: calc(100% + 5px);
-      top: -10px;
-    }
-
-    .dropdown-item:hover>.dropdown {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    .nav-cta {
-      padding: 12px 19px;
-      border-radius: 10px;
-      background: var(--primary);
-      color: white;
-      font-size: 13px;
-      font-weight: 700;
-      transition: var(--transition);
-      white-space: nowrap;
-    }
-
-    .nav-cta:hover {
-      background: var(--primary-dark);
-      transform: translateY(-2px);
-      box-shadow: 0 10px 25px rgba(8, 127, 91, 0.22);
-    }
-
-    .menu-toggle {
-      display: none;
-      width: 44px;
-      height: 44px;
-      border: none;
-      border-radius: 10px;
-      background: var(--primary-light);
-      color: var(--primary);
-      font-size: 22px;
-      cursor: pointer;
-    }
-
+  <style>
     /* =========================================================
            PAGE HERO
         ========================================================= */
@@ -942,261 +651,6 @@ $totalProgram = count($programs);
     }
 
     /* =========================================================
-           FOOTER
-        ========================================================= */
-    footer {
-      background: #0d2b21;
-      color: #b7cec5;
-    }
-
-    .footer-main {
-      padding: 70px 0 45px;
-      display: grid;
-      grid-template-columns: 1.4fr 1fr 1fr 1fr;
-      gap: 45px;
-    }
-
-    .footer-brand p {
-      max-width: 320px;
-      font-size: 13px;
-      margin: 17px 0;
-    }
-
-    .footer-logo strong {
-      color: white;
-    }
-
-    .footer-logo .logo-text small {
-      color: var(--secondary);
-    }
-
-    .footer-title {
-      color: white;
-      font-size: 14px;
-      margin-bottom: 17px;
-    }
-
-    .footer-links {
-      display: grid;
-      gap: 10px;
-    }
-
-    .footer-links a {
-      font-size: 12px;
-      transition: var(--transition);
-    }
-
-    .footer-links a:hover {
-      color: var(--secondary);
-      transform: translateX(3px);
-    }
-
-    .footer-contact {
-      display: flex;
-      align-items: flex-start;
-      gap: 9px;
-      margin-top: 10px;
-      font-size: 11px;
-    }
-
-    .footer-contact i {
-      color: var(--secondary);
-      min-width: 14px;
-    }
-
-    /* =========================================================
-           FOOTER LOCATION / MAP
-        ========================================================= */
-    .footer-location {
-      grid-column: 1 / -1;
-    }
-
-    .location-header {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .location-icon {
-      width: 42px;
-      height: 42px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      border-radius: 12px;
-      color: var(--dark);
-      background: var(--secondary);
-      font-size: 16px;
-    }
-
-    .location-header h3 {
-      margin: 0 0 3px;
-      color: white;
-      font-size: 13px;
-      font-weight: 800;
-    }
-
-    .location-header p {
-      margin: 0;
-      color: rgba(255, 255, 255, .5);
-      font-size: 9px;
-    }
-
-    .map-card {
-      position: relative;
-      width: 100%;
-      height: 210px;
-      overflow: hidden;
-      margin-bottom: 20px;
-      border: 1px solid rgba(255, 255, 255, .1);
-      border-radius: 16px;
-      background: rgba(255, 255, 255, .05);
-      box-shadow: 0 15px 40px rgba(0, 0, 0, .2);
-    }
-
-    .map-card iframe {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      filter: saturate(.85) contrast(1.02);
-    }
-
-    .map-card::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      pointer-events: none;
-      background: linear-gradient(180deg,
-          rgba(3, 25, 18, .05) 35%,
-          rgba(3, 25, 18, .75) 100%);
-    }
-
-    .map-overlay {
-      position: absolute;
-      left: 12px;
-      right: 12px;
-      bottom: 12px;
-      z-index: 5;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-
-    .map-info {
-      display: flex;
-      align-items: center;
-      gap: 9px;
-      min-width: 0;
-      padding: 9px 11px;
-      border: 1px solid rgba(255, 255, 255, .16);
-      border-radius: 10px;
-      background: rgba(5, 35, 26, .78);
-      backdrop-filter: blur(10px);
-    }
-
-    .map-info-icon {
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      border-radius: 8px;
-      color: var(--dark);
-      background: var(--secondary);
-      font-size: 11px;
-    }
-
-    .map-info strong {
-      display: block;
-      max-width: 150px;
-      overflow: hidden;
-      color: white;
-      font-size: 9px;
-      font-weight: 800;
-      white-space: nowrap;
-      text-overflow: ellipsis;
-    }
-
-    .map-info span {
-      display: block;
-      margin-top: 2px;
-      color: rgba(255, 255, 255, .55);
-      font-size: 7px;
-    }
-
-    .map-direction {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      flex-shrink: 0;
-      padding: 10px 12px;
-      border-radius: 9px;
-      color: var(--dark);
-      background: white;
-      font-size: 8px;
-      font-weight: 800;
-      box-shadow: 0 8px 20px rgba(0, 0, 0, .2);
-      transition: all .3s ease;
-    }
-
-    .map-direction:hover {
-      color: white;
-      background: var(--primary);
-      transform: translateY(-2px);
-    }
-
-    .map-direction i {
-      font-size: 9px;
-    }
-
-    .location-contact {
-      margin-top: 5px;
-    }
-
-    .footer-bottom {
-      border-top: 1px solid rgba(255, 255, 255, .08);
-      padding: 20px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 11px;
-    }
-
-    /* =========================================================
-           BACK TO TOP
-        ========================================================= */
-    .back-top {
-      position: fixed;
-      right: 25px;
-      bottom: 25px;
-      width: 45px;
-      height: 45px;
-      border: none;
-      border-radius: 12px;
-      background: var(--primary);
-      color: white;
-      cursor: pointer;
-      opacity: 0;
-      visibility: hidden;
-      transform: translateY(10px);
-      transition: var(--transition);
-      z-index: 900;
-    }
-
-    .back-top.show {
-      opacity: 1;
-      visibility: visible;
-      transform: translateY(0);
-    }
-
-    /* =========================================================
            RESPONSIVE
         ========================================================= */
     @media (max-width: 1100px) {
@@ -1373,468 +827,213 @@ $totalProgram = count($programs);
         width: 100%;
       }
     }
-    </style>
-  </head>
+  </style>
+</head>
 
-  <body>
+<body>
 
-    <!-- TOPBAR REUSABLE -->
-    <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
+  <!-- TOPBAR REUSABLE -->
+  <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
 
-    <!-- NAVBAR REUSABLE -->
-    <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
-    <!-- =========================================================
+  <!-- NAVBAR REUSABLE -->
+  <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
+  <!-- =========================================================
      HERO
 ========================================================= -->
-    <section class="page-hero">
-      <div class="container hero-content">
+  <section class="page-hero">
+    <div class="container hero-content">
 
-        <div class="breadcrumb">
-          <a href="/fikes/">⌂ Beranda</a>
-          <span>›</span>
-          <span>Program Studi</span>
-        </div>
-
-        <span class="hero-label">PENDIDIKAN FIKES</span>
-
-        <h1>
-          Program <span>Studi</span>
-        </h1>
-
-        <p>
-          Kenali program pendidikan FIKES dan temukan program studi
-          yang sesuai dengan minat serta tujuan karier Anda.
-        </p>
-
+      <div class="breadcrumb">
+        <a href="/fikes/">⌂ Beranda</a>
+        <span>›</span>
+        <span>Program Studi</span>
       </div>
-    </section>
 
-    <!-- =========================================================
+      <span class="hero-label">PENDIDIKAN FIKES</span>
+
+      <h1>
+        Program <span>Studi</span>
+      </h1>
+
+      <p>
+        Kenali program pendidikan FIKES dan temukan program studi
+        yang sesuai dengan minat serta tujuan karier Anda.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- =========================================================
      DAFTAR PROGRAM STUDI
 ========================================================= -->
-    <main class="program-section" id="daftar-prodi">
-      <div class="container">
+  <main class="program-section" id="daftar-prodi">
+    <div class="container">
 
-        <div class="section-heading">
-          <span class="eyebrow">PILIH PROGRAM ANDA</span>
+      <div class="section-heading">
+        <span class="eyebrow">PILIH PROGRAM ANDA</span>
 
-          <h2>Program Studi</h2>
+        <h2>Program Studi</h2>
 
-          <p>
-            Pilih program studi untuk melihat informasi lengkap mengenai
-            profil, kurikulum, capaian pembelajaran, fasilitas,
-            dan informasi akademik lainnya.
-          </p>
-        </div>
+        <p>
+          Pilih program studi untuk melihat informasi lengkap mengenai
+          profil, kurikulum, capaian pembelajaran, fasilitas,
+          dan informasi akademik lainnya.
+        </p>
+      </div>
 
-        <form class="filter-bar" method="get" action="/fikes/program-studi">
+      <form class="filter-bar" method="get" action="/fikes/program-studi">
 
-          <div class="filter-tabs">
-            <a class="<?= $filter === '' ? 'active' : '' ?>" href="/fikes/program-studi#daftar-prodi">
-              Semua
-            </a>
+        <div class="filter-tabs">
+          <a class="<?= $filter === '' ? 'active' : '' ?>" href="/fikes/program-studi#daftar-prodi">
+            Semua
+          </a>
 
-            <?php foreach ($jenjangList as $j): ?>
+          <?php foreach ($jenjangList as $j): ?>
             <a class="<?= $filter === $j ? 'active' : '' ?>" href="?jenjang=<?= urlencode($j) ?>#daftar-prodi">
               <?= e($j) ?>
             </a>
-            <?php endforeach; ?>
-          </div>
+          <?php endforeach; ?>
+        </div>
 
-          <div class="search-box">
-            <span>⌕</span>
+        <div class="search-box">
+          <span>⌕</span>
 
-            <input type="text" name="search" value="<?= e($search) ?>" placeholder="Cari program studi..."
-              autocomplete="off">
+          <input type="text" name="search" value="<?= e($search) ?>" placeholder="Cari program studi..."
+            autocomplete="off">
 
-            <?php if ($filter !== ''): ?>
+          <?php if ($filter !== ''): ?>
             <input type="hidden" name="jenjang" value="<?= e($filter) ?>">
-            <?php endif; ?>
-          </div>
+          <?php endif; ?>
+        </div>
 
-        </form>
+      </form>
 
-        <p class="result-info">
-          Menampilkan <strong><?= $totalProgram ?></strong> program studi
-          <?= $filter !== '' ? 'pada jenjang <strong>' . e($filter) . '</strong>' : '' ?>
-          <?= $search !== '' ? ' untuk pencarian <strong>"' . e($search) . '"</strong>' : '' ?>.
-        </p>
+      <p class="result-info">
+        Menampilkan <strong><?= $totalProgram ?></strong> program studi
+        <?= $filter !== '' ? 'pada jenjang <strong>' . e($filter) . '</strong>' : '' ?>
+        <?= $search !== '' ? ' untuk pencarian <strong>"' . e($search) . '"</strong>' : '' ?>.
+      </p>
 
-        <?php if (!$programs): ?>
+      <?php if (!$programs): ?>
 
         <div class="empty-state">
           Program studi yang Anda cari belum tersedia.
         </div>
 
-        <?php else: ?>
+      <?php else: ?>
 
         <div class="program-grid">
 
           <?php foreach ($programs as $p): ?>
 
-          <?php
+            <?php
             $foto = !empty($p['foto'])
               ? '/fikes/admin/uploads/program-studi/' . rawurlencode($p['foto'])
               : '';
             ?>
 
-          <article class="program-card">
+            <article class="program-card">
 
-            <div class="program-image">
+              <div class="program-image">
 
-              <?php if ($foto): ?>
+                <?php if ($foto): ?>
 
-              <img src="<?= e($foto) ?>" alt="Foto <?= e($p['nama']) ?>" loading="lazy">
+                  <img src="<?= e($foto) ?>" alt="Foto <?= e($p['nama']) ?>" loading="lazy">
 
-              <?php else: ?>
+                <?php else: ?>
 
-              <div class="image-placeholder">
-                F
-              </div>
+                  <div class="image-placeholder">
+                    F
+                  </div>
 
-              <?php endif; ?>
-
-              <span class="jenjang-badge">
-                <?= e($p['jenjang']) ?>
-              </span>
-
-            </div>
-
-            <div class="program-body">
-
-              <div class="code">
-                <?= e($p['kode_prodi']) ?>
-              </div>
-
-              <h3>
-                <?= e($p['nama']) ?>
-              </h3>
-
-              <p>
-                <?= e($p['deskripsi']) ?>
-              </p>
-
-              <div class="meta-row">
-
-                <?php if (!empty($p['gelar'])): ?>
-                <span>🎓 <?= e($p['gelar']) ?></span>
                 <?php endif; ?>
 
-                <?php if (!empty($p['akreditasi'])): ?>
-                <span>✓ <?= e($p['akreditasi']) ?></span>
-                <?php endif; ?>
+                <span class="jenjang-badge">
+                  <?= e($p['jenjang']) ?>
+                </span>
 
               </div>
 
-              <a class="detail-btn" href="/fikes/program-studi/<?= rawurlencode($p['kode_prodi']) ?>">
-                <span>Lihat Detail</span>
-                <span>→</span>
-              </a>
+              <div class="program-body">
 
-            </div>
+                <div class="code">
+                  <?= e($p['kode_prodi']) ?>
+                </div>
 
-          </article>
+                <h3>
+                  <?= e($p['nama']) ?>
+                </h3>
+
+                <p>
+                  <?= e($p['deskripsi']) ?>
+                </p>
+
+                <div class="meta-row">
+
+                  <?php if (!empty($p['gelar'])): ?>
+                    <span>🎓 <?= e($p['gelar']) ?></span>
+                  <?php endif; ?>
+
+                  <?php if (!empty($p['akreditasi'])): ?>
+                    <span>✓ <?= e($p['akreditasi']) ?></span>
+                  <?php endif; ?>
+
+                </div>
+
+                <a class="detail-btn" href="/fikes/program-studi/<?= rawurlencode($p['kode_prodi']) ?>">
+                  <span>Lihat Detail</span>
+                  <span>→</span>
+                </a>
+
+              </div>
+
+            </article>
 
           <?php endforeach; ?>
 
         </div>
 
-        <?php endif; ?>
+      <?php endif; ?>
 
-      </div>
-    </main>
+    </div>
+  </main>
 
-    <!-- =========================================================
+  <!-- =========================================================
      CTA
 ========================================================= -->
-    <section class="cta-section">
-      <div class="container">
+  <section class="cta-section">
+    <div class="container">
 
-        <div class="cta">
-          <div class="cta-content">
+      <div class="cta">
+        <div class="cta-content">
 
-            <span class="eyebrow">BERSAMA FIKES</span>
+          <span class="eyebrow">BERSAMA FIKES</span>
 
-            <h2>
-              Bangun Masa Depan Bersama Kami
-            </h2>
-
-            <p>
-              Temukan program studi yang mendukung perjalanan
-              akademik dan profesional Anda.
-            </p>
-
-            <a href="#daftar-prodi" class="btn">
-              Lihat Program Studi →
-            </a>
-
-          </div>
-        </div>
-
-      </div>
-    </section>
-
-    <!-- =========================================================
-     FOOTER
-========================================================= -->
-    <footer>
-
-      <div class="container footer-main">
-
-        <div class="footer-brand">
-
-          <div class="logo footer-logo">
-
-            <div class="logo-icon">F</div>
-
-            <div class="logo-text">
-              <strong>FIKES</strong>
-              <small>FAKULTAS ILMU KESEHATAN</small>
-            </div>
-
-          </div>
+          <h2>
+            Bangun Masa Depan Bersama Kami
+          </h2>
 
           <p>
-            Membangun generasi kesehatan yang profesional,
-            berintegritas, inovatif, dan berorientasi kepada masyarakat.
+            Temukan program studi yang mendukung perjalanan
+            akademik dan profesional Anda.
           </p>
 
-        </div>
-
-        <div>
-          <h4 class="footer-title">Tentang FIKES</h4>
-
-          <div class="footer-links">
-            <a href="/fikes/tentang/visi-misi">Visi Misi</a>
-            <a href="/fikes/tentang/struktur-organisasi">Struktur Organisasi</a>
-            <a href="/fikes/tentang/sertifikat-akreditasi">Akreditasi</a>
-            <a href="/fikes/dosen">Daftar Dosen</a>
-          </div>
-        </div>
-
-        <div>
-          <h4 class="footer-title">Program Studi</h4>
-
-          <div class="footer-links">
-            <?php foreach (array_slice($programs, 0, 5) as $p): ?>
-            <a href="/fikes/program-studi/<?= rawurlencode($p['kode_prodi']) ?>">
-              <?= e($p['nama']) ?>
-            </a>
-            <?php endforeach; ?>
-          </div>
-        </div>
-
-        <div>
-          <h4 class="footer-title">Informasi</h4>
-
-          <div class="footer-links">
-            <a href="/fikes/akademik">Akademik</a>
-            <a href="/fikes/kemahasiswaan/himpunan-mahasiswa">Kemahasiswaan</a>
-            <a href="/fikes/">Pelayanan FIKES</a>
-            <a href="/fikes/survey">Survey</a>
-          </div>
-        </div>
-
-        <!-- =====================================================
-             LOKASI & PETA
-        ====================================================== -->
-        <div class="footer-location">
-
-          <div class="location-header">
-
-            <div class="location-icon">
-              📍
-            </div>
-
-            <div>
-              <h3>Lokasi Kampus</h3>
-              <p>Fakultas Ilmu Kesehatan</p>
-            </div>
-
-          </div>
-
-          <div class="map-card">
-
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.1515727139526!2d109.11806027499709!3d-6.991421893009626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fbef42471658d%3A0x883656d1325ef066!2sUniversitas%20Bhamada%20Slawi!5e0!3m2!1sid!2sid!4v1787544396003!5m2!1sid!2sid"
-              width="600" height="450" style="border:0" allowfullscreen loading="lazy"
-              referrerpolicy="strict-origin-when-cross-origin" title="Lokasi Fakultas Ilmu Kesehatan"></iframe>
-
-            <div class="map-overlay">
-
-              <div class="map-info">
-
-                <div class="map-info-icon">
-                  📍
-                </div>
-
-                <div>
-                  <strong>Fakultas Ilmu Kesehatan</strong>
-                  <span>Lihat lokasi kampus</span>
-                </div>
-
-              </div>
-
-              <a href="https://www.google.com/maps/dir/?api=1&destination=-6.991421893009626,109.11806027499709"
-                target="_blank" rel="noopener" class="map-direction">
-                ↗ Petunjuk Arah
-              </a>
-
-            </div>
-
-          </div>
-
-          <div class="footer-contact location-contact">
-            <span>📍</span>
-            <span>Alamat Fakultas Ilmu Kesehatan, silakan sesuaikan dengan alamat kampus.</span>
-          </div>
-
-          <div class="footer-contact">
-            <span>☎</span>
-            <span>Nomor Telepon FIKES</span>
-          </div>
-
-          <div class="footer-contact">
-            <span>✉</span>
-            <span>email@fikes.ac.id</span>
-          </div>
+          <a href="#daftar-prodi" class="btn">
+            Lihat Program Studi →
+          </a>
 
         </div>
-
       </div>
 
-      <div class="container footer-bottom">
-        <span>
-          © <span id="year"></span>
-          Fakultas Ilmu Kesehatan. All Rights Reserved.
-        </span>
+    </div>
+  </section>
 
-        <span>Website FIKES</span>
-      </div>
+  <!-- =========================================================
+     FOOTER
+========================================================= -->
+  <?php require_once __DIR__ . '/../menu/footer.php'; ?>
 
-    </footer>
 
-    <!-- BACK TO TOP -->
-    <button class="back-top" id="backTop" type="button" aria-label="Kembali ke atas">
-      ↑
-    </button>
-
-    <script>
-    /* =========================================================
-       NAVBAR SCROLL
-    ========================================================= */
-    const navbar = document.getElementById("navbar");
-
-    window.addEventListener("scroll", () => {
-      if (window.scrollY > 20) {
-        navbar.classList.add("scrolled");
-      } else {
-        navbar.classList.remove("scrolled");
-      }
-    });
-
-    /* =========================================================
-       MOBILE MENU
-    ========================================================= */
-    const menuToggle = document.getElementById("menuToggle");
-    const navMenu = document.getElementById("navMenu");
-
-    menuToggle.addEventListener("click", () => {
-      navMenu.classList.toggle("active");
-
-      menuToggle.innerHTML =
-        navMenu.classList.contains("active") ? "✕" : "☰";
-    });
-
-    /* =========================================================
-       MOBILE DROPDOWN
-    ========================================================= */
-    document
-      .querySelectorAll(".has-dropdown > .nav-link, .has-dropdown > .dropdown-link")
-      .forEach((link) => {
-
-        link.addEventListener("click", function(e) {
-
-          if (window.innerWidth <= 900) {
-
-            e.preventDefault();
-
-            const parent = this.parentElement;
-
-            parent.classList.toggle("open");
-          }
-
-        });
-
-      });
-
-    /* =========================================================
-       CLOSE MOBILE MENU
-    ========================================================= */
-    document.querySelectorAll(".nav-menu a").forEach((link) => {
-
-      link.addEventListener("click", function() {
-
-        if (
-          window.innerWidth <= 900 &&
-          !this.parentElement.classList.contains("has-dropdown")
-        ) {
-          navMenu.classList.remove("active");
-          menuToggle.innerHTML = "☰";
-        }
-
-      });
-
-    });
-
-    /* =========================================================
-       BACK TO TOP
-    ========================================================= */
-    const backTop = document.getElementById("backTop");
-
-    window.addEventListener("scroll", () => {
-
-      if (window.scrollY > 500) {
-        backTop.classList.add("show");
-      } else {
-        backTop.classList.remove("show");
-      }
-
-    });
-
-    backTop.addEventListener("click", () => {
-
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth"
-      });
-
-    });
-
-    /* =========================================================
-       YEAR
-    ========================================================= */
-    document.getElementById("year").textContent =
-      new Date().getFullYear();
-
-    /* =========================================================
-       CLOSE DROPDOWN
-    ========================================================= */
-    document.addEventListener("click", (event) => {
-
-      if (!event.target.closest(".navbar")) {
-
-        document
-          .querySelectorAll(".nav-item.open")
-          .forEach((item) => {
-            item.classList.remove("open");
-          });
-
-      }
-
-    });
-    </script>
-
-  </body>
+</body>
 
 </html>
