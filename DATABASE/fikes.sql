@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 15, 2026 at 10:49 AM
+-- Generation Time: Sep 18, 2026 at 04:46 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -192,7 +192,7 @@ CREATE TABLE `berita` (
 
 INSERT INTO `berita` (`id`, `judul`, `slug`, `kategori`, `ringkasan`, `isi`, `gambar`, `penulis`, `tanggal_terbit`, `status`, `created_at`, `updated_at`) VALUES
 (1, 'asdasdd', 'asdasdd', 'Berita', 'asdasdasd', 'asdasdasd', '20260914034106_7a9ea462.jpeg', 'Admin FIKES', '2026-09-12 16:06:00', 'terbit', '2026-09-12 09:06:42', '2026-09-14 01:41:06'),
-(2, 'oke', 'oke', 'Berita', 'asdakjfadfjkbaas\r\nasdajsdajdn', 'asdasdhlnkajsld<div>askdjabskjdbha sd</div><div>asbd asbd</div><div>lasndlasd</div>', '20260914042413_9c52ca0e.jpeg', 'Admin FIKES', '2026-09-14 09:23:00', 'terbit', '2026-09-14 02:24:13', '2026-09-14 02:24:23');
+(2, 'okeaaa', 'oke', 'Berita', 'asdakjfadfjkbaas\r\nasdajsdajdn', 'asdasdhlnkajsld<div>askdjabskjdbha sd</div><div>asbd asbd</div><div>lasndlasd</div>', '20260914042413_9c52ca0e.jpeg', 'Admin FIKES', '2026-09-14 09:23:00', 'terbit', '2026-09-14 02:24:13', '2026-09-17 08:34:40');
 
 -- --------------------------------------------------------
 
@@ -298,6 +298,137 @@ CREATE TABLE `kemahasiswaan` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `kemahasiswaan_anggota`
+--
+
+CREATE TABLE `kemahasiswaan_anggota` (
+  `id` int(11) NOT NULL,
+  `organisasi_slug` varchar(100) NOT NULL,
+  `nama` varchar(150) NOT NULL,
+  `nim` varchar(50) DEFAULT NULL,
+  `prodi` varchar(150) DEFAULT NULL,
+  `angkatan` varchar(20) DEFAULT NULL,
+  `jabatan` varchar(100) DEFAULT NULL,
+  `foto` varchar(255) DEFAULT NULL,
+  `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kemahasiswaan_galeri`
+--
+
+CREATE TABLE `kemahasiswaan_galeri` (
+  `id` int(11) NOT NULL,
+  `organisasi_slug` varchar(100) NOT NULL,
+  `judul` varchar(200) NOT NULL,
+  `foto` varchar(255) NOT NULL,
+  `keterangan` varchar(255) DEFAULT NULL,
+  `nomor_urut` int(11) NOT NULL DEFAULT 1,
+  `status` enum('publish','draft') NOT NULL DEFAULT 'publish',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kemahasiswaan_kegiatan`
+--
+
+CREATE TABLE `kemahasiswaan_kegiatan` (
+  `id` int(11) NOT NULL,
+  `organisasi_slug` varchar(100) NOT NULL,
+  `judul` varchar(200) NOT NULL,
+  `tanggal_kegiatan` date DEFAULT NULL,
+  `deskripsi` text DEFAULT NULL,
+  `foto` varchar(255) DEFAULT NULL,
+  `nomor_urut` int(11) NOT NULL DEFAULT 1,
+  `status` enum('publish','draft') NOT NULL DEFAULT 'publish',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kemahasiswaan_organisasi`
+--
+
+CREATE TABLE `kemahasiswaan_organisasi` (
+  `id` int(11) NOT NULL,
+  `jenis` enum('himpunan','ukm') NOT NULL,
+  `nama` varchar(150) NOT NULL,
+  `slug` varchar(120) NOT NULL,
+  `kategori` varchar(100) DEFAULT NULL,
+  `deskripsi` text DEFAULT NULL,
+  `fokus` text DEFAULT NULL,
+  `visi` text DEFAULT NULL,
+  `misi` text DEFAULT NULL,
+  `ketua_nama` varchar(150) DEFAULT NULL,
+  `sekretariat` varchar(255) DEFAULT NULL,
+  `email` varchar(150) DEFAULT NULL,
+  `telepon` varchar(50) DEFAULT NULL,
+  `instagram` varchar(150) DEFAULT NULL,
+  `facebook` varchar(150) DEFAULT NULL,
+  `youtube` varchar(150) DEFAULT NULL,
+  `logo` varchar(255) DEFAULT NULL,
+  `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif',
+  `nomor_urut` int(11) NOT NULL DEFAULT 1,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `kemahasiswaan_organisasi`
+--
+
+INSERT INTO `kemahasiswaan_organisasi` (`id`, `jenis`, `nama`, `slug`, `kategori`, `deskripsi`, `fokus`, `visi`, `misi`, `ketua_nama`, `sekretariat`, `email`, `telepon`, `instagram`, `facebook`, `youtube`, `logo`, `status`, `nomor_urut`, `created_at`, `updated_at`) VALUES
+(1, 'himpunan', 'HIMAFARDA', 'himafarda', 'Himpunan Mahasiswa Farmasi', 'Wadah mahasiswa Farmasi untuk mengembangkan potensi, kreativitas, kepemimpinan, dan kebersamaan di lingkungan FIKES.', 'Pengembangan organisasi, keilmuan, kreativitas, pengabdian, dan kebersamaan mahasiswa Farmasi.', '', '', '', '', '', '', '', '', '', 'org_20260917041355_6b70b2.jpg', 'aktif', 1, '2026-09-16 09:30:25', '2026-09-17 02:13:55'),
+(2, 'himpunan', 'HIMASADA HIMASADA', 'himasada', 'Himpunan Mahasiswa', 'Organisasi mahasiswa sebagai ruang pengembangan potensi, aspirasi, komunikasi, dan kegiatan kemahasiswaan.', 'Pengembangan potensi mahasiswa, kepemimpinan, kebersamaan, dan kegiatan kemahasiswaan.', '', '', '', '', '', '', '', '', '', 'org_20260917042601_4f03bb.jpg', 'aktif', 2, '2026-09-16 09:30:25', '2026-09-17 02:26:01'),
+(3, 'himpunan', 'HIMADIKA', 'himadika', 'Himpunan Mahasiswa Keperawatan', 'Wadah mahasiswa untuk kegiatan organisasi, pengembangan diri, kolaborasi, dan kontribusi bagi lingkungan kampus.', 'Keilmuan keperawatan, kepemimpinan, pengembangan diri, pengabdian, dan kegiatan mahasiswa.', '', '', '', '', '', '', '', '', '', 'org_20260917041437_6c511a.png', 'aktif', 3, '2026-09-16 09:30:25', '2026-09-17 02:14:37'),
+(4, 'himpunan', 'HIMIKA', 'himika', 'Himpunan Mahasiswa', 'Organisasi mahasiswa yang mendukung aktivitas kemahasiswaan dan pengembangan kemampuan kepemimpinan.', 'Organisasi, aspirasi mahasiswa, kepemimpinan, kreativitas, dan kolaborasi.', '', '', '', '', '', '', '', '', '', 'org_20260917041453_ca245e.png', 'aktif', 4, '2026-09-16 09:30:25', '2026-09-17 02:14:53'),
+(5, 'himpunan', 'HIMADAN', 'himadan', 'Himpunan Mahasiswa', 'Wadah mahasiswa untuk mengembangkan kreativitas, komunikasi, solidaritas, dan kegiatan sosial.', 'Kreativitas, komunikasi, solidaritas, kegiatan sosial, dan pengembangan mahasiswa.', '', '', '', '', '', '', '', '', '', 'org_20260917041510_e1601e.jpg', 'aktif', 5, '2026-09-16 09:30:25', '2026-09-17 02:15:10'),
+(6, 'himpunan', 'BEM FIKES', 'bem-fikes', 'Organisasi Mahasiswa Tingkat Fakultas', 'Badan Eksekutif Mahasiswa sebagai wadah pelaksanaan program dan kegiatan mahasiswa di tingkat fakultas.', 'Koordinasi program kerja, pelayanan mahasiswa, pengembangan kegiatan, dan kolaborasi.', '', '', '', '', '', '', '', '', '', 'org_20260917041525_9dacca.jpg', 'aktif', 6, '2026-09-16 09:30:25', '2026-09-17 02:15:25'),
+(7, 'himpunan', 'DPM FIKES', 'dpm-fikes', 'Organisasi Mahasiswa Tingkat Fakultas', 'Dewan Perwakilan Mahasiswa sebagai ruang perwakilan dan penyampaian aspirasi mahasiswa.', 'Perwakilan mahasiswa, aspirasi, pengawasan organisasi, dan komunikasi kelembagaan.', '', '', '', '', '', '', '', '', '', 'org_20260917041541_77047d.png', 'aktif', 7, '2026-09-16 09:30:25', '2026-09-17 02:15:41'),
+(8, 'ukm', 'Karate', 'karate', 'Olahraga & Bela Diri', 'Wadah pengembangan bela diri, disiplin, kebugaran, karakter, dan prestasi mahasiswa.', 'Pengembangan bela diri, disiplin, kebugaran, karakter, dan prestasi mahasiswa.', '', '', '', '', '', '', '', '', '', 'org_20260917041611_3b1125.png', 'aktif', 1, '2026-09-16 09:30:25', '2026-09-17 02:16:11'),
+(9, 'ukm', 'Basket', 'basket', 'Olahraga', 'Wadah pengembangan kemampuan bola basket, sportivitas, kebugaran, dan kerja sama tim.', 'Pengembangan kemampuan bola basket, sportivitas, kebugaran, dan kerja sama tim.', '', '', '', '', '', '', '', '', '', 'org_20260917041624_105f3c.png', 'aktif', 2, '2026-09-16 09:30:25', '2026-09-17 02:16:24'),
+(10, 'ukm', 'Futsal', 'futsal', 'Olahraga', 'Wadah pengembangan teknik futsal, kekompakan, kebugaran, dan pengalaman kompetisi.', 'Pengembangan teknik futsal, kekompakan, kebugaran, dan pengalaman kompetisi.', '', '', '', '', '', '', '', '', '', 'org_20260917041637_96d83c.png', 'aktif', 3, '2026-09-16 09:30:25', '2026-09-17 02:16:37'),
+(11, 'ukm', 'Badminton', 'badminton', 'Olahraga', 'Wadah pengembangan keterampilan badminton, kebugaran, sportivitas, dan prestasi mahasiswa.', 'Pengembangan keterampilan badminton, kebugaran, sportivitas, dan prestasi mahasiswa.', '', '', '', '', '', '', '', '', '', 'org_20260917041653_4b0416.png', 'aktif', 4, '2026-09-16 09:30:25', '2026-09-17 02:16:53'),
+(12, 'ukm', 'Voli', 'voli', 'Olahraga', 'Wadah pengembangan kemampuan bola voli, kekompakan tim, kebugaran, dan prestasi.', 'Pengembangan kemampuan bola voli, kekompakan tim, kebugaran, dan prestasi.', '', '', '', '', '', '', '', '', '', 'org_20260917041707_dfcdf3.jpg', 'aktif', 5, '2026-09-16 09:30:25', '2026-09-17 02:17:07'),
+(13, 'ukm', 'Silat', 'silat', 'Olahraga & Bela Diri', 'Wadah pengembangan seni bela diri, disiplin, karakter, kebugaran, dan prestasi.', 'Pengembangan seni bela diri, disiplin, karakter, kebugaran, dan prestasi.', '', '', '', '', '', '', '', '', '', 'org_20260917041723_8a777f.jpeg', 'aktif', 6, '2026-09-16 09:30:25', '2026-09-17 02:17:23'),
+(14, 'ukm', 'BMB', 'bmb', 'Minat & Bakat', 'Ruang bagi mahasiswa untuk mengembangkan minat, bakat, kreativitas, dan pengalaman berorganisasi.', 'Pengembangan minat, bakat, kreativitas, dan pengalaman mahasiswa.', '', '', '', '', '', '', '', '', '', 'org_20260917041738_c43759.png', 'aktif', 7, '2026-09-16 09:30:25', '2026-09-17 02:17:38'),
+(15, 'ukm', 'PIK', 'pik', 'Pengembangan Mahasiswa', 'Ruang pengembangan edukasi, komunikasi, kreativitas, dan kepedulian mahasiswa.', 'Pengembangan edukasi, komunikasi, kreativitas, dan kepedulian mahasiswa.', '', '', '', '', '', '', '', '', '', 'org_20260917041755_4ca497.jpg', 'aktif', 8, '2026-09-16 09:30:25', '2026-09-17 02:17:55'),
+(16, 'ukm', 'BHAPALA', 'bhapala', 'Kepencintaalaman', 'Wadah kegiatan alam bebas, kepedulian lingkungan, kebersamaan, dan ketangguhan mahasiswa.', 'Pengembangan kegiatan alam bebas, kepedulian lingkungan, kebersamaan, dan ketangguhan mahasiswa.', '', '', '', '', '', '', '', '', '', 'org_20260917041811_a1d86a.jpg', 'aktif', 9, '2026-09-16 09:30:25', '2026-09-17 02:18:11'),
+(17, 'ukm', 'Sentramada', 'sentramada', 'Seni & Kreativitas', 'Ruang ekspresi seni, kreativitas, kolaborasi, dan pengembangan potensi mahasiswa.', 'Pengembangan seni, kreativitas, ekspresi, dan kolaborasi mahasiswa.', '', '', '', '', '', '', '', '', '', 'org_20260917041829_961e71.png', 'aktif', 10, '2026-09-16 09:30:25', '2026-09-17 02:18:29'),
+(18, 'ukm', 'Voice', 'voice', 'Seni & Musik', 'Wadah pengembangan vokal, musik, penampilan, kepercayaan diri, dan kreativitas seni.', 'Pengembangan vokal, musik, penampilan, kepercayaan diri, dan kreativitas seni.', '', '', '', '', '', '', '', '', '', 'org_20260917041842_6afc99.jpeg', 'aktif', 11, '2026-09-16 09:30:25', '2026-09-17 02:18:42'),
+(19, 'ukm', 'Pramuka', 'pramuka', 'Kepanduan', 'Wadah pengembangan kepemimpinan, kedisiplinan, kemandirian, dan kegiatan sosial.', 'Pengembangan kepemimpinan, kedisiplinan, kemandirian, dan kegiatan sosial.', '', '', '', '', '', '', '', '', '', 'org_20260917041857_b0a70b.jpg', 'aktif', 12, '2026-09-16 09:30:25', '2026-09-17 02:18:57'),
+(20, 'ukm', 'Bakti', 'bakti', 'Sosial & Pengabdian', 'Ruang pengembangan kepedulian sosial, pengabdian, dan kegiatan kemasyarakatan.', 'Pengembangan kepedulian sosial, pengabdian, dan kegiatan kemasyarakatan.', '', '', '', '', '', '', '', '', '', 'org_20260917041911_f53ff8.jpg', 'aktif', 13, '2026-09-16 09:30:25', '2026-09-17 02:19:11'),
+(21, 'ukm', 'Jurnalika', 'jurnalika', 'Media & Jurnalistik', 'Wadah pengembangan jurnalistik, penulisan, dokumentasi, media, dan komunikasi.', 'Pengembangan jurnalistik, penulisan, dokumentasi, media, dan komunikasi.', '', '', '', '', '', '', '', '', '', 'org_20260917041926_8566bd.jpg', 'aktif', 14, '2026-09-16 09:30:25', '2026-09-17 02:19:26'),
+(22, 'ukm', 'KSR', 'ksr', 'Kemanusiaan', 'Wadah pengembangan kepedulian kemanusiaan, kesiapsiagaan, dan kegiatan sosial.', 'Pengembangan kepedulian kemanusiaan, kesiapsiagaan, dan kegiatan sosial.', '', '', '', '', '', '', '', '', '', 'org_20260917041939_20c2f3.jpg', 'aktif', 15, '2026-09-16 09:30:25', '2026-09-17 02:19:39'),
+(23, 'ukm', 'BEC', 'bec', 'Bahasa & Komunikasi', 'Ruang pengembangan kemampuan bahasa, komunikasi, kepercayaan diri, dan kreativitas.', 'Pengembangan kemampuan bahasa, komunikasi, kepercayaan diri, dan kreativitas.', '', '', '', '', '', '', '', '', '', 'org_20260917041953_4ecdb9.png', 'aktif', 16, '2026-09-16 09:30:25', '2026-09-17 02:19:53');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `kemahasiswaan_pengurus`
+--
+
+CREATE TABLE `kemahasiswaan_pengurus` (
+  `id` int(11) NOT NULL,
+  `organisasi_slug` varchar(100) NOT NULL,
+  `nama` varchar(150) NOT NULL,
+  `jabatan` varchar(100) NOT NULL,
+  `foto` varchar(255) DEFAULT NULL,
+  `nomor_urut` int(11) NOT NULL DEFAULT 1,
+  `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `misi`
 --
 
@@ -343,7 +474,7 @@ CREATE TABLE `pengaturan` (
 --
 
 INSERT INTO `pengaturan` (`id`, `nama_kampus`, `email`, `telepon`, `alamat`, `instagram`, `facebook`, `youtube`, `maps_embed`) VALUES
-(1, 'Fakultas Ilmu Kesehatan', 'fikes.bhama@gmail.ac.id', '(021) 1234567', 'Alamat Fakultas Ilmu Kesehatan, Universitas Bhamada Slawi', '', '', '', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.1515727139526!2d109.11806027499709!3d-6.991421893009626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fbef42471658d%3A0x883656d1325ef066!2sUniversitas%20Bhamada%20Slawi!5e0!3m2!1sid!2sid!4v1787544396003!5m2!1sid!2sid');
+(1, 'Fakultas Ilmu Kesehatan', 'fikes.bhamada@gmail.ac.id', '(021) 1234567', 'Alamat Fakultas Ilmu Kesehatan, Universitas Bhamada Slawi', 'fikes', 'fbfikes', 'ytfikes', 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.1515727139526!2d109.11806027499709!3d-6.991421893009626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fbef42471658d%3A0x883656d1325ef066!2sUniversitas%20Bhamada%20Slawi!5e0!3m2!1sid!2sid!4v1787544396003!5m2!1sid!2sid');
 
 -- --------------------------------------------------------
 
@@ -365,10 +496,10 @@ CREATE TABLE `prodi_capaian_pembelajaran` (
 --
 
 INSERT INTO `prodi_capaian_pembelajaran` (`id`, `prodi_id`, `kategori`, `isi`, `nomor_urut`, `created_at`) VALUES
-(26, 1, 'Sikap', 'Mampu menunjukkan sikap profesional dan bertanggung jawab.', 1, '2026-09-14 05:58:54'),
-(27, 1, 'Pengetahuan', 'Menguasai konsep dan teori ilmu keperawatan.', 2, '2026-09-14 05:58:54'),
-(28, 1, 'Keterampilan Umum', 'Mampu menerapkan komunikasi efektif dalam pelayanan kesehatan.', 3, '2026-09-14 05:58:54'),
-(29, 1, 'Keterampilan Khusus', 'Mampu memberikan asuhan keperawatan secara profesional.', 4, '2026-09-14 05:58:54');
+(30, 1, 'Sikap', 'Mampu menunjukkan sikap profesional dan bertanggung jawab.', 1, '2026-09-16 09:19:22'),
+(31, 1, 'Pengetahuan', 'Menguasai konsep dan teori ilmu keperawatan.', 2, '2026-09-16 09:19:22'),
+(32, 1, 'Keterampilan Umum', 'Mampu menerapkan komunikasi efektif dalam pelayanan kesehatan.', 3, '2026-09-16 09:19:22'),
+(33, 1, 'Keterampilan Khusus', 'Mampu memberikan asuhan keperawatan secara profesional.', 4, '2026-09-16 09:19:22');
 
 -- --------------------------------------------------------
 
@@ -391,9 +522,9 @@ CREATE TABLE `prodi_fasilitas` (
 --
 
 INSERT INTO `prodi_fasilitas` (`id`, `prodi_id`, `nama_fasilitas`, `deskripsi`, `gambar`, `nomor_urut`, `created_at`) VALUES
-(19, 1, 'Laboratorium Keperawatan', 'Laboratorium untuk praktik mahasiswa keperawatan.', NULL, 1, '2026-09-14 05:58:54'),
-(20, 1, 'Laboratorium Komputer', 'Laboratorium komputer untuk mendukung kegiatan pembelajaran.', NULL, 2, '2026-09-14 05:58:54'),
-(21, 1, 'Perpustakaan', 'Perpustakaan dengan koleksi buku dan referensi kesehatan.', NULL, 3, '2026-09-14 05:58:54');
+(22, 1, 'Laboratorium Keperawatan', 'Laboratorium untuk praktik mahasiswa keperawatan.', NULL, 1, '2026-09-16 09:19:22'),
+(23, 1, 'Laboratorium Komputer', 'Laboratorium komputer untuk mendukung kegiatan pembelajaran.', NULL, 2, '2026-09-16 09:19:22'),
+(24, 1, 'Perpustakaan', 'Perpustakaan dengan koleksi buku dan referensi kesehatan.', NULL, 3, '2026-09-16 09:19:22');
 
 -- --------------------------------------------------------
 
@@ -418,11 +549,11 @@ CREATE TABLE `prodi_kurikulum` (
 --
 
 INSERT INTO `prodi_kurikulum` (`id`, `prodi_id`, `kode_mk`, `nama_mk`, `semester`, `sks`, `jenis`, `nomor_urut`, `created_at`) VALUES
-(25, 1, 'KEP101', 'Dasar-Dasar Keperawatan', '1', 3.0, NULL, 1, '2026-09-14 05:58:54'),
-(26, 1, 'KEP102', 'Anatomi dan Fisiologi', '1', 4.0, NULL, 2, '2026-09-14 05:58:54'),
-(27, 1, 'KEP201', 'Keperawatan Medikal Bedah', '2', 4.0, NULL, 3, '2026-09-14 05:58:54'),
-(28, 1, 'KEP301', 'Keperawatan Anak', '3', 3.0, NULL, 4, '2026-09-14 05:58:54'),
-(29, 6, 'K3', 'K3', '4', 2.0, 'Wajib', 5, '2026-09-15 02:25:18');
+(29, 6, 'K3', 'K3', '4', 2.0, 'Wajib', 5, '2026-09-15 02:25:18'),
+(30, 1, 'KEP101', 'Dasar-Dasar Keperawatan', '1', 3.0, NULL, 1, '2026-09-16 09:19:22'),
+(31, 1, 'KEP102', 'Anatomi dan Fisiologi', '1', 4.0, NULL, 2, '2026-09-16 09:19:22'),
+(32, 1, 'KEP201', 'Keperawatan Medikal Bedah', '2', 4.0, NULL, 3, '2026-09-16 09:19:22'),
+(33, 1, 'KEP301', 'Keperawatan Anak', '3', 3.0, NULL, 4, '2026-09-16 09:19:22');
 
 -- --------------------------------------------------------
 
@@ -458,9 +589,9 @@ INSERT INTO `prodi_misi` (`id`, `prodi_id`, `nomor_urut`, `isi`, `created_at`) V
 (18, 4, 3, 'Menghasilkan lulusan yang kompeten, profesional, beretika, adaptif, dan mampu berkolaborasi.', '2026-09-10 04:27:29'),
 (19, 5, 3, 'Menghasilkan lulusan yang kompeten, profesional, beretika, adaptif, dan mampu berkolaborasi.', '2026-09-10 04:27:29'),
 (20, 6, 3, 'Menghasilkan lulusan yang kompeten, profesional, beretika, adaptif, dan mampu berkolaborasi.', '2026-09-10 04:27:29'),
-(41, 1, 1, 'Menyelenggarakan pendidikan yang berkualitas dan relevan dengan kebutuhan masyarakat.', '2026-09-14 05:58:54'),
-(42, 1, 2, 'Melaksanakan penelitian dan pengabdian kepada masyarakat sesuai bidang keilmuan program studi.', '2026-09-14 05:58:54'),
-(43, 1, 3, 'Menghasilkan lulusan yang kompeten, profesional, beretika, adaptif, dan mampu berkolaborasi.', '2026-09-14 05:58:54');
+(44, 1, 1, 'Menyelenggarakan pendidikan yang berkualitas dan relevan dengan kebutuhan masyarakat.', '2026-09-16 09:19:22'),
+(45, 1, 2, 'Melaksanakan penelitian dan pengabdian kepada masyarakat sesuai bidang keilmuan program studi.', '2026-09-16 09:19:22'),
+(46, 1, 3, 'Menghasilkan lulusan yang kompeten, profesional, beretika, adaptif, dan mampu berkolaborasi.', '2026-09-16 09:19:22');
 
 -- --------------------------------------------------------
 
@@ -566,7 +697,7 @@ CREATE TABLE `slider_beranda` (
 INSERT INTO `slider_beranda` (`id`, `judul`, `highlight`, `label`, `deskripsi`, `gambar`, `link_utama`, `teks_tombol_utama`, `link_kedua`, `teks_tombol_kedua`, `nomor_urut`, `status`, `created_at`) VALUES
 (1, 'Membangun Generasi', 'Tenaga Kesehatan Profesional', 'FAKULTAS ILMU KESEHATAN', 'Mewujudkan pendidikan kesehatan yang unggul, profesional, inovatif, dan berintegritas untuk masa depan yang lebih baik.', '20260914033930_14b336cb.jpeg', 'page/program-studi/program-studi.php', 'Lihat Program Studi', '#', 'Pendaftaran', 4, 'aktif', '2026-09-12 07:40:43'),
 (2, 'Pendidikan Kesehatan', 'Untuk Masa Depan', 'PENDIDIKAN BERKUALITAS', 'Mengembangkan kompetensi mahasiswa melalui pembelajaran berkualitas, teknologi, penelitian, dan pengalaman praktik.', '20260914034004_1db88d50.jpeg', 'page/program-studi/program-studi.php', 'Lihat Program Studi', '#', 'Pendaftaran', 3, 'aktif', '2026-09-12 07:40:43'),
-(4, 'Membangun Generasii', 'Tenaga Kesehatan Profesional', 'FAKULTAS ILMU KESEHATAN', 'Mewujudkan pendidikan kesehatan yang unggul, profesional, inovatif, dan berintegritas untuk masa depan yang lebih baik.', '20260914033939_865a2e52.jpeg', 'page/program-studi/program-studi.php', 'Lihat Program Studi', '#', 'Pendaftaran', 1, 'aktif', '2026-09-12 07:48:41'),
+(4, 'Membangun Generasi', 'Tenaga Kesehatan Profesional', 'FAKULTAS ILMU KESEHATAN', 'Mewujudkan pendidikan kesehatan yang unggul, profesional, inovatif, dan berintegritas untuk masa depan yang lebih baik.', '20260914033939_865a2e52.jpeg', 'page/program-studi/program-studi.php', 'Lihat Program Studi', '#', 'Pendaftaran', 1, 'aktif', '2026-09-12 07:48:41'),
 (5, 'Pendidikan Kesehatan', 'Untuk Masa Depan', 'PENDIDIKAN BERKUALITAS', 'Mengembangkan kompetensi mahasiswa melalui pembelajaran berkualitas, teknologi, penelitian, dan pengalaman praktik.', '20260914033949_f75787cb.jpeg', 'page/program-studi/program-studi.php', 'Lihat Program Studi', '#', 'Pendaftaran', 2, 'aktif', '2026-09-12 07:48:41');
 
 -- --------------------------------------------------------
@@ -593,7 +724,7 @@ CREATE TABLE `struktur_organisasi` (
 --
 
 INSERT INTO `struktur_organisasi` (`id`, `periode`, `sk_rektor`, `dekan`, `wakil_dekan_akademik`, `wakil_dekan_adum_keu`, `wakil_dekan_kemahasiswaan`, `gambar`, `created_at`, `updated_at`) VALUES
-(1, '2024 - 2026', 'Nomor 030/Univ.BHAMADA/KEP/V/2024', 'Rosmalia, S.T.,M.Kes.', 'Siswati, S.Si.T.,Bdn.,M.Kes.', 'Sri Hidayati, Ns.,M.Kep.,Sp.Kep.MB.', 'Deni Irawan, Ns.,M.Kep.', 'struktur_20260908111729_e58cb6b9.png', '2026-09-08 07:07:10', '2026-09-08 09:17:29');
+(1, '2024 - 2026', 'Nomor 030/Univ.BHAMADA/KEP/V/2024', 'Rosmalia, S.T.,M.Kes. MOH', 'Siswati, S.Si.T.,Bdn.,M.Kes.', 'Sri Hidayati, Ns.,M.Kep.,Sp.Kep.MB.', 'Deni Irawan, Ns.,M.Kep.', 'struktur_20260908111729_e58cb6b9.png', '2026-09-08 07:07:10', '2026-09-17 09:00:25');
 
 -- --------------------------------------------------------
 
@@ -650,7 +781,10 @@ INSERT INTO `survey_jawaban` (`id`, `responden_id`, `pertanyaan_id`, `pilihan_id
 (3, 2, 1, 2, NULL, 2.00),
 (4, 2, 2, 7, NULL, 2.00),
 (5, 3, 1, 5, NULL, 5.00),
-(6, 3, 2, 10, NULL, 5.00);
+(6, 3, 2, 10, NULL, 5.00),
+(7, 4, 1, 2, NULL, 2.00),
+(8, 4, 2, 7, NULL, 2.00),
+(9, 4, 3, NULL, 'kurang', NULL);
 
 -- --------------------------------------------------------
 
@@ -732,7 +866,8 @@ CREATE TABLE `survey_responden` (
 INSERT INTO `survey_responden` (`id`, `survey_id`, `nama`, `email`, `kategori_responden`, `identitas`, `tanggal_isi`, `ip_address`) VALUES
 (1, 4, 'Kamal Furqon', 'furqonkamal9@gmail.com', 'Mahasiswa', '554541351351', '2026-09-15 15:05:36', '::1'),
 (2, 4, 'Kamal', 'furqonkal9@gmail.com', 'Karyawan/Pegawai', '', '2026-09-15 15:12:17', '::1'),
-(3, 4, 'masruhin', 'mas@gmail.com', 'Masyarakat', '3328545151', '2026-09-15 15:38:44', '::1');
+(3, 4, 'masruhin', 'mas@gmail.com', 'Masyarakat', '3328545151', '2026-09-15 15:38:44', '::1'),
+(4, 4, 'jaka', 'jaka@gmail.com', 'Mahasiswa', '5265115', '2026-09-16 11:40:11', '::1');
 
 -- --------------------------------------------------------
 
@@ -862,6 +997,47 @@ ALTER TABLE `dosen_pendidikan`
 --
 ALTER TABLE `kemahasiswaan`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `kemahasiswaan_anggota`
+--
+ALTER TABLE `kemahasiswaan_anggota`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_ka_org` (`organisasi_slug`),
+  ADD KEY `idx_ka_status` (`organisasi_slug`,`status`);
+
+--
+-- Indexes for table `kemahasiswaan_galeri`
+--
+ALTER TABLE `kemahasiswaan_galeri`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_kg_org` (`organisasi_slug`),
+  ADD KEY `idx_kg_status` (`organisasi_slug`,`status`);
+
+--
+-- Indexes for table `kemahasiswaan_kegiatan`
+--
+ALTER TABLE `kemahasiswaan_kegiatan`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_kk_org` (`organisasi_slug`),
+  ADD KEY `idx_kk_status` (`organisasi_slug`,`status`);
+
+--
+-- Indexes for table `kemahasiswaan_organisasi`
+--
+ALTER TABLE `kemahasiswaan_organisasi`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `slug` (`slug`),
+  ADD KEY `idx_ko_jenis_status` (`jenis`,`status`),
+  ADD KEY `idx_ko_urut` (`jenis`,`nomor_urut`);
+
+--
+-- Indexes for table `kemahasiswaan_pengurus`
+--
+ALTER TABLE `kemahasiswaan_pengurus`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_kp_org` (`organisasi_slug`),
+  ADD KEY `idx_kp_status` (`organisasi_slug`,`status`);
 
 --
 -- Indexes for table `misi`
@@ -1059,6 +1235,36 @@ ALTER TABLE `kemahasiswaan`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
+-- AUTO_INCREMENT for table `kemahasiswaan_anggota`
+--
+ALTER TABLE `kemahasiswaan_anggota`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `kemahasiswaan_galeri`
+--
+ALTER TABLE `kemahasiswaan_galeri`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `kemahasiswaan_kegiatan`
+--
+ALTER TABLE `kemahasiswaan_kegiatan`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `kemahasiswaan_organisasi`
+--
+ALTER TABLE `kemahasiswaan_organisasi`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
+
+--
+-- AUTO_INCREMENT for table `kemahasiswaan_pengurus`
+--
+ALTER TABLE `kemahasiswaan_pengurus`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `misi`
 --
 ALTER TABLE `misi`
@@ -1074,25 +1280,25 @@ ALTER TABLE `pengaturan`
 -- AUTO_INCREMENT for table `prodi_capaian_pembelajaran`
 --
 ALTER TABLE `prodi_capaian_pembelajaran`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `prodi_fasilitas`
 --
 ALTER TABLE `prodi_fasilitas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `prodi_kurikulum`
 --
 ALTER TABLE `prodi_kurikulum`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `prodi_misi`
 --
 ALTER TABLE `prodi_misi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=44;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
 -- AUTO_INCREMENT for table `program_studi`
@@ -1116,7 +1322,7 @@ ALTER TABLE `slider_beranda`
 -- AUTO_INCREMENT for table `struktur_organisasi`
 --
 ALTER TABLE `struktur_organisasi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `survey`
@@ -1128,7 +1334,7 @@ ALTER TABLE `survey`
 -- AUTO_INCREMENT for table `survey_jawaban`
 --
 ALTER TABLE `survey_jawaban`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `survey_pertanyaan`
@@ -1146,7 +1352,7 @@ ALTER TABLE `survey_pilihan`
 -- AUTO_INCREMENT for table `survey_responden`
 --
 ALTER TABLE `survey_responden`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `users`
