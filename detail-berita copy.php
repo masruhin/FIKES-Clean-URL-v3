@@ -11,31 +11,43 @@ function beritaImageUrl($gambar)
   $gambar = trim((string)$gambar);
   if ($gambar === '') return '';
 
-  // URL eksternal tetap digunakan apa adanya.
-  if (preg_match('~^(https?:)?//~i', $gambar)) {
-    return $gambar;
-  }
+  if (preg_match('~^(https?:)?//~i', $gambar)) return $gambar;
 
   $gambar = str_replace('\\', '/', $gambar);
   $gambar = ltrim($gambar, '/');
 
-  // Jika database menyimpan path lengkap relatif terhadap root project.
-  if (strpos($gambar, 'fikes/') === 0) {
-    return '/' . $gambar;
-  }
-
+  // Database may contain only the filename.
   if (strpos($gambar, 'admin/uploads/berita/') === 0) {
-    return '/fikes/' . $gambar;
+    return $gambar;
   }
-
   if (strpos($gambar, 'uploads/berita/') === 0) {
-    return '/fikes/admin/' . $gambar;
+    return 'admin/' . $gambar;
+  }
+  if (strpos($gambar, 'admin/') === 0 || strpos($gambar, 'assets/') === 0) {
+    return $gambar;
   }
 
-  // Data normal dari tabel berita hanya menyimpan nama file.
-  return '/fikes/admin/uploads/berita/' . rawurlencode(basename($gambar));
+  return 'admin/uploads/berita/' . rawurlencode(basename($gambar));
 }
 
+function beritaImageExists($gambar)
+{
+  $gambar = trim((string)$gambar);
+  if ($gambar === '' || preg_match('~^(https?:)?//~i', $gambar)) return false;
+
+  $gambar = str_replace('\\', '/', ltrim($gambar, '/'));
+  if (strpos($gambar, 'admin/uploads/berita/') === 0) {
+    $relative = $gambar;
+  } elseif (strpos($gambar, 'uploads/berita/') === 0) {
+    $relative = 'admin/' . $gambar;
+  } elseif (strpos($gambar, 'admin/') === 0 || strpos($gambar, 'assets/') === 0) {
+    $relative = $gambar;
+  } else {
+    $relative = 'admin/uploads/berita/' . basename($gambar);
+  }
+
+  return is_file(__DIR__ . '/' . $relative);
+}
 
 $slug = trim($_GET['slug'] ?? '');
 $stmt = $pdo->prepare("SELECT * FROM berita WHERE slug = :slug AND status = 'terbit' LIMIT 1");
@@ -52,6 +64,7 @@ $relatedStmt->execute(['id' => $berita['id']]);
 $related = $relatedStmt->fetchAll(PDO::FETCH_ASSOC);
 
 $mainImage = beritaImageUrl($berita['gambar'] ?? '');
+$mainImageExists = beritaImageExists($berita['gambar'] ?? '');
 ?>
 <!doctype html>
 <html lang="id">
@@ -1447,7 +1460,7 @@ $mainImage = beritaImageUrl($berita['gambar'] ?? '');
     <section class="article-area">
       <div class="container">
         <article class="article-card">
-          <?php if ($mainImage): ?>
+          <?php if ($mainImage && ($mainImageExists || preg_match('~^(https?:)?//~i', $mainImage))): ?>
             <img class="featured-image" src="<?= e($mainImage) ?>" alt="<?= e($berita['judul']) ?>"
               onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
             <div class="image-placeholder" style="display:none">FIKES</div>
@@ -1469,14 +1482,12 @@ $mainImage = beritaImageUrl($berita['gambar'] ?? '');
             </div><a class="all-link" href="/fikes/#berita">Lihat Semua →</a>
           </div>
           <div class="news-grid">
-            <?php foreach ($related as $b): $img = beritaImageUrl($b['gambar'] ?? ''); ?>
+            <?php foreach ($related as $b): $img = beritaImageUrl($b['gambar'] ?? '');
+              $exists = beritaImageExists($b['gambar'] ?? ''); ?>
               <article class="news-card"><a href="/fikes/berita/<?= rawurlencode($b['slug']) ?>"
-                  class="news-image"><?php if ($img): ?><img src="<?= e($img) ?>" alt="<?= e($b['judul']) ?>"
-                      loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
-                    <div class="news-placeholder" style="display:none">FIKES</div><?php else: ?><div
-                      class="news-placeholder">FIKES
-                    </div><?php endif; ?>
-                </a>
+                  class="news-image"><?php if ($img && ($exists || preg_match('~^(https?:)?//~i', $img))): ?><img
+                      src="<?= e($img) ?>" alt="<?= e($b['judul']) ?>"><?php else: ?><div class="news-placeholder">FIKES
+                    </div><?php endif; ?></a>
                 <div class="news-body"><span class="news-category"><?= e($b['kategori']) ?></span>
                   <div class="news-date">📅 <?= date('d M Y', strtotime($b['tanggal_terbit'])) ?></div>
                   <h3><a href="/fikes/berita/<?= rawurlencode($b['slug']) ?>"><?= e($b['judul']) ?></a></h3>

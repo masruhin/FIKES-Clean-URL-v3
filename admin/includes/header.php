@@ -46,6 +46,7 @@ $active_konten = $active_slider || $active_berita;
 
 $active_visi = strpos($current_path, '/admin/modules/tentang/visi-misi.php') !== false;
 $active_struktur = strpos($current_path, '/admin/modules/tentang/struktur.php') !== false;
+$active_gambar_struktur = strpos($current_path, '/admin/modules/tentang/gambar-struktur.php') !== false;
 $active_sertifikat = strpos($current_path, '/admin/modules/sertifikat/') !== false;
 $active_logo = strpos($current_path, '/admin/modules/tentang/logo.php') !== false;
 $active_tentang = $active_visi || $active_struktur || $active_sertifikat || $active_logo;
@@ -84,26 +85,26 @@ function submenu_style($active)
 <!doctype html>
 <html lang="id">
 
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title><?= e($page_title) ?> | Admin FIKES</title>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title><?= e($page_title) ?> | Admin FIKES</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
-    rel="stylesheet">
-  <link rel="stylesheet" href="<?= $project_url ?>/admin/assets/css/admin.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
+      rel="stylesheet">
+    <link rel="stylesheet" href="<?= $project_url ?>/admin/assets/css/admin.css">
 
-  <?php if (!empty($page_styles) && is_array($page_styles)): ?>
+    <?php if (!empty($page_styles) && is_array($page_styles)): ?>
     <?php foreach ($page_styles as $style): ?>
-      <link rel="stylesheet"
-        href="<?= $project_url . '/' . ltrim($style, '/') ?>?v=<?= file_exists(dirname(__DIR__, 2) . '/' . ltrim($style, '/')) ? filemtime(dirname(__DIR__, 2) . '/' . ltrim($style, '/')) : time() ?>">
+    <link rel="stylesheet"
+      href="<?= $project_url . '/' . ltrim($style, '/') ?>?v=<?= file_exists(dirname(__DIR__, 2) . '/' . ltrim($style, '/')) ? filemtime(dirname(__DIR__, 2) . '/' . ltrim($style, '/')) : time() ?>">
     <?php endforeach; ?>
-  <?php endif; ?>
+    <?php endif; ?>
 
-  <style>
+    <style>
     /* =====================================================
        ACTIVE SIDEBAR
        ===================================================== */
@@ -139,129 +140,131 @@ function submenu_style($active)
       opacity: 1;
       background: #1677ed;
     }
-  </style>
-</head>
+    </style>
+  </head>
 
-<body>
-  <div class="app">
-    <aside class="sidebar" id="sidebar">
-      <div class="brand">
-        <div class="brand-mark">F</div>
-        <div><strong>FIKES</strong><small>ADMIN PANEL</small></div>
-      </div>
-
-      <nav class="sidebar-nav">
-        <a href="<?= $project_url ?>/admin/index.php" class="menu-link<?= parent_class($active_dashboard) ?>">
-          <span>▦</span><b>Dashboard</b>
-        </a>
-
-        <button type="button" class="menu-parent<?= parent_class($active_konten) ?>" data-menu="konten-website"
-          aria-expanded="<?= $active_konten ? 'true' : 'false' ?>">
-          <span>▣</span><b>Konten Website</b><i>⌄</i>
-        </button>
-        <div class="submenu<?= $active_konten ? ' is-active' : '' ?>" id="konten-website"
-          <?= submenu_style($active_konten) ?>>
-          <a href="<?= $project_url ?>/admin/modules/slider/index.php"
-            class="submenu-link<?= parent_class($active_slider) ?>">Slider Beranda</a>
-          <a href="<?= $project_url ?>/admin/modules/berita/index.php"
-            class="submenu-link<?= parent_class($active_berita) ?>">Berita</a>
+  <body>
+    <div class="app">
+      <aside class="sidebar" id="sidebar">
+        <div class="brand">
+          <div class="brand-mark">F</div>
+          <div><strong>FIKES</strong><small>ADMIN PANEL</small></div>
         </div>
 
-        <button type="button" class="menu-parent<?= parent_class($active_tentang) ?>" data-menu="tentang"
-          aria-expanded="<?= $active_tentang ? 'true' : 'false' ?>">
-          <span>◈</span><b>Tentang FIKES</b><i>⌄</i>
-        </button>
-        <div class="submenu<?= $active_tentang ? ' is-active' : '' ?>" id="tentang"
-          <?= submenu_style($active_tentang) ?>>
-          <a href="<?= $project_url ?>/admin/modules/tentang/visi-misi.php"
-            class="submenu-link<?= parent_class($active_visi) ?>">Visi-Misi</a>
-          <a href="<?= $project_url ?>/admin/modules/tentang/struktur.php"
-            class="submenu-link<?= parent_class($active_struktur) ?>">Struktur Organisasi</a>
-          <a href="<?= $project_url ?>/admin/modules/sertifikat/index.php"
-            class="submenu-link<?= parent_class($active_sertifikat) ?>">Sertifikat Akreditasi</a>
-          <a href="<?= $project_url ?>/admin/modules/tentang/logo.php"
-            class="submenu-link<?= parent_class($active_logo) ?>">Unduh Logo</a>
-        </div>
+        <nav class="sidebar-nav">
+          <a href="<?= $project_url ?>/admin/index.php" class="menu-link<?= parent_class($active_dashboard) ?>">
+            <span>▦</span><b>Dashboard</b>
+          </a>
 
-        <button type="button" class="menu-parent<?= parent_class($active_dosen) ?>" data-menu="dosen"
-          aria-expanded="<?= $active_dosen ? 'true' : 'false' ?>">
-          <span>♙</span><b>Daftar Dosen</b><i>⌄</i>
-        </button>
-        <div class="submenu<?= $active_dosen ? ' is-active' : '' ?>" id="dosen" <?= submenu_style($active_dosen) ?>>
-          <a href="<?= $project_url ?>/admin/modules/dosen/index.php?prodi=Keperawatan"
-            class="submenu-link<?= parent_class($active_dosen_keperawatan) ?>">Dosen Keperawatan</a>
-          <a href="<?= $project_url ?>/admin/modules/dosen/index.php?prodi=Kebidanan"
-            class="submenu-link<?= parent_class($active_dosen_kebidanan) ?>">Dosen Kebidanan</a>
-          <a href="<?= $project_url ?>/admin/modules/dosen/index.php?prodi=Farmasi"
-            class="submenu-link<?= parent_class($active_dosen_farmasi) ?>">Dosen Farmasi</a>
-          <a href="<?= $project_url ?>/admin/modules/dosen/index.php?prodi=K3"
-            class="submenu-link<?= parent_class($active_dosen_k3) ?>">Dosen K3</a>
-        </div>
-
-        <button type="button" class="menu-parent<?= parent_class($active_kemahasiswaan) ?>"
-          data-menu="kemahasiswaan-data" aria-expanded="<?= $active_kemahasiswaan ? 'true' : 'false' ?>">
-          <span>♧</span><b>Kemahasiswaan</b><i>⌄</i>
-        </button>
-        <div class="submenu<?= $active_kemahasiswaan ? ' is-active' : '' ?>" id="kemahasiswaan-data"
-          <?= submenu_style($active_kemahasiswaan) ?>>
-          <a href="<?= $project_url ?>/admin/modules/kemahasiswaan/himpunan.php"
-            class="submenu-link<?= parent_class($active_himpunan) ?>">Unit Himpunan Mahasiswa</a>
-          <a href="<?= $project_url ?>/admin/modules/kemahasiswaan/ukm.php"
-            class="submenu-link<?= parent_class($active_ukm) ?>">UKM Kemahasiswaan</a>
-        </div>
-
-        <a href="<?= $project_url ?>/admin/modules/program-studi/index.php"
-          class="menu-link<?= parent_class($active_program_studi) ?>">
-          <span>▤</span><b>Program Studi</b>
-        </a>
-
-        <a href="<?= $project_url ?>/admin/modules/akademik/index.php"
-          class="menu-link<?= parent_class($active_akademik) ?>">
-          <span>▥</span><b>Akademik</b>
-        </a>
-
-        <a href="<?= $project_url ?>/admin/modules/survey/index.php"
-          class="menu-link<?= parent_class($active_survey) ?>">
-          <span>◉</span><b>Survey</b>
-        </a>
-
-        <button type="button" class="menu-parent<?= parent_class($active_pengaturan) ?>" data-menu="akun"
-          aria-expanded="<?= $active_pengaturan ? 'true' : 'false' ?>">
-          <span>⚙</span><b>Pengaturan</b><i>⌄</i>
-        </button>
-        <div class="submenu<?= $active_pengaturan ? ' is-active' : '' ?>" id="akun"
-          <?= submenu_style($active_pengaturan) ?>>
-          <a href="<?= $project_url ?>/admin/modules/pengaturan/index.php"
-            class="submenu-link<?= parent_class($active_pengaturan_website) ?>">Pengaturan Website</a>
-          <a href="<?= $project_url ?>/admin/modules/akun/index.php"
-            class="submenu-link<?= parent_class($active_profil_admin) ?>">Profil Admin</a>
-        </div>
-      </nav>
-
-      <a href="<?= $project_url ?>/admin/logout.php" class="logout"><span>↪</span> Keluar</a>
-    </aside>
-
-    <div class="overlay" id="overlay"></div>
-
-    <main class="main">
-      <header class="topbar">
-        <button type="button" id="sidebarToggle" class="icon-btn" aria-label="Buka menu">☰</button>
-        <div class="top-title">
-          <span>Panel Administrasi</span>
-          <strong><?= e($page_title) ?></strong>
-        </div>
-        <div class="user">
-          <div class="avatar"><?= strtoupper(substr($_SESSION['admin_nama'], 0, 1)) ?></div>
-          <div>
-            <strong><?= e($_SESSION['admin_nama']) ?></strong>
-            <small><?= e($_SESSION['admin_role']) ?></small>
+          <button type="button" class="menu-parent<?= parent_class($active_konten) ?>" data-menu="konten-website"
+            aria-expanded="<?= $active_konten ? 'true' : 'false' ?>">
+            <span>▣</span><b>Konten Website</b><i>⌄</i>
+          </button>
+          <div class="submenu<?= $active_konten ? ' is-active' : '' ?>" id="konten-website"
+            <?= submenu_style($active_konten) ?>>
+            <a href="<?= $project_url ?>/admin/modules/slider/index.php"
+              class="submenu-link<?= parent_class($active_slider) ?>">Slider Beranda</a>
+            <a href="<?= $project_url ?>/admin/modules/berita/index.php"
+              class="submenu-link<?= parent_class($active_berita) ?>">Berita</a>
           </div>
-        </div>
-      </header>
 
-      <section class="content">
+          <button type="button" class="menu-parent<?= parent_class($active_tentang) ?>" data-menu="tentang"
+            aria-expanded="<?= $active_tentang ? 'true' : 'false' ?>">
+            <span>◈</span><b>Tentang FIKES</b><i>⌄</i>
+          </button>
+          <div class="submenu<?= $active_tentang ? ' is-active' : '' ?>" id="tentang"
+            <?= submenu_style($active_tentang) ?>>
+            <a href="<?= $project_url ?>/admin/modules/tentang/visi-misi.php"
+              class="submenu-link<?= parent_class($active_visi) ?>">Visi-Misi</a>
+            <a href="<?= $project_url ?>/admin/modules/tentang/struktur.php"
+              class="submenu-link<?= parent_class($active_struktur) ?>">Struktur Organisasi</a>
+            <a href="<?= $project_url ?>/admin/modules/tentang/gambar-struktur.php"
+              class="submenu-link<?= parent_class($active_gambar_struktur) ?>">Gambar Struktur Organisasi</a>
+            <a href="<?= $project_url ?>/admin/modules/sertifikat/index.php"
+              class="submenu-link<?= parent_class($active_sertifikat) ?>">Sertifikat Akreditasi</a>
+            <a href="<?= $project_url ?>/admin/modules/tentang/logo.php"
+              class="submenu-link<?= parent_class($active_logo) ?>">Unduh Logo</a>
+          </div>
 
-        <script>
+          <button type="button" class="menu-parent<?= parent_class($active_dosen) ?>" data-menu="dosen"
+            aria-expanded="<?= $active_dosen ? 'true' : 'false' ?>">
+            <span>♙</span><b>Daftar Dosen</b><i>⌄</i>
+          </button>
+          <div class="submenu<?= $active_dosen ? ' is-active' : '' ?>" id="dosen" <?= submenu_style($active_dosen) ?>>
+            <a href="<?= $project_url ?>/admin/modules/dosen/index.php?prodi=Keperawatan"
+              class="submenu-link<?= parent_class($active_dosen_keperawatan) ?>">Dosen Keperawatan</a>
+            <a href="<?= $project_url ?>/admin/modules/dosen/index.php?prodi=Kebidanan"
+              class="submenu-link<?= parent_class($active_dosen_kebidanan) ?>">Dosen Kebidanan</a>
+            <a href="<?= $project_url ?>/admin/modules/dosen/index.php?prodi=Farmasi"
+              class="submenu-link<?= parent_class($active_dosen_farmasi) ?>">Dosen Farmasi</a>
+            <a href="<?= $project_url ?>/admin/modules/dosen/index.php?prodi=K3"
+              class="submenu-link<?= parent_class($active_dosen_k3) ?>">Dosen K3</a>
+          </div>
+
+          <button type="button" class="menu-parent<?= parent_class($active_kemahasiswaan) ?>"
+            data-menu="kemahasiswaan-data" aria-expanded="<?= $active_kemahasiswaan ? 'true' : 'false' ?>">
+            <span>♧</span><b>Kemahasiswaan</b><i>⌄</i>
+          </button>
+          <div class="submenu<?= $active_kemahasiswaan ? ' is-active' : '' ?>" id="kemahasiswaan-data"
+            <?= submenu_style($active_kemahasiswaan) ?>>
+            <a href="<?= $project_url ?>/admin/modules/kemahasiswaan/himpunan.php"
+              class="submenu-link<?= parent_class($active_himpunan) ?>">Unit Himpunan Mahasiswa</a>
+            <a href="<?= $project_url ?>/admin/modules/kemahasiswaan/ukm.php"
+              class="submenu-link<?= parent_class($active_ukm) ?>">UKM Kemahasiswaan</a>
+          </div>
+
+          <a href="<?= $project_url ?>/admin/modules/program-studi/index.php"
+            class="menu-link<?= parent_class($active_program_studi) ?>">
+            <span>▤</span><b>Program Studi</b>
+          </a>
+
+          <a href="<?= $project_url ?>/admin/modules/akademik/index.php"
+            class="menu-link<?= parent_class($active_akademik) ?>">
+            <span>▥</span><b>Akademik</b>
+          </a>
+
+          <a href="<?= $project_url ?>/admin/modules/survey/index.php"
+            class="menu-link<?= parent_class($active_survey) ?>">
+            <span>◉</span><b>Survey</b>
+          </a>
+
+          <button type="button" class="menu-parent<?= parent_class($active_pengaturan) ?>" data-menu="akun"
+            aria-expanded="<?= $active_pengaturan ? 'true' : 'false' ?>">
+            <span>⚙</span><b>Pengaturan</b><i>⌄</i>
+          </button>
+          <div class="submenu<?= $active_pengaturan ? ' is-active' : '' ?>" id="akun"
+            <?= submenu_style($active_pengaturan) ?>>
+            <a href="<?= $project_url ?>/admin/modules/pengaturan/index.php"
+              class="submenu-link<?= parent_class($active_pengaturan_website) ?>">Pengaturan Website</a>
+            <a href="<?= $project_url ?>/admin/modules/akun/index.php"
+              class="submenu-link<?= parent_class($active_profil_admin) ?>">Profil Admin</a>
+          </div>
+        </nav>
+
+        <a href="<?= $project_url ?>/admin/logout.php" class="logout"><span>↪</span> Keluar</a>
+      </aside>
+
+      <div class="overlay" id="overlay"></div>
+
+      <main class="main">
+        <header class="topbar">
+          <button type="button" id="sidebarToggle" class="icon-btn" aria-label="Buka menu">☰</button>
+          <div class="top-title">
+            <span>Panel Administrasi</span>
+            <strong><?= e($page_title) ?></strong>
+          </div>
+          <div class="user">
+            <div class="avatar"><?= strtoupper(substr($_SESSION['admin_nama'], 0, 1)) ?></div>
+            <div>
+              <strong><?= e($_SESSION['admin_nama']) ?></strong>
+              <small><?= e($_SESSION['admin_role']) ?></small>
+            </div>
+          </div>
+        </header>
+
+        <section class="content">
+
+          <script>
           (function() {
             'use strict';
 
@@ -327,4 +330,4 @@ function submenu_style($active)
               initSidebarMenus();
             }
           })();
-        </script>
+          </script>

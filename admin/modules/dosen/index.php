@@ -4,13 +4,13 @@ require_once __DIR__ . '/../../config/auth.php';
 
 /* HAPUS DOSEN */
 if (isset($_GET['hapus'])) {
-    $id = (int) $_GET['hapus'];
+  $id = (int) $_GET['hapus'];
 
-    $stmt = $pdo->prepare("DELETE FROM dosen WHERE id=?");
-    $stmt->execute([$id]);
+  $stmt = $pdo->prepare("DELETE FROM dosen WHERE id=?");
+  $stmt->execute([$id]);
 
-    header('Location: index.php?ok=deleted');
-    exit;
+  header('Location: index.php?ok=deleted');
+  exit;
 }
 
 /* SIMPAN DOSEN DILAKUKAN MELALUI AJAX */
@@ -26,14 +26,14 @@ $where = [];
 $params = [];
 
 if ($prodi_filter !== '') {
-    $where[] = "program_studi = ?";
-    $params[] = $prodi_filter;
+  $where[] = "program_studi = ?";
+  $params[] = $prodi_filter;
 }
 
 if ($search !== '') {
-    $where[] = "(nama LIKE ? OR nidn LIKE ? OR program_studi LIKE ? OR jabatan LIKE ? OR email LIKE ?)";
-    $keyword = '%' . $search . '%';
-    $params = array_merge($params, [$keyword, $keyword, $keyword, $keyword, $keyword]);
+  $where[] = "(nama LIKE ? OR nidn LIKE ? OR program_studi LIKE ? OR jabatan LIKE ? OR email LIKE ?)";
+  $keyword = '%' . $search . '%';
+  $params = array_merge($params, [$keyword, $keyword, $keyword, $keyword, $keyword]);
 }
 
 $whereSql = $where ? 'WHERE ' . implode(' AND ', $where) : '';
@@ -56,10 +56,11 @@ $stmt = $pdo->prepare("
 $stmt->execute($params);
 $dosen = $stmt->fetchAll();
 
-function halamanUrl($nomor) {
-    $query = $_GET;
-    $query['page'] = $nomor;
-    return '?' . http_build_query($query);
+function halamanUrl($nomor)
+{
+  $query = $_GET;
+  $query['page'] = $nomor;
+  return '?' . http_build_query($query);
 }
 
 require __DIR__ . '/../../includes/header.php';
@@ -160,11 +161,11 @@ require __DIR__ . '/../../includes/header.php';
       <?php endif; ?>
 
       <?php
-                $start_page = max(1, $page - 2);
-                $end_page = min($total_pages, $page + 2);
+        $start_page = max(1, $page - 2);
+        $end_page = min($total_pages, $page + 2);
 
-                if ($start_page > 1):
-                ?>
+        if ($start_page > 1):
+        ?>
       <a class="page-btn" href="<?= e(halamanUrl(1)) ?>">1</a>
       <?php if ($start_page > 2): ?><span class="page-dots">...</span><?php endif; ?>
       <?php endif; ?>
@@ -235,7 +236,7 @@ require __DIR__ . '/../../includes/header.php';
         <div>
           <label>Foto Dosen</label>
           <input type="file" name="foto" id="foto" accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/png,image/webp">
-          <small class="form-help">JPG, JPEG, PNG, WEBP — maksimal 2 MB.</small>
+          <small class="form-help">JPG, JPEG, PNG, WEBP — maksimal 6 MB.</small>
           <div id="fotoPreviewWrap" class="foto-preview-wrap">
             <img id="fotoPreview" src="" alt="Preview foto">
             <button type="button" class="btn small danger-text" onclick="hapusFotoPreview()">Hapus Foto</button>
@@ -696,8 +697,8 @@ document.getElementById('foto').addEventListener('change', function() {
     return;
   }
 
-  if (file.size > 2 * 1024 * 1024) {
-    alert('Ukuran foto maksimal 2 MB.');
+  if (file.size > 6 * 1024 * 1024) {
+    alert('Ukuran foto maksimal 6 MB.');
     this.value = '';
     return;
   }

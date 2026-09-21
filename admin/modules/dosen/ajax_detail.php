@@ -75,8 +75,8 @@ if ($action === 'save_dosen') {
       json_error('Upload foto gagal.');
     }
 
-    if ($file['size'] > 2 * 1024 * 1024) {
-      json_error('Ukuran foto maksimal 2 MB.');
+    if ($file['size'] > 6 * 1024 * 1024) {
+      json_error('Ukuran foto maksimal 6 MB.');
     }
 
     $allowed = [
