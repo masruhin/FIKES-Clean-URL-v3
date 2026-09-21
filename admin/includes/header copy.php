@@ -24,6 +24,11 @@ function menu_active($path)
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap"
       rel="stylesheet">
     <link rel="stylesheet" href="<?= $project_url ?>/admin/assets/css/admin.css">
+    <?php if (!empty($page_styles) && is_array($page_styles)): ?>
+    <?php foreach ($page_styles as $style): ?>
+    <link rel="stylesheet" href="<?= $project_url ?>/<?= e(ltrim($style, '/')) ?>?v=20260918">
+    <?php endforeach; ?>
+    <?php endif; ?>
   </head>
 
   <body>
@@ -36,16 +41,16 @@ function menu_active($path)
         <nav class="sidebar-nav">
           <a href="<?= $project_url ?>/admin/index.php"
             class="menu-link <?= menu_active('/admin/index.php') ?>"><span>▦</span><b>Dashboard</b></a>
-          <button type="button" class="menu-parent" data-menu="kemahasiswaan"><span>♧</span><b>Konten
+          <button type="button" class="menu-parent" data-menu="konten-website"><span>▣</span><b>Konten
               Website</b><i>⌄</i></button>
-          <div class="submenu" id="kemahasiswaan">
+          <div class="submenu" id="konten-website">
             <a href="<?= $project_url ?>/admin/modules/slider/index.php"
-              class=" submenu-link <?= menu_active('kategori=Unit%20Himpunan') ?>">Slider Beranda</a>
+              class="submenu-link <?= menu_active('/modules/slider/') ?>">Slider Beranda</a>
             <a href="<?= $project_url ?>/admin/modules/berita/index.php"
-              class="submenu-link <?= menu_active('kategori=UKM%20Kemahasiswaan') ?>">Berita</a>
+              class="submenu-link <?= menu_active('/modules/berita/') ?>">Berita</a>
           </div>
 
-          <button type="button" class="menu-parent" data-menu="tentang"><span>◉</span><b>Tentang
+          <button type="button" class="menu-parent" data-menu="tentang"><span>◈</span><b>Tentang
               FIKES</b><i>⌄</i></button>
           <div class="submenu" id="tentang">
             <a href="<?= $project_url ?>/admin/modules/tentang/visi-misi.php"
@@ -53,9 +58,9 @@ function menu_active($path)
             <a href="<?= $project_url ?>/admin/modules/tentang/struktur.php"
               class="submenu-link <?= menu_active('/tentang/struktur.php') ?>">Struktur Organisasi</a>
             <!-- <a href="<?= $project_url ?>/admin/modules/tentang/akreditasi.php"
-            class="submenu-link <?= menu_active('/tentang/akreditasi.php') ?>">Sertifikat Akreditasi</a> -->
+            class="submenu-link <?= menu_active('/modules/sertifikat/') ?>">Sertifikat Akreditasi</a> -->
             <a href="<?= $project_url ?>/admin/modules/sertifikat/index.php"
-              class="submenu-link <?= menu_active('/tentang/akreditasi.php') ?>">Sertifikat Akreditasi</a>
+              class="submenu-link <?= menu_active('/modules/sertifikat/') ?>">Sertifikat Akreditasi</a>
             <a href="<?= $project_url ?>/admin/modules/tentang/logo.php"
               class="submenu-link <?= menu_active('/tentang/logo.php') ?>">Unduh Logo</a>
           </div>
@@ -70,13 +75,16 @@ function menu_active($path)
             <a href="<?= $project_url ?>/admin/modules/dosen/index.php?prodi=K3"
               class="submenu-link <?= menu_active('prodi=K3') ?>">Dosen K3</a>
           </div>
-          <button type="button" class="menu-parent"
-            data-menu="kemahasiswaan"><span>♧</span><b>Kemahasiswaan</b><i>⌄</i></button>
-          <div class="submenu" id="kemahasiswaan">
-            <a href="<?= $project_url ?>/admin/modules/kemahasiswaan/index.php?kategori=Himpunan"
-              class="submenu-link <?= menu_active('kategori=Himpunan') ?>">Unit Himpunan Mahasiswa</a>
-            <a href="<?= $project_url ?>/admin/modules/kemahasiswaan/index.php?kategori=Ukm"
-              class="submenu-link <?= menu_active('kategori=Ukm') ?>">UKM Kemahasiswaan</a>
+          <button type="button"
+            class="menu-parent <?= (strpos($current_url, '/modules/kemahasiswaan/') !== false) ? 'active' : '' ?>"
+            data-menu="kemahasiswaan-data">
+            <span>♧</span><b>Kemahasiswaan</b><i>⌄</i>
+          </button>
+          <div class="submenu" id="kemahasiswaan-data">
+            <a href="<?= $project_url ?>/admin/modules/kemahasiswaan/himpunan.php"
+              class="submenu-link <?= menu_active('/modules/kemahasiswaan/himpunan.php') ?>">Unit Himpunan Mahasiswa</a>
+            <a href="<?= $project_url ?>/admin/modules/kemahasiswaan/ukm.php"
+              class="submenu-link <?= menu_active('/modules/kemahasiswaan/ukm.php') ?>">UKM Kemahasiswaan</a>
           </div>
           <a href="<?= $project_url ?>/admin/modules/program-studi/index.php"
             class="menu-link <?= menu_active('/modules/program-studi/') ?>"><span>▤</span><b>Program Studi</b>
@@ -103,10 +111,10 @@ function menu_active($path)
               class="submenu-link <?= menu_active('jenjang=Diploma&nama=K3') ?>">K3</a>
           </div> -->
           <a href="<?= $project_url ?>/admin/modules/akademik/index.php"
-            class="menu-link <?= menu_active('/modules/akademik/') ?>"><span>▣</span><b>Akademik</b>
+            class="menu-link <?= menu_active('/modules/akademik/') ?>"><span>▥</span><b>Akademik</b>
           </a>
           <a href="<?= $project_url ?>/admin/modules/survey/index.php"
-            class="menu-link <?= menu_active('/modules/survey/') ?>"><span>◎</span><b>Survey</b></a>
+            class="menu-link <?= menu_active('/modules/survey/') ?>"><span>◉</span><b>Survey</b></a>
           <button type="button" class="menu-parent" data-menu="akun"><span>⚙</span><b>Pengaturan
             </b><i>⌄</i></button>
           <div class="submenu" id="akun">

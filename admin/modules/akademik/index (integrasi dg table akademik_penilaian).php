@@ -75,25 +75,10 @@ try {
     } else {
       $id = (int)($_POST['id'] ?? 0);
       $d = [trim($_POST['komponen'] ?? ''), (float)($_POST['bobot'] ?? 0), trim($_POST['keterangan'] ?? ''), (int)($_POST['nomor_urut'] ?? 1)];
-      if ($d[0] === '' || $d[1] < 0 || $d[1] > 100) throw new Exception('Komponen dan bobot 0–100 wajib diisi.');
       if ($id) $pdo->prepare('UPDATE akademik_penilaian SET komponen=?,bobot=?,keterangan=?,nomor_urut=? WHERE id=?')->execute([...$d, $id]);
       else $pdo->prepare('INSERT INTO akademik_penilaian(komponen,bobot,keterangan,nomor_urut) VALUES(?,?,?,?)')->execute($d);
     }
     redirect_ok('Data akademik berhasil disimpan.');
-  }
-  if ($action === 'skala_nilai') {
-    $id = (int)($_POST['id'] ?? 0);
-    $d = [strtoupper(trim($_POST['kode_nilai'] ?? '')), (float)($_POST['nilai_min'] ?? 0), (float)($_POST['nilai_max'] ?? 0), (float)($_POST['nilai_mutu'] ?? 0), trim($_POST['keterangan'] ?? ''), (int)($_POST['nomor_urut'] ?? 1)];
-    if ($d[0] === '') throw new Exception('Nilai huruf wajib diisi.');
-    if ($d[1] < 0 || $d[1] > 100 || $d[2] < 0 || $d[2] > 100 || $d[1] > $d[2]) throw new Exception('Rentang nilai harus 0–100 dan nilai minimum tidak boleh lebih besar dari maksimum.');
-    if ($d[3] < 0 || $d[3] > 4) throw new Exception('Nilai mutu harus berada pada rentang 0–4.');
-    if ($id) $pdo->prepare('UPDATE akademik_skala_nilai SET kode_nilai=?,nilai_min=?,nilai_max=?,nilai_mutu=?,keterangan=?,nomor_urut=? WHERE id=?')->execute([...$d, $id]);
-    else $pdo->prepare('INSERT INTO akademik_skala_nilai(kode_nilai,nilai_min,nilai_max,nilai_mutu,keterangan,nomor_urut) VALUES(?,?,?,?,?,?)')->execute($d);
-    redirect_ok('Skala nilai berhasil disimpan.');
-  }
-  if ($action === 'skala_nilai_delete') {
-    $pdo->prepare('DELETE FROM akademik_skala_nilai WHERE id=?')->execute([(int)$_POST['id']]);
-    redirect_ok('Skala nilai berhasil dihapus.');
   }
   if ($action === 'jadwal') {
     $id = (int)($_POST['id'] ?? 0);
@@ -131,11 +116,10 @@ $jad = $pdo->query("SELECT j.*,p.nama prodi_nama FROM akademik_jadwal j LEFT JOI
 $reg = $pdo->query("SELECT * FROM akademik_registrasi ORDER BY tanggal_mulai,id")->fetchAll();
 $doc = $pdo->query("SELECT * FROM akademik_dokumen ORDER BY kategori,nomor_urut,id DESC")->fetchAll();
 $nilai = $pdo->query("SELECT * FROM akademik_penilaian ORDER BY nomor_urut,id")->fetchAll();
-$skala = $pdo->query("SELECT * FROM akademik_skala_nilai ORDER BY nomor_urut,id")->fetchAll();
 $editType = $_GET['edit_type'] ?? '';
 $editId = (int)($_GET['edit_id'] ?? 0);
 $editRow = [];
-$editMap = ['kurikulum' => 'prodi_kurikulum', 'silabus' => 'akademik_silabus', 'kalender' => 'akademik_kalender', 'jadwal' => 'akademik_jadwal', 'registrasi' => 'akademik_registrasi', 'dokumen' => 'akademik_dokumen', 'penilaian' => 'akademik_penilaian', 'skala_nilai' => 'akademik_skala_nilai'];
+$editMap = ['kurikulum' => 'prodi_kurikulum', 'silabus' => 'akademik_silabus', 'kalender' => 'akademik_kalender', 'jadwal' => 'akademik_jadwal', 'registrasi' => 'akademik_registrasi', 'dokumen' => 'akademik_dokumen', 'penilaian' => 'akademik_penilaian'];
 if ($editId && isset($editMap[$editType])) {
   $st = $pdo->prepare("SELECT * FROM {$editMap[$editType]} WHERE id=? LIMIT 1");
   $st->execute([$editId]);
@@ -506,29 +490,6 @@ include __DIR__ . '/../../includes/header.php';
     color: #943c6a
   }
 
-  .nilai-subhead {
-    margin: 28px 0 14px;
-    padding-top: 22px;
-    border-top: 1px solid #ead8e1
-  }
-
-  .grade-badge {
-    display: inline-flex;
-    min-width: 42px;
-    justify-content: center;
-    padding: 6px 9px;
-    border-radius: 9px;
-    background: #f9eaf2;
-    color: #943c6a;
-    font-weight: 900;
-  }
-
-  .grade-help {
-    margin: -4px 0 14px;
-    color: #6f817a;
-    font-size: 11px;
-  }
-
   @media(max-width:1100px) {
     .ak-wrap {
       padding: 18px
@@ -614,8 +575,7 @@ include __DIR__ . '/../../includes/header.php';
     <?php endif; ?><?php if (isset($_GET['err'])): ?><div class="alert err"><?= e($_GET['err']) ?></div><?php endif; ?>
   <div class="ak-tabs"><a href="#kurikulum">Kurikulum</a><a href="#silabus">Silabus</a><a
       href="#kalender">Kalender</a><a href="#jadwal">Jadwal</a><a href="#registrasi">Registrasi</a><a
-      href="#dokumen">Dokumen Mahasiswa</a><a href="#penilaian">Penilaian</a><a href="#skala-nilai">Skala Nilai</a>
-  </div>
+      href="#dokumen">Dokumen Mahasiswa</a><a href="#penilaian">Penilaian</a></div>
   <div class="ak-grid">
     <section class="ak-panel full<?= ($editType === 'kurikulum' && $editId) ? ' editing' : '' ?>" id="kurikulum">
       <h2>📚 Kurikulum &amp; Silabus — Mata Kuliah</h2>
@@ -623,8 +583,7 @@ include __DIR__ . '/../../includes/header.php';
           name="id" value="<?= ($editType === 'kurikulum' ? ($editRow['id'] ?? 0) : 0) ?>">
         <div><label>Program Studi *</label><select name="prodi_id" required>
             <option value="">Pilih Program Studi</option><?php foreach ($prodi as $p): ?><option value="<?= $p['id'] ?>"
-                <?= ($editType === 'kurikulum' && ($editRow['prodi_id'] ?? 0) == $p['id']) ? 'selected' : '' ?>>
-                <?= e($p['nama']) ?> —
+                <?= ($editType === 'kurikulum' && ($editRow['prodi_id'] ?? 0) == $p['id']) ? 'selected' : '' ?>><?= e($p['nama']) ?> —
                 <?= e($p['jenjang']) ?></option><?php endforeach; ?>
           </select></div>
         <div><label>Kode Mata Kuliah</label><input name="kode_mk"
@@ -632,15 +591,12 @@ include __DIR__ . '/../../includes/header.php';
         <div><label>Nama Mata Kuliah *</label><input name="nama_mk"
             value="<?= e($editType === 'kurikulum' ? ($editRow['nama_mk'] ?? '') : '') ?>" required></div>
         <div><label>Semester</label><input name="semester"
-            value="<?= e($editType === 'kurikulum' ? ($editRow['semester'] ?? '') : '') ?>" placeholder="1 / 2 / 3...">
-        </div>
+            value="<?= e($editType === 'kurikulum' ? ($editRow['semester'] ?? '') : '') ?>" placeholder="1 / 2 / 3..."></div>
         <div><label>SKS</label><input type="number" step="0.5" name="sks"
             value="<?= e($editType === 'kurikulum' ? ($editRow['sks'] ?? 2) : 2) ?>"></div>
         <div><label>Jenis</label><select name="jenis">
-            <option <?= ($editType === 'kurikulum' && ($editRow['jenis'] ?? '') === 'Wajib') ? 'selected' : '' ?>>Wajib
-            </option>
-            <option <?= ($editType === 'kurikulum' && ($editRow['jenis'] ?? '') === 'Pilihan') ? 'selected' : '' ?>>
-              Pilihan</option>
+            <option <?= ($editType === 'kurikulum' && ($editRow['jenis'] ?? '') === 'Wajib') ? 'selected' : '' ?>>Wajib</option>
+            <option <?= ($editType === 'kurikulum' && ($editRow['jenis'] ?? '') === 'Pilihan') ? 'selected' : '' ?>>Pilihan</option>
           </select></div>
         <div class="full"><button
             class="ak-btn"><?= ($editType === 'kurikulum' && $editId) ? 'Simpan Perubahan' : '+ Tambah Mata Kuliah' ?></button>
@@ -691,8 +647,7 @@ include __DIR__ . '/../../includes/header.php';
         <div class="full"><label>Deskripsi</label><textarea
             name="deskripsi"><?= e($editType === 'silabus' ? ($editRow['deskripsi'] ?? '') : '') ?></textarea></div>
         <div class="full"><button
-            class="ak-btn"><?= ($editType === 'silabus' && $editId) ? 'Simpan Perubahan' : '+ Simpan Silabus' ?></button>
-        </div>
+            class="ak-btn"><?= ($editType === 'silabus' && $editId) ? 'Simpan Perubahan' : '+ Simpan Silabus' ?></button></div>
       </form>
       <hr>
       <div class="ak-table-wrap">
@@ -721,8 +676,7 @@ include __DIR__ . '/../../includes/header.php';
       <form class="ak-form" method="post"><input type="hidden" name="action" value="kalender"><input type="hidden"
           name="id" value="<?= ($editType === 'kalender' ? ($editRow['id'] ?? 0) : 0) ?>">
         <div><label>Tahun Ajaran</label><input name="tahun_ajaran"
-            value="<?= e($editType === 'kalender' ? ($editRow['tahun_ajaran'] ?? '') : '') ?>" placeholder="2026/2027"
-            required>
+            value="<?= e($editType === 'kalender' ? ($editRow['tahun_ajaran'] ?? '') : '') ?>" placeholder="2026/2027" required>
         </div>
         <div><label>Kategori</label><input name="kategori"
             value="<?= e($editType === 'kalender' ? ($editRow['kategori'] ?? '') : '') ?>"
@@ -738,8 +692,7 @@ include __DIR__ . '/../../includes/header.php';
         <div><label>Urutan</label><input type="number" name="nomor_urut"
             value="<?= e($editType === 'kalender' ? ($editRow['nomor_urut'] ?? 1) : 1) ?>"></div>
         <div><label>&nbsp;</label><button
-            class="ak-btn"><?= ($editType === 'kalender' && $editId) ? 'Simpan Perubahan' : '+ Tambah Kalender' ?></button>
-        </div>
+            class="ak-btn"><?= ($editType === 'kalender' && $editId) ? 'Simpan Perubahan' : '+ Tambah Kalender' ?></button></div>
       </form>
       <hr>
       <div class="ak-table-wrap">
@@ -783,8 +736,7 @@ include __DIR__ . '/../../includes/header.php';
         <div><label>Jenis</label><select name="jenis">
             <?php foreach (['Kuliah', 'UTS', 'UAS'] as $jenis): ?>
               <option value="<?= e($jenis) ?>"
-                <?= ($editType === 'jadwal' && ($editRow['jenis'] ?? 'Kuliah') === $jenis) ? 'selected' : '' ?>>
-                <?= e($jenis) ?>
+                <?= ($editType === 'jadwal' && ($editRow['jenis'] ?? 'Kuliah') === $jenis) ? 'selected' : '' ?>><?= e($jenis) ?>
               </option>
             <?php endforeach; ?>
           </select></div>
@@ -794,16 +746,12 @@ include __DIR__ . '/../../includes/header.php';
             value="<?= e($editType === 'jadwal' ? ($editRow['nama_kegiatan'] ?? '') : '') ?>" required></div>
         <div><label>Tanggal</label><input type="date" name="tanggal"
             value="<?= e($editType === 'jadwal' ? ($editRow['tanggal'] ?? '') : '') ?>" required></div>
-        <div><label>Hari</label><input name="hari"
-            value="<?= e($editType === 'jadwal' ? ($editRow['hari'] ?? '') : '') ?>"></div>
+        <div><label>Hari</label><input name="hari" value="<?= e($editType === 'jadwal' ? ($editRow['hari'] ?? '') : '') ?>"></div>
         <div><label>Jam Mulai</label><input type="time" name="jam_mulai"
-            value="<?= e($editType === 'jadwal' ? substr((string)($editRow['jam_mulai'] ?? ''), 0, 5) : '') ?>"
-            required></div>
+            value="<?= e($editType === 'jadwal' ? substr((string)($editRow['jam_mulai'] ?? ''), 0, 5) : '') ?>" required></div>
         <div><label>Jam Selesai</label><input type="time" name="jam_selesai"
-            value="<?= e($editType === 'jadwal' ? substr((string)($editRow['jam_selesai'] ?? ''), 0, 5) : '') ?>"
-            required></div>
-        <div><label>Ruang</label><input name="ruang"
-            value="<?= e($editType === 'jadwal' ? ($editRow['ruang'] ?? '') : '') ?>">
+            value="<?= e($editType === 'jadwal' ? substr((string)($editRow['jam_selesai'] ?? ''), 0, 5) : '') ?>" required></div>
+        <div><label>Ruang</label><input name="ruang" value="<?= e($editType === 'jadwal' ? ($editRow['ruang'] ?? '') : '') ?>">
         </div>
         <div><label>Keterangan</label><input name="keterangan"
             value="<?= e($editType === 'jadwal' ? ($editRow['keterangan'] ?? '') : '') ?>"></div>
@@ -827,9 +775,7 @@ include __DIR__ . '/../../includes/header.php';
               <td><?= e($x['nama_kegiatan']) ?></td>
               <td><?= e($x['prodi_nama'] ?: 'Semua') ?></td>
               <td><?= tanggal_id($x['tanggal']) ?></td>
-              <td>
-                <?= e(substr($x['jam_mulai'], 0, 5)) ?>-<?= e(substr($x['jam_selesai'], 0, 5)) ?><br><?= e($x['ruang']) ?>
-              </td>
+              <td><?= e(substr($x['jam_mulai'], 0, 5)) ?>-<?= e(substr($x['jam_selesai'], 0, 5)) ?><br><?= e($x['ruang']) ?></td>
               <td>
                 <a class="ak-btn light" href="?edit_type=jadwal&edit_id=<?= $x['id'] ?>#jadwal">Edit</a>
                 <form method="post" style="display:inline" class="js-delete-form" data-confirm="Hapus jadwal?"><input
@@ -849,8 +795,7 @@ include __DIR__ . '/../../includes/header.php';
         <div><label>Jenis</label><select
             name="jenis"><?php foreach (['UKT/SPP', 'KRS', 'Persetujuan KRS', 'Registrasi'] as $jenis): ?><option
                 value="<?= e($jenis) ?>"
-                <?= ($editType === 'registrasi' && ($editRow['jenis'] ?? 'Registrasi') === $jenis) ? 'selected' : '' ?>>
-                <?= e($jenis) ?>
+                <?= ($editType === 'registrasi' && ($editRow['jenis'] ?? 'Registrasi') === $jenis) ? 'selected' : '' ?>><?= e($jenis) ?>
               </option><?php endforeach; ?></select></div>
         <div class="full"><label>Judul</label><input name="judul"
             value="<?= e($editType === 'registrasi' ? ($editRow['judul'] ?? '') : '') ?>" required></div>
@@ -859,8 +804,7 @@ include __DIR__ . '/../../includes/header.php';
         <div><label>Selesai</label><input type="date" name="tanggal_selesai"
             value="<?= e($editType === 'registrasi' ? ($editRow['tanggal_selesai'] ?? '') : '') ?>"></div>
         <div class="full"><label>Keterangan</label><textarea
-            name="keterangan"><?= e($editType === 'registrasi' ? ($editRow['keterangan'] ?? '') : '') ?></textarea>
-        </div>
+            name="keterangan"><?= e($editType === 'registrasi' ? ($editRow['keterangan'] ?? '') : '') ?></textarea></div>
         <div class="full"><button
             class="ak-btn"><?= ($editType === 'registrasi' && $editId) ? 'Simpan Perubahan' : '+ Tambah Registrasi' ?></button>
         </div>
@@ -900,13 +844,11 @@ include __DIR__ . '/../../includes/header.php';
       <form class="ak-form" method="post" enctype="multipart/form-data">
         <input type="hidden" name="action" value="dokumen">
         <input type="hidden" name="id" value="<?= ($editType === 'dokumen' ? ($editRow['id'] ?? 0) : 0) ?>">
-        <input type="hidden" name="old_file"
-          value="<?= e($editType === 'dokumen' ? ($editRow['file_dokumen'] ?? '') : '') ?>">
+        <input type="hidden" name="old_file" value="<?= e($editType === 'dokumen' ? ($editRow['file_dokumen'] ?? '') : '') ?>">
         <div><label>Kategori</label><select name="kategori">
             <?php foreach (['panduan' => 'Panduan Akademik', 'formulir' => 'Unduhan Formulir', 'kelulusan' => 'Layanan Kelulusan'] as $k => $label): ?>
               <option value="<?= e($k) ?>"
-                <?= ($editType === 'dokumen' && ($editRow['kategori'] ?? 'panduan') === $k) ? 'selected' : '' ?>>
-                <?= e($label) ?>
+                <?= ($editType === 'dokumen' && ($editRow['kategori'] ?? 'panduan') === $k) ? 'selected' : '' ?>><?= e($label) ?>
               </option>
             <?php endforeach; ?>
           </select></div>
@@ -971,8 +913,7 @@ Pelaksanaan wisuda"><?= e($editType === 'dokumen' ? ($editRow['isi'] ?? '') : ''
         <div><label>Urutan</label><input type="number" name="nomor_urut"
             value="<?= e($editType === 'penilaian' ? ($editRow['nomor_urut'] ?? 1) : 1) ?>"></div>
         <div><label>&nbsp;</label><button
-            class="ak-btn"><?= ($editType === 'penilaian' && $editId) ? 'Simpan Perubahan' : '+ Tambah Komponen' ?></button>
-        </div>
+            class="ak-btn"><?= ($editType === 'penilaian' && $editId) ? 'Simpan Perubahan' : '+ Tambah Komponen' ?></button></div>
       </form>
       <hr>
       <div class="ak-table-wrap">
@@ -995,64 +936,6 @@ Pelaksanaan wisuda"><?= e($editType === 'dokumen' ? ($editRow['isi'] ?? '') : ''
               </td>
             </tr><?php endforeach; ?>
         </table>
-      </div>
-
-      <div class="nilai-subhead" id="skala-nilai">
-        <h2>🔤 Skala Nilai Huruf</h2>
-        <p class="grade-help">Atur rentang nilai angka menjadi nilai huruf dan nilai mutu. Contoh default dapat diubah
-          sesuai pedoman akademik FIKES.</p>
-        <form class="ak-form" method="post">
-          <input type="hidden" name="action" value="skala_nilai">
-          <input type="hidden" name="id" value="<?= ($editType === 'skala_nilai' ? ($editRow['id'] ?? 0) : 0) ?>">
-          <div><label>Nilai Huruf *</label><input name="kode_nilai" maxlength="10" placeholder="A, B+, B, C+..."
-              value="<?= e($editType === 'skala_nilai' ? ($editRow['kode_nilai'] ?? '') : '') ?>" required></div>
-          <div><label>Nilai Mutu *</label><input type="number" step="0.01" min="0" max="4" name="nilai_mutu"
-              placeholder="4.00" value="<?= e($editType === 'skala_nilai' ? ($editRow['nilai_mutu'] ?? 4) : 4) ?>"
-              required></div>
-          <div><label>Nilai Minimum *</label><input type="number" step="0.01" min="0" max="100" name="nilai_min"
-              placeholder="85" value="<?= e($editType === 'skala_nilai' ? ($editRow['nilai_min'] ?? 0) : 0) ?>"
-              required></div>
-          <div><label>Nilai Maksimum *</label><input type="number" step="0.01" min="0" max="100" name="nilai_max"
-              placeholder="100" value="<?= e($editType === 'skala_nilai' ? ($editRow['nilai_max'] ?? 100) : 100) ?>"
-              required></div>
-          <div><label>Keterangan</label><input name="keterangan" maxlength="255"
-              placeholder="Sangat Baik, Baik, Cukup..."
-              value="<?= e($editType === 'skala_nilai' ? ($editRow['keterangan'] ?? '') : '') ?>"></div>
-          <div><label>Urutan</label><input type="number" min="1" name="nomor_urut"
-              value="<?= e($editType === 'skala_nilai' ? ($editRow['nomor_urut'] ?? 1) : 1) ?>"></div>
-          <div><label>&nbsp;</label><button
-              class="ak-btn"><?= ($editType === 'skala_nilai' && $editId) ? 'Simpan Perubahan' : '+ Tambah Nilai Huruf' ?></button>
-          </div>
-        </form>
-        <hr>
-        <div class="ak-table-wrap">
-          <table class="ak-table">
-            <tr>
-              <th>Nilai</th>
-              <th>Rentang</th>
-              <th>Nilai Mutu</th>
-              <th>Keterangan</th>
-              <th>Urutan</th>
-              <th>Aksi</th>
-            </tr>
-            <?php foreach ($skala as $x): ?><tr>
-                <td><span class="grade-badge"><?= e($x['kode_nilai']) ?></span></td>
-                <td><?= number_format((float)$x['nilai_min'], 2, ',', '.') ?> –
-                  <?= number_format((float)$x['nilai_max'], 2, ',', '.') ?></td>
-                <td><?= number_format((float)$x['nilai_mutu'], 2, ',', '.') ?></td>
-                <td><?= e($x['keterangan'] ?? '') ?></td>
-                <td><?= e($x['nomor_urut']) ?></td>
-                <td>
-                  <a class="ak-btn light" href="?edit_type=skala_nilai&edit_id=<?= $x['id'] ?>#skala-nilai">Edit</a>
-                  <form method="post" style="display:inline" class="js-delete-form"
-                    data-confirm="Hapus nilai <?= e($x['kode_nilai']) ?>?">
-                    <input type="hidden" name="action" value="skala_nilai_delete"><input type="hidden" name="id"
-                      value="<?= $x['id'] ?>"><button class="ak-btn danger">Hapus</button>
-                  </form>
-                </td>
-              </tr><?php endforeach; ?>
-          </table>
-        </div>
       </div>
     </section>
   </div>

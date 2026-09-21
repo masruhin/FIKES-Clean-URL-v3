@@ -22,570 +22,30 @@ $jadwal = $pdo->query("SELECT j.*,p.nama prodi_nama FROM akademik_jadwal j LEFT 
 $registrasi = $pdo->query("SELECT * FROM akademik_registrasi WHERE status='aktif' ORDER BY tanggal_mulai ASC,id ASC")->fetchAll();
 $dokumen = $pdo->query("SELECT * FROM akademik_dokumen WHERE status='aktif' ORDER BY kategori,nomor_urut,id DESC")->fetchAll();
 $penilaian = $pdo->query("SELECT * FROM akademik_penilaian WHERE status='aktif' ORDER BY nomor_urut,id ASC")->fetchAll();
-$totalBobot = 0;
-foreach ($penilaian as $n) $totalBobot += (float)$n['bobot'];
-$skalaNilai = [];
-$skalaNilaiError = '';
-
-/*
- * Master skala nilai: kompatibel dengan dua versi schema yang sempat digunakan.
- * Versi lama memakai `nilai_huruf`, versi terbaru memakai `kode_nilai`.
- * Data Admin tetap menjadi sumber utama; frontend hanya membaca.
- */
-try {
-  $table = $pdo->query("SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'akademik_skala_nilai' LIMIT 1")->fetchColumn();
-  if ($table) {
-    $colsStmt = $pdo->prepare("SELECT COLUMN_NAME FROM information_schema.COLUMNS WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = 'akademik_skala_nilai'");
-    $colsStmt->execute();
-    $cols = array_map('strtolower', $colsStmt->fetchAll(PDO::FETCH_COLUMN));
-
-    $gradeCol = in_array('kode_nilai', $cols, true) ? 'kode_nilai' : (in_array('nilai_huruf', $cols, true) ? 'nilai_huruf' : null);
-    if (!$gradeCol || !in_array('nilai_min', $cols, true) || !in_array('nilai_max', $cols, true) || !in_array('nilai_mutu', $cols, true)) {
-      throw new RuntimeException('Struktur tabel akademik_skala_nilai belum sesuai. Jalankan migration akademik_skala_nilai.sql.');
-    }
-
-    $hasStatus = in_array('status', $cols, true);
-    $hasKeterangan = in_array('keterangan', $cols, true);
-    $statusWhere = $hasStatus ? " WHERE status='aktif'" : '';
-    $order = in_array('nomor_urut', $cols, true) ? 'nomor_urut ASC, id ASC' : 'id ASC';
-    $keteranganSelect = $hasKeterangan ? 'keterangan' : "NULL AS keterangan";
-
-    $sql = "SELECT id, `{$gradeCol}` AS kode_nilai, nilai_min, nilai_max, nilai_mutu, {$keteranganSelect}" .
-      " FROM akademik_skala_nilai{$statusWhere} ORDER BY {$order}";
-    $skalaNilai = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
-
-    /* Jika schema lama belum memiliki keterangan, tetap tampilkan keterangan yang sesuai. */
-    foreach ($skalaNilai as &$s) {
-      if (trim((string)($s['keterangan'] ?? '')) === '') {
-        $kode = strtoupper(trim((string)$s['kode_nilai']));
-        $s['keterangan'] = match ($kode) {
-          'A', 'A-' => 'Sangat Baik',
-          'B+', 'B' => 'Baik',
-          'B-' => 'Cukup Baik',
-          'C+', 'C' => 'Cukup',
-          'C-', 'D' => 'Kurang',
-          'E' => 'Tidak Lulus',
-          default => ((float)$s['nilai_mutu'] >= 3.50 ? 'Sangat Baik' : ((float)$s['nilai_mutu'] >= 3.00 ? 'Baik' : ((float)$s['nilai_mutu'] >= 2.00 ? 'Cukup' : ((float)$s['nilai_mutu'] >= 1.00 ? 'Kurang' : 'Tidak Lulus')))),
-        };
-      }
-    }
-    unset($s);
-  } else {
-    /* Tabel belum dibuat: tampilkan default agar halaman frontend tidak kosong.
-       Untuk sinkronisasi penuh dengan Admin, jalankan migration yang disertakan. */
-    $skalaNilai = [
-      ['kode_nilai' => 'A', 'nilai_min' => 85, 'nilai_max' => 100, 'nilai_mutu' => 4, 'keterangan' => 'Sangat Baik'],
-      ['kode_nilai' => 'A-', 'nilai_min' => 80, 'nilai_max' => 84.99, 'nilai_mutu' => 3.75, 'keterangan' => 'Sangat Baik'],
-      ['kode_nilai' => 'B+', 'nilai_min' => 75, 'nilai_max' => 79.99, 'nilai_mutu' => 3.50, 'keterangan' => 'Baik'],
-      ['kode_nilai' => 'B', 'nilai_min' => 70, 'nilai_max' => 74.99, 'nilai_mutu' => 3, 'keterangan' => 'Baik'],
-      ['kode_nilai' => 'B-', 'nilai_min' => 65, 'nilai_max' => 69.99, 'nilai_mutu' => 2.75, 'keterangan' => 'Cukup Baik'],
-      ['kode_nilai' => 'C+', 'nilai_min' => 60, 'nilai_max' => 64.99, 'nilai_mutu' => 2.50, 'keterangan' => 'Cukup'],
-      ['kode_nilai' => 'C', 'nilai_min' => 55, 'nilai_max' => 59.99, 'nilai_mutu' => 2, 'keterangan' => 'Cukup'],
-      ['kode_nilai' => 'C-', 'nilai_min' => 50, 'nilai_max' => 54.99, 'nilai_mutu' => 1.75, 'keterangan' => 'Kurang'],
-      ['kode_nilai' => 'D', 'nilai_min' => 40, 'nilai_max' => 49.99, 'nilai_mutu' => 1, 'keterangan' => 'Kurang'],
-      ['kode_nilai' => 'E', 'nilai_min' => 0, 'nilai_max' => 39.99, 'nilai_mutu' => 0, 'keterangan' => 'Tidak Lulus'],
-    ];
-  }
-} catch (Throwable $e) {
-  $skalaNilaiError = 'Skala nilai belum dapat dimuat: ' . $e->getMessage();
-}
 ?>
 <!doctype html>
 <html lang="id">
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <title>Akademik | FIKES - Fakultas Ilmu Kesehatan</title>
+    <title>Akademik | FIKES - Fakultas Ilmu Kesehatan</title>
 
-  <meta name="description"
-    content="Website resmi Fakultas Ilmu Kesehatan - Informasi akademik, program studi, kemahasiswaan, pelayanan dan informasi FIKES." />
+    <meta name="description"
+      content="Website resmi Fakultas Ilmu Kesehatan - Informasi akademik, program studi, kemahasiswaan, pelayanan dan informasi FIKES." />
 
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-  <link
-    href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="/fikes/assets/css/style.css" />
-  <style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap"
+      rel="stylesheet" />
+    <link rel="stylesheet" href="/fikes/assets/css/style.css" />
+    <style>
     @import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap");
 
 
-
-    /* =========================================================
-         RESPONSIVE TABLE AKADEMIK
-         Semua tabel dibungkus horizontal-scroll agar tidak
-         membuat layout halaman melebar pada HP/tablet.
-      ========================================================= */
-    .ak-table-wrap {
-      width: 100%;
-      max-width: 100%;
-      min-width: 0;
-      overflow-x: auto;
-      overflow-y: hidden;
-      -webkit-overflow-scrolling: touch;
-      overscroll-behavior-x: contain;
-      border: 1px solid #e3ece9;
-      border-radius: 14px;
-      background: #fff;
-      scrollbar-width: thin;
-    }
-
-    .ak-table-wrap::-webkit-scrollbar {
-      height: 7px;
-    }
-
-    .ak-table-wrap::-webkit-scrollbar-track {
-      background: #eef4f1;
-      border-radius: 999px;
-    }
-
-    .ak-table-wrap::-webkit-scrollbar-thumb {
-      background: #a9c9be;
-      border-radius: 999px;
-    }
-
-    .ak-table {
-      width: 100%;
-      min-width: 820px;
-      border-collapse: separate;
-      border-spacing: 0;
-      table-layout: auto;
-    }
-
-    .ak-table th,
-    .ak-table td {
-      white-space: nowrap;
-    }
-
-    .ak-table th {
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
-
-    /* Kolom teks panjang tetap punya ruang yang cukup */
-    .ak-table td:nth-child(2) {
-      min-width: 210px;
-      white-space: normal;
-    }
-
-    /* Tombol/link tidak terpotong */
-    .ak-table td:last-child {
-      white-space: nowrap;
-    }
-
-    /* Penanda kecil agar pengguna HP tahu tabel dapat digeser */
-    .ak-table-wrap::after {
-      content: "Geser tabel ke samping →";
-      display: block;
-      padding: 7px 12px;
-      font-size: 10px;
-      color: #70817b;
-      background: #f7faf9;
-      border-top: 1px solid #edf1ef;
-      text-align: right;
-    }
-
-    @media(max-width:900px) {
-      .ak-table-wrap {
-        width: 100%;
-        max-width: 100%;
-        overflow-x: auto;
-      }
-
-      .ak-table {
-        min-width: 820px;
-      }
-    }
-
-    /* HP: tabel berubah menjadi kartu, bukan dipaksa melebar */
-    @media(max-width:600px) {
-      .ak-table-wrap {
-        width: 100%;
-        max-width: 100%;
-        margin: 0;
-        overflow: visible;
-        border: 0;
-        background: transparent;
-        border-radius: 0;
-      }
-
-      .ak-table-wrap::after {
-        display: none;
-      }
-
-      .ak-table {
-        width: 100%;
-        min-width: 0;
-        table-layout: auto;
-        border-collapse: separate;
-        border-spacing: 0;
-        font-size: 12px;
-      }
-
-      .ak-table thead {
-        display: none;
-      }
-
-      .ak-table tbody,
-      .ak-table tbody tr,
-      .ak-table tbody td {
-        display: block;
-        width: 100%;
-        box-sizing: border-box;
-      }
-
-      .ak-table tbody tr {
-        margin: 0 0 12px;
-        padding: 10px 12px;
-        border: 1px solid #e3ece9;
-        border-radius: 14px;
-        background: #fff;
-        box-shadow: 0 4px 14px rgba(12, 68, 52, .05);
-      }
-
-      .ak-table tbody td {
-        min-width: 0 !important;
-        padding: 8px 0;
-        border: 0;
-        white-space: normal !important;
-        overflow-wrap: anywhere;
-        display: grid;
-        grid-template-columns: 108px minmax(0, 1fr);
-        gap: 10px;
-        align-items: start;
-        line-height: 1.5;
-      }
-
-      .ak-table tbody td+td {
-        border-top: 1px dashed #e8efec;
-      }
-
-      .ak-table tbody td::before {
-        content: attr(data-label);
-        display: block;
-        font-size: 10px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: .35px;
-        color: #71817c;
-      }
-
-      .ak-table tbody td:last-child {
-        white-space: normal !important;
-      }
-
-      .ak-table tbody td .ak-badge {
-        width: fit-content;
-      }
-
-      .ak-table tbody td a {
-        max-width: 100%;
-        overflow-wrap: anywhere;
-      }
-    }
-
-    @media(max-width:380px) {
-      .ak-table tbody tr {
-        padding: 9px 10px;
-      }
-
-      .ak-table tbody td {
-        grid-template-columns: 92px minmax(0, 1fr);
-        gap: 8px;
-        font-size: 11px;
-      }
-
-      .ak-table tbody td::before {
-        font-size: 9px;
-      }
-    }
-
-    @media(max-width:900px) {
-      .ak-layout {
-        grid-template-columns: 1fr
-      }
-
-      .ak-side {
-        position: static
-      }
-
-      .ak-doc-grid {
-        grid-template-columns: 1fr 1fr
-      }
-
-      .ak-calendar {
-        grid-template-columns: 1fr
-      }
-
-      .ak-stat-row {
-        grid-template-columns: 1fr 1fr
-      }
-    }
-
-    @media(max-width:600px) {
-      .akademik-hero {
-        padding: 42px 0 55px
-      }
-
-      .ak-section {
-        padding: 21px
-      }
-
-      .ak-doc-grid,
-      .ak-stat-row {
-        grid-template-columns: 1fr
-      }
-
-      .ak-rating {
-        grid-template-columns: 1fr 55px 1fr
-      }
-
-      .ak-section h2 {
-        font-size: 22px
-      }
-    }
-
-
-
-    /* =========================================================
-   SISTEM PENILAIAN & SKALA NILAI
-========================================================= */
-    .ak-score-summary {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 12px;
-      margin-bottom: 18px;
-    }
-
-    .ak-score-stat {
-      padding: 16px 18px;
-      border: 1px solid #e4ece8;
-      border-radius: 14px;
-      background: linear-gradient(135deg, #f8fcfa, #ffffff);
-    }
-
-    .ak-score-stat span {
-      display: block;
-      color: #71817b;
-      font-size: 11px;
-      font-weight: 700;
-      margin-bottom: 4px;
-    }
-
-    .ak-score-stat strong {
-      color: #087f5b;
-      font-size: 22px;
-      font-family: "Plus Jakarta Sans", sans-serif;
-    }
-
-    .ak-score-block {
-      padding: 18px;
-      border: 1px solid #e4ece8;
-      border-radius: 16px;
-      background: #fff;
-      margin-top: 16px;
-    }
-
-    .ak-score-title {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      margin-bottom: 12px;
-    }
-
-    .ak-score-title h3 {
-      margin-top: 4px;
-      font-size: 17px;
-    }
-
-    .ak-score-caption {
-      color: #7b8984;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .ak-total-badge {
-      display: inline-flex;
-      align-items: center;
-      padding: 7px 10px;
-      border-radius: 999px;
-      font-size: 11px;
-      font-weight: 800;
-      white-space: nowrap;
-    }
-
-    .ak-total-badge.is-valid {
-      background: #e7f7f1;
-      color: #087f5b;
-    }
-
-    .ak-total-badge.is-warning {
-      background: #fff5dd;
-      color: #8a671c;
-    }
-
-    .ak-rating-head {
-      border-top: 1px solid #edf1ef;
-    }
-
-    .ak-grade-grid {
-      display: grid;
-      grid-template-columns: repeat(5, minmax(0, 1fr));
-      gap: 10px;
-    }
-
-    .ak-grade-card {
-      padding: 14px 12px;
-      border: 1px solid #e4ece8;
-      border-radius: 13px;
-      background: #f9fcfb;
-      text-align: center;
-      transition: transform .2s ease, border-color .2s ease, box-shadow .2s ease;
-    }
-
-    .ak-grade-card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(8, 127, 91, .25);
-      box-shadow: 0 10px 25px rgba(18, 55, 42, .07);
-    }
-
-    .ak-grade-code {
-      color: #087f5b;
-      font-family: "Plus Jakarta Sans", sans-serif;
-      font-size: 24px;
-      font-weight: 800;
-      line-height: 1.1;
-    }
-
-    .ak-grade-range {
-      margin-top: 7px;
-      color: #415c53;
-      font-size: 11px;
-      font-weight: 700;
-    }
-
-    .ak-grade-quality {
-      margin-top: 5px;
-      color: #87938e;
-      font-size: 10px;
-    }
-
-    .ak-grade-quality strong {
-      color: #526a61;
-    }
-
-    @media (max-width: 900px) {
-      .ak-grade-grid {
-        grid-template-columns: repeat(3, minmax(0, 1fr));
-      }
-    }
-
-    @media (max-width: 600px) {
-      .ak-score-summary {
-        grid-template-columns: 1fr;
-      }
-
-      .ak-score-title {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .ak-grade-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-      }
-    }
-
-    /* Tabel skala nilai: data diambil langsung dari akademik_skala_nilai */
-    .ak-grade-table-wrap {
-      width: 100%;
-      overflow-x: auto;
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      background: #fff;
-    }
-
-    .ak-grade-table {
-      width: 100%;
-      min-width: 620px;
-      border-collapse: separate;
-      border-spacing: 0;
-      font-size: 13px;
-    }
-
-    .ak-grade-table th {
-      padding: 12px 14px;
-      text-align: left;
-      background: #fff4f7;
-      color: #9e315a;
-      font-size: 10px;
-      font-weight: 800;
-      letter-spacing: .35px;
-      border-bottom: 1px solid #eadfe4;
-    }
-
-    .ak-grade-table td {
-      padding: 13px 14px;
-      color: var(--text);
-      border-bottom: 1px solid #edf0ef;
-      vertical-align: middle;
-    }
-
-    .ak-grade-table tbody tr:last-child td {
-      border-bottom: 0;
-    }
-
-    .ak-grade-table tbody tr:hover {
-      background: #fcfdfd;
-    }
-
-    .ak-grade-badge {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-width: 38px;
-      height: 26px;
-      padding: 0 9px;
-      border-radius: 8px;
-      background: #f8e8ef;
-      color: #a62f5b;
-      font-weight: 800;
-    }
-
-    .ak-grade-range-text,
-    .ak-grade-table td:last-child strong {
-      color: #a62f5b;
-    }
-
-    @media (max-width: 700px) {
-      .ak-grade-table-wrap {
-        border-radius: 10px;
-      }
-    }
-
-
-    /* Status koneksi skala nilai */
-    .ak-db-warning {
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-      border: 1px dashed #e6c36a;
-      background: #fff9e8;
-      color: #7a5a00;
-    }
-
-    .ak-db-warning strong {
-      color: #7a4d00;
-    }
-
-    .ak-db-warning code {
-      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-      font-size: .92em;
-    }
 
     .scroll-line {
       width: 50px;
@@ -1226,20 +686,20 @@ try {
         font-size: 28px
       }
     }
-  </style>
-</head>
+    </style>
+  </head>
 
-<body>
-  <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
+  <body>
+    <?php require_once __DIR__ . '/../menu/topbar.php'; ?>
 
-  <!-- NAVBAR REUSABLE -->
-  <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
-  <!-- =========================================================
+    <!-- NAVBAR REUSABLE -->
+    <?php require_once __DIR__ . '/../menu/navbar.php'; ?>
+    <!-- =========================================================
      HERO
 ========================================================= -->
 
-  <main>
-    <style>
+    <main>
+      <style>
       .akademik-hero {
         position: relative;
         overflow: hidden;
@@ -1820,58 +1280,58 @@ try {
           font-size: 22px
         }
       }
-    </style>
-    <section class="akademik-hero">
-      <div class="container">
-        <div class="ak-breadcrumb"><a href="/fikes/">⌂ Beranda</a><span>›</span><span>Akademik</span></div>
-        <div class="ak-label" style="background:rgba(255,255,255,.15);color:#fff">PUSAT INFORMASI AKADEMIK</div>
-        <h1>Akademik <span>FIKES</span></h1>
-        <p>Informasi kurikulum, kalender pendidikan, jadwal perkuliahan dan ujian, registrasi, administrasi mahasiswa,
-          dokumen akademik, hingga sistem penilaian.</p>
-      </div>
-    </section>
-    <section class="akademik-wrap">
-      <div class="container">
-        <div class="ak-layout">
-          <aside class="ak-side">
-            <div class="ak-side-title">MENU AKADEMIK</div><a href="#kurikulum"><i>📚</i>Kurikulum &amp; Silabus</a><a
-              href="#kalender"><i>🗓️</i>Kalender Akademik</a><a href="#jadwal"><i>🕘</i>Jadwal Kuliah &amp;
-              Ujian</a><a href="#registrasi"><i>📝</i>Jadwal Registrasi</a><a href="#dokumen"><i>📁</i>Administrasi
-              &amp; Dokumen</a><a href="#penilaian"><i>📊</i>Sistem Penilaian</a>
-          </aside>
-          <div>
-            <section class="ak-section" id="kurikulum">
-              <div class="ak-section-head">
-                <div><span class="ak-label">KURIKULUM &amp; SILABUS</span>
-                  <h2>Kurikulum dan Silabus</h2>
-                  <p class="ak-section-desc">Daftar mata kuliah wajib dan pilihan beserta bobot SKS yang terhubung
-                    langsung dengan Program Studi.</p>
+      </style>
+      <section class="akademik-hero">
+        <div class="container">
+          <div class="ak-breadcrumb"><a href="/fikes/">⌂ Beranda</a><span>›</span><span>Akademik</span></div>
+          <div class="ak-label" style="background:rgba(255,255,255,.15);color:#fff">PUSAT INFORMASI AKADEMIK</div>
+          <h1>Akademik <span>FIKES</span></h1>
+          <p>Informasi kurikulum, kalender pendidikan, jadwal perkuliahan dan ujian, registrasi, administrasi mahasiswa,
+            dokumen akademik, hingga sistem penilaian.</p>
+        </div>
+      </section>
+      <section class="akademik-wrap">
+        <div class="container">
+          <div class="ak-layout">
+            <aside class="ak-side">
+              <div class="ak-side-title">MENU AKADEMIK</div><a href="#kurikulum"><i>📚</i>Kurikulum &amp; Silabus</a><a
+                href="#kalender"><i>🗓️</i>Kalender Akademik</a><a href="#jadwal"><i>🕘</i>Jadwal Kuliah &amp;
+                Ujian</a><a href="#registrasi"><i>📝</i>Jadwal Registrasi</a><a href="#dokumen"><i>📁</i>Administrasi
+                &amp; Dokumen</a><a href="#penilaian"><i>📊</i>Sistem Penilaian</a>
+            </aside>
+            <div>
+              <section class="ak-section" id="kurikulum">
+                <div class="ak-section-head">
+                  <div><span class="ak-label">KURIKULUM &amp; SILABUS</span>
+                    <h2>Kurikulum dan Silabus</h2>
+                    <p class="ak-section-desc">Daftar mata kuliah wajib dan pilihan beserta bobot SKS yang terhubung
+                      langsung dengan Program Studi.</p>
+                  </div>
                 </div>
-              </div>
-              <div class="ak-filter"><select id="prodiFilter">
-                  <option value="">Semua Program Studi</option><?php foreach ($prodiList as $p): ?><option
+                <div class="ak-filter"><select id="prodiFilter">
+                    <option value="">Semua Program Studi</option><?php foreach ($prodiList as $p): ?><option
                       value="<?= e($p['id']) ?>"><?= e($p['nama']) ?> — <?= e($p['jenjang']) ?></option>
-                  <?php endforeach; ?>
-                </select></div>
-              <div class="ak-stat-row">
-                <div class="ak-stat"><strong><?= count($kurikulum) ?></strong><span>Mata kuliah aktif</span></div>
-                <div class="ak-stat"><strong><?= number_format($totalSks, 1) ?></strong><span>Total SKS</span></div>
-                <div class="ak-stat"><strong><?= count($prodiList) ?></strong><span>Program Studi</span></div>
-              </div>
-              <div class="ak-table-wrap">
-                <table class="ak-table" id="kurTable">
-                  <thead>
-                    <tr>
-                      <th>Kode</th>
-                      <th>Mata Kuliah</th>
-                      <th>Program Studi</th>
-                      <th>Semester</th>
-                      <th>SKS</th>
-                      <th>Jenis</th>
-                      <th>Silabus</th>
-                    </tr>
-                  </thead>
-                  <tbody><?php foreach ($kurikulum as $k): ?><tr data-prodi="<?= e($k['prodi_id']) ?>">
+                    <?php endforeach; ?>
+                  </select></div>
+                <div class="ak-stat-row">
+                  <div class="ak-stat"><strong><?= count($kurikulum) ?></strong><span>Mata kuliah aktif</span></div>
+                  <div class="ak-stat"><strong><?= number_format($totalSks, 1) ?></strong><span>Total SKS</span></div>
+                  <div class="ak-stat"><strong><?= count($prodiList) ?></strong><span>Program Studi</span></div>
+                </div>
+                <div class="ak-table-wrap">
+                  <table class="ak-table" id="kurTable">
+                    <thead>
+                      <tr>
+                        <th>Kode</th>
+                        <th>Mata Kuliah</th>
+                        <th>Program Studi</th>
+                        <th>Semester</th>
+                        <th>SKS</th>
+                        <th>Jenis</th>
+                        <th>Silabus</th>
+                      </tr>
+                    </thead>
+                    <tbody><?php foreach ($kurikulum as $k): ?><tr data-prodi="<?= e($k['prodi_id']) ?>">
                         <td><?= e($k['kode_mk']) ?></td>
                         <td><strong><?= e($k['nama_mk']) ?></strong></td>
                         <td><?= e($k['prodi_nama']) ?></td>
@@ -1879,24 +1339,24 @@ try {
                         <td><?= number_format((float)$k['sks'], 1) ?></td>
                         <td><span class="ak-badge"><?= e($k['jenis'] ?: 'Wajib') ?></span></td>
                         <td><?php if (!empty($k['silabus_file'])): ?><a class="ak-btn outline"
-                              href="/fikes/admin/uploads/akademik/<?= rawurlencode(basename($k['silabus_file'])) ?>"
-                              target="_blank">Lihat</a><?php else: ?>- <?php endif; ?></td>
+                            href="/fikes/admin/uploads/akademik/<?= rawurlencode(basename($k['silabus_file'])) ?>"
+                            target="_blank">Lihat</a><?php else: ?>- <?php endif; ?></td>
                       </tr><?php endforeach; ?></tbody>
-                </table>
-              </div>
-              <?php if (!$kurikulum): ?><div class="ak-empty">Belum ada data kurikulum. Data akan tampil setelah
-                  dimasukkan melalui Dashboard Admin.</div><?php endif; ?>
-            </section>
-
-            <section class="ak-section" id="kalender">
-              <div class="ak-section-head">
-                <div><span class="ak-label">KALENDER PENDIDIKAN</span>
-                  <h2>Kalender Akademik</h2>
-                  <p class="ak-section-desc">Jadwal penting selama satu tahun ajaran, termasuk masuk kuliah, minggu
-                    tenang, ujian, dan masa libur.</p>
+                  </table>
                 </div>
-              </div>
-              <div class="ak-calendar"><?php foreach ($kalender as $x): ?><div class="ak-event">
+                <?php if (!$kurikulum): ?><div class="ak-empty">Belum ada data kurikulum. Data akan tampil setelah
+                  dimasukkan melalui Dashboard Admin.</div><?php endif; ?>
+              </section>
+
+              <section class="ak-section" id="kalender">
+                <div class="ak-section-head">
+                  <div><span class="ak-label">KALENDER PENDIDIKAN</span>
+                    <h2>Kalender Akademik</h2>
+                    <p class="ak-section-desc">Jadwal penting selama satu tahun ajaran, termasuk masuk kuliah, minggu
+                      tenang, ujian, dan masa libur.</p>
+                  </div>
+                </div>
+                <div class="ak-calendar"><?php foreach ($kalender as $x): ?><div class="ak-event">
                     <small><?= e($x['tahun_ajaran']) ?> ·
                       <?= e($x['kategori']) ?></small><strong><?= e($x['judul']) ?></strong>
                     <p>
@@ -1904,28 +1364,28 @@ try {
                     </p>
                   </div><?php endforeach; ?></div><?php if (!$kalender): ?><div class="ak-empty">Belum ada kalender
                   akademik.</div><?php endif; ?>
-            </section>
+              </section>
 
-            <section class="ak-section" id="jadwal">
-              <div class="ak-section-head">
-                <div><span class="ak-label">JADWAL KULIAH &amp; UJIAN</span>
-                  <h2>Jadwal Perkuliahan dan Ujian</h2>
-                  <p class="ak-section-desc">Waktu, ruang, dan pelaksanaan kuliah, UTS, serta UAS.</p>
+              <section class="ak-section" id="jadwal">
+                <div class="ak-section-head">
+                  <div><span class="ak-label">JADWAL KULIAH &amp; UJIAN</span>
+                    <h2>Jadwal Perkuliahan dan Ujian</h2>
+                    <p class="ak-section-desc">Waktu, ruang, dan pelaksanaan kuliah, UTS, serta UAS.</p>
+                  </div>
                 </div>
-              </div>
-              <div class="ak-table-wrap">
-                <table class="ak-table">
-                  <thead>
-                    <tr>
-                      <th>Jenis</th>
-                      <th>Kegiatan / Mata Kuliah</th>
-                      <th>Program Studi</th>
-                      <th>Tanggal</th>
-                      <th>Waktu</th>
-                      <th>Ruang</th>
-                    </tr>
-                  </thead>
-                  <tbody><?php foreach ($jadwal as $j): ?><tr>
+                <div class="ak-table-wrap">
+                  <table class="ak-table">
+                    <thead>
+                      <tr>
+                        <th>Jenis</th>
+                        <th>Kegiatan / Mata Kuliah</th>
+                        <th>Program Studi</th>
+                        <th>Tanggal</th>
+                        <th>Waktu</th>
+                        <th>Ruang</th>
+                      </tr>
+                    </thead>
+                    <tbody><?php foreach ($jadwal as $j): ?><tr>
                         <td><span class="ak-badge"><?= e($j['jenis']) ?></span></td>
                         <td>
                           <strong><?= e($j['nama_kegiatan']) ?></strong><?= $j['kode_mk'] ? '<br><small>' . e($j['kode_mk']) . '</small>' : '' ?>
@@ -1935,20 +1395,20 @@ try {
                         <td><?= e(substr($j['jam_mulai'], 0, 5)) ?> - <?= e(substr($j['jam_selesai'], 0, 5)) ?></td>
                         <td><?= e($j['ruang'] ?: '-') ?></td>
                       </tr><?php endforeach; ?></tbody>
-                </table>
-              </div><?php if (!$jadwal): ?><div class="ak-empty">Belum ada jadwal kuliah atau ujian.</div>
-              <?php endif; ?>
-            </section>
+                  </table>
+                </div><?php if (!$jadwal): ?><div class="ak-empty">Belum ada jadwal kuliah atau ujian.</div>
+                <?php endif; ?>
+              </section>
 
-            <section class="ak-section" id="registrasi">
-              <div class="ak-section-head">
-                <div><span class="ak-label">JADWAL REGISTRASI</span>
-                  <h2>Pembayaran &amp; Pengisian KRS</h2>
-                  <p class="ak-section-desc">Batas waktu pembayaran UKT/SPP, pengisian KRS, dan proses persetujuan
-                    akademik.</p>
+              <section class="ak-section" id="registrasi">
+                <div class="ak-section-head">
+                  <div><span class="ak-label">JADWAL REGISTRASI</span>
+                    <h2>Pembayaran &amp; Pengisian KRS</h2>
+                    <p class="ak-section-desc">Batas waktu pembayaran UKT/SPP, pengisian KRS, dan proses persetujuan
+                      akademik.</p>
+                  </div>
                 </div>
-              </div>
-              <div class="ak-calendar"><?php foreach ($registrasi as $r): ?><div class="ak-event">
+                <div class="ak-calendar"><?php foreach ($registrasi as $r): ?><div class="ak-event">
                     <small><?= e($r['tahun_ajaran']) ?> ·
                       <?= e($r['jenis']) ?></small><strong><?= e($r['judul']) ?></strong>
                     <p>
@@ -1956,308 +1416,217 @@ try {
                     </p>
                   </div><?php endforeach; ?></div><?php if (!$registrasi): ?><div class="ak-empty">Belum ada jadwal
                   registrasi.</div><?php endif; ?><div class="ak-note">Perhatikan batas waktu pembayaran UKT/SPP dan
-                pengisian KRS agar status akademik semester dapat diproses tepat waktu.</div>
-            </section>
+                  pengisian KRS agar status akademik semester dapat diproses tepat waktu.</div>
+              </section>
 
-            <section class="ak-section" id="dokumen">
-              <div class="ak-section-head">
-                <div><span class="ak-label">ADMINISTRASI &amp; DOKUMEN MAHASISWA</span>
-                  <h2>Panduan, Formulir &amp; Layanan Kelulusan</h2>
-                  <p class="ak-section-desc">Dokumen digital dan informasi layanan akademik mahasiswa.</p>
+              <section class="ak-section" id="dokumen">
+                <div class="ak-section-head">
+                  <div><span class="ak-label">ADMINISTRASI &amp; DOKUMEN MAHASISWA</span>
+                    <h2>Panduan, Formulir &amp; Layanan Kelulusan</h2>
+                    <p class="ak-section-desc">Dokumen digital dan informasi layanan akademik mahasiswa.</p>
+                  </div>
                 </div>
-              </div>
-              <div class="ak-doc-grid">
-                <?php $icons = ['panduan' => '📘', 'formulir' => '📄', 'kelulusan' => '🎓'];
+                <div class="ak-doc-grid">
+                  <?php $icons = ['panduan' => '📘', 'formulir' => '📄', 'kelulusan' => '🎓'];
                 foreach ($dokumen as $d): ?><article class="ak-doc">
                     <div class="ak-doc-icon"><?= $icons[$d['kategori']] ?? '📁' ?></div>
                     <h3><?= e($d['judul']) ?></h3>
                     <p><?= e($d['deskripsi']) ?></p><?php if ($d['kategori'] === 'kelulusan' && $d['isi']): ?><ul
-                        class="ak-list">
-                        <?php foreach (preg_split('/\r\n|\r|\n/', trim($d['isi'])) as $li): if (trim($li) !== ''): ?><li>
-                              <?= e($li) ?></li><?php endif;
+                      class="ak-list">
+                      <?php foreach (preg_split('/\r\n|\r|\n/', trim($d['isi'])) as $li): if (trim($li) !== ''): ?><li>
+                        <?= e($li) ?></li><?php endif;
                                                       endforeach; ?></ul>
-                      <?php endif; ?><?php if (!empty($d['file_dokumen'])): ?><a class="ak-btn"
-                        href="/fikes/admin/uploads/akademik/<?= rawurlencode(basename($d['file_dokumen'])) ?>"
-                        target="_blank">Unduh Dokumen</a><?php elseif (!empty($d['link_url'])): ?><a class="ak-btn"
-                        href="<?= e($d['link_url']) ?>" target="_blank">Buka Informasi</a><?php endif; ?>
+                    <?php endif; ?><?php if (!empty($d['file_dokumen'])): ?><a class="ak-btn"
+                      href="/fikes/admin/uploads/akademik/<?= rawurlencode(basename($d['file_dokumen'])) ?>"
+                      target="_blank">Unduh Dokumen</a><?php elseif (!empty($d['link_url'])): ?><a class="ak-btn"
+                      href="<?= e($d['link_url']) ?>" target="_blank">Buka Informasi</a><?php endif; ?>
                   </article><?php endforeach; ?></div><?php if (!$dokumen): ?><div class="ak-empty">Belum ada dokumen
                   atau informasi administrasi mahasiswa.</div><?php endif; ?>
-            </section>
+              </section>
 
-            <section class="ak-section" id="penilaian">
-              <div class="ak-section-head">
-                <div><span class="ak-label">SISTEM PENILAIAN</span>
-                  <h2>Komponen &amp; Skala Penilaian</h2>
-                  <p class="ak-section-desc">Komponen penilaian dan skala nilai huruf yang dikelola melalui Dashboard
-                    Admin FIKES.</p>
-                </div>
-              </div>
-
-              <div class="ak-score-summary">
-                <div class="ak-score-stat">
-                  <span>Total Bobot</span>
-                  <strong><?= number_format($totalBobot, 0) ?>%</strong>
-                </div>
-                <div class="ak-score-stat">
-                  <span>Komponen Penilaian</span>
-                  <strong><?= count($penilaian) ?></strong>
-                </div>
-                <div class="ak-score-stat">
-                  <span>Skala Nilai</span>
-                  <strong><?= count($skalaNilai) ?></strong>
-                </div>
-              </div>
-
-              <div class="ak-score-block">
-                <div class="ak-score-title">
-                  <div>
-                    <span class="ak-label">KOMPONEN PENILAIAN</span>
-                    <h3>Bobot Penilaian</h3>
+              <section class="ak-section" id="penilaian">
+                <div class="ak-section-head">
+                  <div><span class="ak-label">SISTEM PENILAIAN</span>
+                    <h2>Komponen &amp; Skala Penilaian</h2>
+                    <p class="ak-section-desc">Informasi komponen penilaian pembelajaran yang ditetapkan dan dikelola
+                      melalui Dashboard Admin.</p>
                   </div>
-                  <span class="ak-total-badge <?= abs($totalBobot - 100) < 0.01 ? 'is-valid' : 'is-warning' ?>">
-                    <?= abs($totalBobot - 100) < 0.01 ? 'Total 100%' : 'Total ' . number_format($totalBobot, 0) . '%' ?>
-                  </span>
                 </div>
-                <div class="ak-rating ak-rating-head">
+                <div class="ak-rating">
                   <div>Komponen</div>
                   <div>Bobot</div>
                   <div>Keterangan</div>
-                </div>
-                <?php foreach ($penilaian as $n): ?>
-                  <div class="ak-rating">
-                    <div><strong><?= e($n['komponen']) ?></strong></div>
-                    <div><span class="ak-badge"><?= number_format((float)$n['bobot'], 0) ?>%</span></div>
-                    <div><?= e($n['keterangan'] ?: '-') ?></div>
-                  </div>
-                <?php endforeach; ?>
-                <?php if (!$penilaian): ?><div class="ak-empty">Belum ada komponen penilaian.</div><?php endif; ?>
-              </div>
-
-              <div class="ak-score-block">
-                <div class="ak-score-title">
-                  <div>
-                    <span class="ak-label">SKALA NILAI HURUF</span>
-                    <h3>Konversi Nilai Angka</h3>
-                  </div>
-                  <span class="ak-score-caption">Dikelola oleh Admin</span>
-                </div>
-                <?php if ($skalaNilai): ?>
-                  <div class="ak-grade-table-wrap">
-                    <table class="ak-grade-table">
-                      <thead>
-                        <tr>
-                          <th>NILAI</th>
-                          <th>RENTANG</th>
-                          <th>NILAI MUTU</th>
-                          <th>KETERANGAN</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        <?php foreach ($skalaNilai as $s):
-                          $kode = strtoupper(trim((string)$s['kode_nilai']));
-                          $min = (float)$s['nilai_min'];
-                          $max = (float)$s['nilai_max'];
-                          $mutu = (float)$s['nilai_mutu'];
-                          $keterangan = match ($kode) {
-                            'A' => 'Sangat Baik',
-                            'A-' => 'Sangat Baik',
-                            'B+' => 'Baik',
-                            'B' => 'Baik',
-                            'B-' => 'Cukup Baik',
-                            'C+' => 'Cukup',
-                            'C' => 'Cukup',
-                            'C-' => 'Kurang',
-                            'D' => 'Kurang',
-                            'E' => 'Tidak Lulus',
-                            default => ($mutu >= 3.50 ? 'Sangat Baik' : ($mutu >= 3.00 ? 'Baik' : ($mutu >= 2.00 ? 'Cukup' : ($mutu >= 1.00 ? 'Kurang' : 'Tidak Lulus')))),
-                          };
-                        ?>
-                          <tr>
-                            <td><span class="ak-grade-badge"><?= e($kode) ?></span></td>
-                            <td class="ak-grade-range-text"><strong><?= number_format($min, 2, ',', '.') ?> –
-                                <?= number_format($max, 2, ',', '.') ?></strong></td>
-                            <td><?= number_format($mutu, 2, ',', '.') ?></td>
-                            <td><strong><?= e($keterangan) ?></strong></td>
-                          </tr>
-                        <?php endforeach; ?>
-                      </tbody>
-                    </table>
-                  </div>
-                  <?php if ($skalaNilaiError !== ''): ?>
-                    <div class="ak-db-warning" style="margin-top:12px">Data default ditampilkan. Untuk sinkronisasi dengan
-                      Admin, jalankan <code>DATABASE/struktur/akademik_skala_nilai.sql</code>.</div>
-                  <?php endif; ?>
-                <?php else: ?>
-                  <div class="ak-empty">Belum ada skala nilai yang dipublikasikan.</div>
-                <?php endif; ?>
-              </div>
-
-              <div class="ak-note">Rentang nilai, nilai mutu, dan bobot komponen mengikuti data aktif yang ditetapkan
-                pada Dashboard Admin. Perubahan di backend akan otomatis tampil di halaman akademik ini.</div>
-            </section>
+                </div><?php foreach ($penilaian as $n): ?><div class="ak-rating">
+                  <div><strong><?= e($n['komponen']) ?></strong></div>
+                  <div><span class="ak-badge"><?= number_format((float)$n['bobot'], 0) ?>%</span></div>
+                  <div><?= e($n['keterangan']) ?></div>
+                </div><?php endforeach; ?><?php if (!$penilaian): ?><div class="ak-empty">Belum ada komponen penilaian.
+                </div><?php endif; ?><div class="ak-note">Skala nilai huruf dan konversi nilai dapat disesuaikan dengan
+                  ketentuan akademik FIKES melalui Dashboard Admin.</div>
+              </section>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
-  </main>
+      </section>
+    </main>
 
-  <!-- =========================================================
+    <!-- =========================================================
      FOOTER
 ========================================================= -->
 
-  <footer>
-    <div class="container footer-main">
-      <div class="footer-brand">
-        <div class="logo footer-logo">
-          <div class="logo-icon">F</div>
+    <footer>
+      <div class="container footer-main">
+        <div class="footer-brand">
+          <div class="logo footer-logo">
+            <div class="logo-icon">F</div>
 
-          <div class="logo-text">
-            <strong style="color: white"> FIKES </strong>
+            <div class="logo-text">
+              <strong style="color: white"> FIKES </strong>
 
-            <small> FAKULTAS ILMU KESEHATAN </small>
+              <small> FAKULTAS ILMU KESEHATAN </small>
+            </div>
+          </div>
+
+          <p>
+            Membangun generasi kesehatan yang profesional, berintegritas,
+            inovatif, dan berorientasi kepada masyarakat.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="footer-title">Tentang FIKES</h4>
+
+          <div class="footer-links">
+            <a href="#"> Visi Misi </a>
+
+            <a href="#"> Struktur Organisasi </a>
+
+            <a href="#"> Akreditasi </a>
+
+            <a href="#"> Daftar Dosen </a>
           </div>
         </div>
 
-        <p>
-          Membangun generasi kesehatan yang profesional, berintegritas,
-          inovatif, dan berorientasi kepada masyarakat.
-        </p>
-      </div>
+        <div>
+          <h4 class="footer-title">Program Studi</h4>
 
-      <div>
-        <h4 class="footer-title">Tentang FIKES</h4>
+          <div class="footer-links">
+            <a href="#"> Profesi Ners </a>
 
-        <div class="footer-links">
-          <a href="#"> Visi Misi </a>
+            <a href="#"> Ilmu Keperawatan </a>
 
-          <a href="#"> Struktur Organisasi </a>
+            <a href="#"> Farmasi </a>
 
-          <a href="#"> Akreditasi </a>
+            <a href="#"> Kebidanan </a>
 
-          <a href="#"> Daftar Dosen </a>
+            <a href="#"> K3 </a>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h4 class="footer-title">Program Studi</h4>
+        <div>
+          <h4 class="footer-title">Informasi</h4>
 
-        <div class="footer-links">
-          <a href="#"> Profesi Ners </a>
+          <div class="footer-links">
+            <a href="/fikes/akademik"> Akademik </a>
 
-          <a href="#"> Ilmu Keperawatan </a>
+            <a href="#"> Kemahasiswaan </a>
 
-          <a href="#"> Farmasi </a>
+            <a href="#"> Pelayanan FIKES </a>
 
-          <a href="#"> Kebidanan </a>
-
-          <a href="#"> K3 </a>
+            <a href="#"> Survey </a>
+          </div>
         </div>
-      </div>
 
-      <div>
-        <h4 class="footer-title">Informasi</h4>
-
-        <div class="footer-links">
-          <a href="/fikes/akademik"> Akademik </a>
-
-          <a href="#"> Kemahasiswaan </a>
-
-          <a href="#"> Pelayanan FIKES </a>
-
-          <a href="#"> Survey </a>
-        </div>
-      </div>
-
-      <!--MAP PETA-->
-      <!-- =========================================================
+        <!--MAP PETA-->
+        <!-- =========================================================
      LOKASI & PETA
 ========================================================== -->
 
-      <div class="footer-location">
-        <div class="location-header">
-          <div class="location-icon">
-            <i class="fa-solid fa-location-dot"></i>
-          </div>
-
-          <div>
-            <h3>Lokasi Kampus</h3>
-
-            <p>Fakultas Ilmu Kesehatan</p>
-          </div>
-        </div>
-
-        <!-- PETA -->
-
-        <div class="map-card">
-          <iframe
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.1515727139526!2d109.11806027499709!3d-6.991421893009626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fbef42471658d%3A0x883656d1325ef066!2sUniversitas%20Bhamada%20Slawi!5e0!3m2!1sid!2sid!4v1787544396003!5m2!1sid!2sid"
-            width="600" height="450" style="border: 0" allowfullscreen="" loading="lazy"
-            referrerpolicy="strict-origin-when-cross-origin" title="Lokasi Fakultas Ilmu Kesehatan" loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
-          </iframe>
-
-          <div class="map-overlay">
-            <div class="map-info">
-              <div class="map-info-icon">
-                <i class="fa-solid fa-location-dot"></i>
-              </div>
-
-              <div>
-                <strong> Fakultas Ilmu Kesehatan </strong>
-
-                <span> Lihat lokasi kampus </span>
-              </div>
+        <div class="footer-location">
+          <div class="location-header">
+            <div class="location-icon">
+              <i class="fa-solid fa-location-dot"></i>
             </div>
 
-            <a href="#" target="_blank" class="map-direction">
-              <i class="fa-solid fa-diamond-turn-right"></i>
+            <div>
+              <h3>Lokasi Kampus</h3>
 
-              Petunjuk Arah
-            </a>
+              <p>Fakultas Ilmu Kesehatan</p>
+            </div>
+          </div>
+
+          <!-- PETA -->
+
+          <div class="map-card">
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3960.1515727139526!2d109.11806027499709!3d-6.991421893009626!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e6fbef42471658d%3A0x883656d1325ef066!2sUniversitas%20Bhamada%20Slawi!5e0!3m2!1sid!2sid!4v1787544396003!5m2!1sid!2sid"
+              width="600" height="450" style="border: 0" allowfullscreen="" loading="lazy"
+              referrerpolicy="strict-origin-when-cross-origin" title="Lokasi Fakultas Ilmu Kesehatan" loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade" allowfullscreen>
+            </iframe>
+
+            <div class="map-overlay">
+              <div class="map-info">
+                <div class="map-info-icon">
+                  <i class="fa-solid fa-location-dot"></i>
+                </div>
+
+                <div>
+                  <strong> Fakultas Ilmu Kesehatan </strong>
+
+                  <span> Lihat lokasi kampus </span>
+                </div>
+              </div>
+
+              <a href="#" target="_blank" class="map-direction">
+                <i class="fa-solid fa-diamond-turn-right"></i>
+
+                Petunjuk Arah
+              </a>
+            </div>
+          </div>
+
+          <!-- ALAMAT -->
+
+          <div class="footer-contact location-contact">
+            <i class="fa-solid fa-location-dot"></i>
+
+            <span>
+              Alamat Fakultas Ilmu Kesehatan, silakan sesuaikan dengan alamat
+              kampus.
+            </span>
+          </div>
+
+          <div class="footer-contact">
+            <i class="fa-solid fa-phone"></i>
+
+            <span> Nomor Telepon FIKES </span>
+          </div>
+
+          <div class="footer-contact">
+            <i class="fa-solid fa-envelope"></i>
+
+            <span> email@fikes.ac.id </span>
           </div>
         </div>
-
-        <!-- ALAMAT -->
-
-        <div class="footer-contact location-contact">
-          <i class="fa-solid fa-location-dot"></i>
-
-          <span>
-            Alamat Fakultas Ilmu Kesehatan, silakan sesuaikan dengan alamat
-            kampus.
-          </span>
-        </div>
-
-        <div class="footer-contact">
-          <i class="fa-solid fa-phone"></i>
-
-          <span> Nomor Telepon FIKES </span>
-        </div>
-
-        <div class="footer-contact">
-          <i class="fa-solid fa-envelope"></i>
-
-          <span> email@fikes.ac.id </span>
-        </div>
+        <!--MAP PETA-->
       </div>
-      <!--MAP PETA-->
-    </div>
 
-    <div class="container footer-bottom">
-      <span>
-        © <span id="year"></span> Fakultas Ilmu Kesehatan. All Rights
-        Reserved.
-      </span>
+      <div class="container footer-bottom">
+        <span>
+          © <span id="year"></span> Fakultas Ilmu Kesehatan. All Rights
+          Reserved.
+        </span>
 
-      <span> Website FIKES </span>
-    </div>
-  </footer>
+        <span> Website FIKES </span>
+      </div>
+    </footer>
 
-  <!-- BACK TO TOP -->
+    <!-- BACK TO TOP -->
 
-  <button class="back-top" id="backTop">↑</button>
-  <!-- <script src="assets/js/main.js"></script> -->
-  <script>
+    <button class="back-top" id="backTop">↑</button>
+    <!-- <script src="assets/js/main.js"></script> -->
+    <script>
     let current = 0;
     let slides = [];
     let dots = [];
@@ -2296,8 +1665,8 @@ try {
         behavior: "smooth"
       });
     });
-  </script>
-  <script>
+    </script>
+    <script>
     document.addEventListener('DOMContentLoaded', function() {
       // Label kolom otomatis untuk mode kartu di HP.
       document.querySelectorAll('.ak-table').forEach(function(table) {
@@ -2322,7 +1691,7 @@ try {
       document.querySelectorAll('.ak-side a').forEach(a => a.addEventListener('click', () => document
         .querySelectorAll('.ak-side a').forEach(x => x.classList.remove('active'))));
     });
-  </script>
-</body>
+    </script>
+  </body>
 
 </html>

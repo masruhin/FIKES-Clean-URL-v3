@@ -5,42 +5,6 @@
 // $base_path = $base_path ?? '..';
 $base_path = '/fikes/page';
 $base = '../../';
-
-/*
- * Active menu frontend FIKES.
- * Menggunakan REQUEST_URI agar menu otomatis aktif sesuai halaman yang sedang dibuka.
- */
-$current_path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
-$current_path = rtrim($current_path, '/');
-if ($current_path === '') {
-    $current_path = '/';
-}
-
-function frontend_active($paths, $exact = false) {
-    global $current_path;
-    $paths = (array) $paths;
-
-    foreach ($paths as $path) {
-        $path = rtrim($path, '/');
-        if ($path === '') $path = '/';
-
-        if ($exact) {
-            if ($current_path === $path) {
-                return 'active';
-            }
-        } else {
-            if ($current_path === $path || strpos($current_path, $path . '/') === 0) {
-                return 'active';
-            }
-        }
-    }
-
-    return '';
-}
-
-function frontend_parent_active($paths) {
-    return frontend_active($paths);
-}
 ?>
 
 <!-- =========================================================
@@ -51,7 +15,7 @@ function frontend_parent_active($paths) {
   <div class="container nav-inner">
     <!-- LOGO -->
 
-    <a href="/fikes/" class="logo <?= frontend_active('/fikes', true) ?>">
+    <a href="/fikes/" class="logo">
       <div class="logo-icon">F</div>
 
       <div class="logo-text">
@@ -77,31 +41,27 @@ function frontend_parent_active($paths) {
 
         <div class="dropdown">
           <div class="dropdown-item">
-            <a href="/fikes/tentang/visi-misi"
-              class="dropdown-link <?= frontend_active('/fikes/tentang/visi-misi', true) ?>"> Visi Misi </a>
+            <a href="/fikes/tentang/visi-misi" class="dropdown-link"> Visi Misi </a>
           </div>
 
           <div class="dropdown-item">
-            <a href="/fikes/tentang/struktur-organisasi"
-              class="dropdown-link <?= frontend_active('/fikes/tentang/struktur-organisasi', true) ?>">
+            <a href="/fikes/tentang/struktur-organisasi" class="dropdown-link">
               Struktur Organisasi
             </a>
           </div>
 
           <div class="dropdown-item">
-            <a href="/fikes/tentang/sertifikat-akreditasi"
-              class="dropdown-link <?= frontend_active('/fikes/tentang/sertifikat-akreditasi', true) ?>">
+            <a href="/fikes/tentang/sertifikat-akreditasi" class="dropdown-link">
               Sertifikat Akreditasi
             </a>
           </div>
 
           <div class="dropdown-item">
-            <a href="/fikes/tentang/unduh-logo"
-              class="dropdown-link <?= frontend_active('/fikes/tentang/unduh-logo', true) ?>"> Unduh Logo </a>
+            <a href="/fikes/tentang/unduh-logo" class="dropdown-link"> Unduh Logo </a>
           </div>
 
           <div class="dropdown-item">
-            <a href="/fikes/dosen" class="dropdown-link <?= frontend_active('/fikes/dosen') ?>"> Daftar Dosen </a>
+            <a href="/fikes/dosen" class="dropdown-link"> Daftar Dosen </a>
           </div>
           <!-- DAFTAR DOSEN -->
 
@@ -113,7 +73,7 @@ function frontend_parent_active($paths) {
 
             <div class="dropdown">
               <div class="dropdown-item">
-                <a href="/fikes/dosen" class="dropdown-link <?= frontend_active('/fikes/dosen') ?>"> Keperawatan </a>
+                <a href="/fikes/dosen" class="dropdown-link"> Keperawatan </a>
               </div>
 
               <div class="dropdown-item">
@@ -142,15 +102,13 @@ function frontend_parent_active($paths) {
 
         <div class="dropdown">
           <div class="dropdown-item">
-            <a href="/fikes/kemahasiswaan/himpunan-mahasiswa"
-              class="dropdown-link <?= frontend_active('/fikes/kemahasiswaan/himpunan-mahasiswa', true) ?>">
+            <a href="/fikes/kemahasiswaan/himpunan-mahasiswa" class="dropdown-link">
               Himpunan Mahasiswa
             </a>
           </div>
 
           <div class="dropdown-item">
-            <a href="/fikes/kemahasiswaan/ukm"
-              class="dropdown-link <?= frontend_active('/fikes/kemahasiswaan/ukm', true) ?>">
+            <a href="/fikes/kemahasiswaan/ukm" class="dropdown-link">
               Unit Kegiatan Mahasiswa
             </a>
           </div>
@@ -159,7 +117,7 @@ function frontend_parent_active($paths) {
 
       <!-- PROGRAM VOKASI -->
       <div class="nav-item">
-        <a href="/fikes/program-studi" class="nav-link <?= frontend_active('/fikes/program-studi') ?>"> Program </a>
+        <a href="/fikes/program-studi" class="nav-link"> Program </a>
       </div>
 
       <!-- <div class="nav-item has-dropdown">
@@ -240,7 +198,7 @@ function frontend_parent_active($paths) {
       <!-- AKADEMIK -->
 
       <div class="nav-item">
-        <a href="/fikes/akademik" class="nav-link <?= frontend_active('/fikes/akademik') ?>"> Akademik </a>
+        <a href="/fikes/akademik" class="nav-link"> Akademik </a>
       </div>
 
       <!-- PELAYANAN -->
@@ -252,7 +210,7 @@ function frontend_parent_active($paths) {
       <!-- SURVEY -->
 
       <div class="nav-item">
-        <a href="/fikes/survey" class="nav-link <?= frontend_active('/fikes/survey') ?>"> Survey </a>
+        <a href="/fikes/survey" class="nav-link"> Survey </a>
       </div>
     </nav>
 
