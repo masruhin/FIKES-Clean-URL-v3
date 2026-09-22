@@ -16,15 +16,15 @@ include __DIR__ . '/../../includes/header.php';
 
 <div class="panel table-panel">
   <div class="table-tools">
-    <input id="search" type="search" placeholder="Cari program studi, nomor SK, peringkat..." oninput="loadData()">
-    <select id="statusFilter" onchange="loadData()">
+    <input id="search" type="search" placeholder="Cari program studi, nomor SK, peringkat..." oninput="loadData(true)">
+    <select id="statusFilter" onchange="loadData(true)">
       <option value="">Semua Status</option>
       <option value="1">Aktif</option>
       <option value="0">Nonaktif</option>
     </select>
   </div>
   <div class="table-wrap">
-    <table id="dataTable">
+    <table id="dataTable" class="cert-table">
       <thead>
         <tr>
           <th>Program Studi</th>
@@ -45,6 +45,7 @@ include __DIR__ . '/../../includes/header.php';
       </tbody>
     </table>
   </div>
+  <div id="pagination" class="pagination" aria-label="Pagination"></div>
 </div>
 
 <div class="modal" id="modal">
@@ -155,6 +156,166 @@ include __DIR__ . '/../../includes/header.php';
 
   .actions {
     white-space: nowrap
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .file-actions {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+  }
+
+  .file-actions .btn {
+    text-decoration: none;
+  }
+
+  .btn.preview-file {
+    border-color: #087f5b;
+    color: #087f5b;
+  }
+
+  .btn.download-file {
+    border-color: #426057;
+    color: #426057;
+  }
+
+  .cert-table {
+    width: 100%;
+    min-width: 980px;
+    border-collapse: collapse;
+  }
+
+  .table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    padding: 18px 0 4px;
+  }
+
+  .page-btn {
+    min-width: 36px;
+    height: 36px;
+    padding: 0 10px;
+    border: 1px solid #dfe8e4;
+    border-radius: 8px;
+    background: #fff;
+    color: #426057;
+    cursor: pointer;
+    font-weight: 600;
+  }
+
+  .page-btn:hover:not(:disabled) {
+    background: #f1f8f5;
+  }
+
+  .page-btn.active {
+    background: #087f5b;
+    border-color: #087f5b;
+    color: #fff;
+  }
+
+  .page-btn:disabled {
+    opacity: .45;
+    cursor: not-allowed;
+  }
+
+  .pagination-info {
+    margin-right: auto;
+    color: #71817b;
+    font-size: 13px;
+  }
+
+  @media (max-width: 768px) {
+    .table-tools {
+      flex-direction: column;
+    }
+
+    .table-tools input,
+    .table-tools select {
+      width: 100%;
+      min-width: 0;
+    }
+
+    .table-wrap {
+      overflow: visible;
+    }
+
+    .cert-table {
+      min-width: 0;
+      border: 0;
+    }
+
+    .cert-table thead {
+      display: none;
+    }
+
+    .cert-table,
+    .cert-table tbody,
+    .cert-table tr,
+    .cert-table td {
+      display: block;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .cert-table tr {
+      margin-bottom: 14px;
+      padding: 12px 14px;
+      border: 1px solid #e5ece9;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 3px 12px rgba(0,0,0,.04);
+    }
+
+    .cert-table td {
+      display: grid;
+      grid-template-columns: 42% 58%;
+      gap: 8px;
+      padding: 8px 0;
+      border: 0;
+      text-align: left;
+      overflow-wrap: anywhere;
+    }
+
+    .cert-table td::before {
+      content: attr(data-label);
+      font-weight: 700;
+      color: #71817b;
+    }
+
+    .cert-table td.actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding-top: 12px;
+      margin-top: 4px;
+      border-top: 1px solid #edf1ef;
+    }
+
+    .cert-table td.actions::before {
+      content: none;
+    }
+
+    .pagination {
+      justify-content: center;
+    }
+
+    .pagination-info {
+      width: 100%;
+      margin: 0 0 6px;
+      text-align: center;
+    }
   }
 </style>
 <script>
@@ -192,18 +353,72 @@ include __DIR__ . '/../../includes/header.php';
       .join('');
     if (selected !== '') s.value = String(selected);
   }
-  async function loadData() {
+  let currentPage = 1;
+  const perPage = 10;
+
+  function renderPagination(meta) {
+    const el = document.getElementById('pagination');
+    if (!meta || meta.total_pages <= 1) {
+      el.innerHTML = meta && meta.total ? `<span class="pagination-info">Menampilkan ${meta.from}-${meta.to} dari ${meta.total} data</span>` : '';
+      return;
+    }
+
+    const totalPages = Number(meta.total_pages);
+    const page = Number(meta.page);
+    let pages = [];
+    const add = p => { if (p >= 1 && p <= totalPages && !pages.includes(p)) pages.push(p); };
+    add(1);
+    for (let p = page - 2; p <= page + 2; p++) add(p);
+    add(totalPages);
+    pages.sort((a,b) => a-b);
+
+    let html = `<span class="pagination-info">Menampilkan ${meta.from}-${meta.to} dari ${meta.total} data</span>`;
+    html += `<button type="button" class="page-btn" ${page <= 1 ? 'disabled' : ''} onclick="goPage(${page - 1})">‹</button>`;
+    let prev = 0;
+    pages.forEach(p => {
+      if (prev && p - prev > 1) html += '<span class="page-btn" style="border:0;background:transparent;cursor:default">…</span>';
+      html += `<button type="button" class="page-btn ${p === page ? 'active' : ''}" onclick="goPage(${p})">${p}</button>`;
+      prev = p;
+    });
+    html += `<button type="button" class="page-btn" ${page >= totalPages ? 'disabled' : ''} onclick="goPage(${page + 1})">›</button>`;
+    el.innerHTML = html;
+  }
+
+  function goPage(page) {
+    currentPage = Math.max(1, Number(page) || 1);
+    loadData();
+  }
+
+  async function loadData(resetPage = false) {
+    if (resetPage) currentPage = 1;
     const q = encodeURIComponent(document.getElementById('search').value || '');
     const st = encodeURIComponent(document.getElementById('statusFilter').value || '');
     const b = document.getElementById('tbody');
     try {
-      const r = await jsonRequest(`${ajaxUrl}?action=list&search=${q}&status=${st}`);
+      const r = await jsonRequest(`${ajaxUrl}?action=list&search=${q}&status=${st}&page=${currentPage}&per_page=${perPage}`);
       if (!r.success) throw new Error(r.message);
-      b.innerHTML = r.data.length ? r.data.map(x =>
-        `<tr><td><strong>${esc(x.nama_prodi||'-')}</strong><br><small>${esc(x.kode_prodi||'')}</small></td><td>${esc(x.jenjang||'-')}</td><td>${esc(x.id_institusi||'-')}</td><td>${esc(x.id_lembaga||'-')}</td><td>${esc(x.nomor_sk||'-')}</td><td>${esc(x.peringkat||'-')}</td><td>${esc(x.tanggal_kadaluarsa||'-')}</td><td><span class="badge ${String(x.status_aktif)==='1'?'success':'danger'}">${String(x.status_aktif)==='1'?'Aktif':'Nonaktif'}</span></td><td class="actions"><button class="btn small" onclick="editCert(${Number(x.id_sertifikat)})">Edit</button> <button class="btn small danger-text" onclick="deleteCert(${Number(x.id_sertifikat)})">Hapus</button></td></tr>`
+      const data = r.data || [];
+      b.innerHTML = data.length ? data.map(x =>
+        `<tr>
+          <td data-label="Program Studi"><strong>${esc(x.nama_prodi||'-')}</strong><br><small>${esc(x.kode_prodi||'')}</small></td>
+          <td data-label="Jenjang">${esc(x.jenjang||'-')}</td>
+          <td data-label="Institusi">${esc(x.id_institusi||'-')}</td>
+          <td data-label="Lembaga">${esc(x.id_lembaga||'-')}</td>
+          <td data-label="Nomor SK">${esc(x.nomor_sk||'-')}</td>
+          <td data-label="Peringkat">${esc(x.peringkat||'-')}</td>
+          <td data-label="Berlaku Sampai">${esc(x.tanggal_kadaluarsa||'-')}</td>
+          <td data-label="Status"><span class="badge ${String(x.status_aktif)==='1'?'success':'danger'}">${String(x.status_aktif)==='1'?'Aktif':'Nonaktif'}</span></td>
+          <td data-label="Aksi" class="actions">
+            ${x.file_sertifikat ? `<div class="file-actions"><a class="btn small preview-file" href="preview.php?id=${Number(x.id_sertifikat)}" target="_blank" rel="noopener">Preview</a><a class="btn small download-file" href="download.php?id=${Number(x.id_sertifikat)}">Download</a></div>` : '<span class="muted">Tidak ada file</span>'}
+            <button type="button" class="btn small" onclick="editCert(${Number(x.id_sertifikat)})">Edit</button>
+            <button type="button" class="btn small danger-text" onclick="deleteCert(${Number(x.id_sertifikat)})">Hapus</button>
+          </td>
+        </tr>`
       ).join('') : '<tr><td colspan="9" class="empty">Belum ada data sertifikat.</td></tr>';
+      renderPagination(r.meta);
     } catch (e) {
       b.innerHTML = `<tr><td colspan="9" class="empty">${esc(e.message)}</td></tr>`;
+      document.getElementById('pagination').innerHTML = '';
     }
   }
 
@@ -230,7 +445,7 @@ include __DIR__ . '/../../includes/header.php';
       document.getElementById('tanggal_kadaluarsa').value = x.tanggal_kadaluarsa || '';
       document.getElementById('status_aktif').value = String(x.status_aktif ?? 1);
       document.getElementById('currentFile').innerHTML = x.file_sertifikat ?
-        `File saat ini: <a href="../../uploads/upload-sertifikat/${encodeURIComponent(x.file_sertifikat)}" target="_blank">${esc(x.file_sertifikat)}</a>` :
+        `File saat ini: <a href="preview.php?id=${Number(x.id_sertifikat)}" target="_blank" rel="noopener">${esc(x.file_sertifikat)}</a>` :
         '';
       document.getElementById('modal').classList.add('show');
       await loadProdi(x.id_prodi);

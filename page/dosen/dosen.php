@@ -7,15 +7,28 @@ if (!function_exists('e')) {
   }
 }
 $programs = ['Keperawatan', 'Kebidanan', 'Farmasi', 'K3'];
-$prodi = trim($_GET['prodi'] ?? '');
+
+// Normalisasi parameter prodi dari URL.
+// .htaccess menggunakan [NC], sehingga /dosen/kebidanan menjadi
+// prodi=kebidanan. Database menyimpan nilai dengan huruf kapital awal
+// (mis. Kebidanan), jadi kita ubah kembali ke nilai kanonik sebelum query.
+$prodiMap = [
+  'keperawatan' => 'Keperawatan',
+  'kebidanan'   => 'Kebidanan',
+  'farmasi'     => 'Farmasi',
+  'k3'          => 'K3',
+];
+
+$prodiInput = trim($_GET['prodi'] ?? '');
+$prodiKey = strtolower($prodiInput);
+$prodi = $prodiMap[$prodiKey] ?? '';
 $search = trim($_GET['search'] ?? '');
 $where = [];
 $params = [];
-if ($prodi !== '' && in_array($prodi, $programs, true)) {
+
+if ($prodi !== '') {
   $where[] = 'program_studi=?';
   $params[] = $prodi;
-} else {
-  $prodi = '';
 }
 if ($search !== '') {
   $where[] = '(nama LIKE ? OR nidn LIKE ? OR jabatan LIKE ? OR email LIKE ?)';

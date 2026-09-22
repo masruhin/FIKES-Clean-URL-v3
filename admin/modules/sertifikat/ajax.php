@@ -5,7 +5,7 @@ require_once __DIR__ . '/../../config/database.php';
 header('Content-Type: application/json; charset=utf-8');
 header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
 ob_start();
-function out($success,$message='',$data=null){while(ob_get_level()>0)ob_end_clean();echo json_encode(['success'=>$success,'message'=>$message,'data'=>$data],JSON_UNESCAPED_UNICODE);exit;}
+function out($success,$message='',$data=null,$meta=null){while(ob_get_level()>0)ob_end_clean();echo json_encode(['success'=>$success,'message'=>$message,'data'=>$data,'meta'=>$meta],JSON_UNESCAPED_UNICODE);exit;}
 try{
  $action=$_GET['action']??$_POST['action']??'';
  if($action==='prodi'){
@@ -14,12 +14,37 @@ try{
  }
  if($action==='list'){
    $search=trim($_GET['search']??''); $status=$_GET['status']??'';
-   $sql="SELECT s.*, p.kode_prodi,p.nama AS nama_prodi,p.jenjang,p.gelar FROM sertifikat_akreditasi s LEFT JOIN program_studi p ON p.id=CAST(s.id_prodi AS UNSIGNED) WHERE 1=1";
+   $page=max(1,(int)($_GET['page']??1));
+   $perPage=(int)($_GET['per_page']??10);
+   if($perPage<5) $perPage=5;
+   if($perPage>50) $perPage=50;
+   $base=" FROM sertifikat_akreditasi s LEFT JOIN program_studi p ON p.id=CAST(s.id_prodi AS UNSIGNED) WHERE 1=1";
    $params=[];
-   if($search!==''){ $sql.=" AND (p.nama LIKE :q OR p.kode_prodi LIKE :q OR s.nomor_sk LIKE :q OR s.peringkat LIKE :q OR s.id_institusi LIKE :q OR s.id_lembaga LIKE :q)"; $params['q']='%'.$search.'%'; }
-   if($status!==''){ $sql.=" AND s.status_aktif=:status"; $params['status']=(int)$status; }
-   $sql.=" ORDER BY s.tanggal_kadaluarsa DESC,s.id_sertifikat DESC";
-   $q=$pdo->prepare($sql);$q->execute($params);out(true,'',$q->fetchAll());
+   if($search!==''){ $base.=" AND (p.nama LIKE :q OR p.kode_prodi LIKE :q OR s.nomor_sk LIKE :q OR s.peringkat LIKE :q OR s.id_institusi LIKE :q OR s.id_lembaga LIKE :q)"; $params['q']='%'.$search.'%'; }
+   if($status!==''){ $base.=" AND s.status_aktif=:status"; $params['status']=(int)$status; }
+   $countStmt=$pdo->prepare("SELECT COUNT(*)".$base);
+   $countStmt->execute($params);
+   $total=(int)$countStmt->fetchColumn();
+   $totalPages=max(1,(int)ceil($total/$perPage));
+   if($page>$totalPages) $page=$totalPages;
+   $offset=($page-1)*$perPage;
+   $sql="SELECT s.*, p.kode_prodi,p.nama AS nama_prodi,p.jenjang,p.gelar".$base." ORDER BY s.tanggal_kadaluarsa DESC,s.id_sertifikat DESC LIMIT :limit OFFSET :offset";
+   $q=$pdo->prepare($sql);
+   foreach($params as $k=>$v) $q->bindValue(':'.$k,$v,is_int($v)?PDO::PARAM_INT:PDO::PARAM_STR);
+   $q->bindValue(':limit',$perPage,PDO::PARAM_INT);
+   $q->bindValue(':offset',$offset,PDO::PARAM_INT);
+   $q->execute();
+   $rows=$q->fetchAll();
+   $from=$total?($offset+1):0;
+   $to=min($offset+count($rows),$total);
+   out(true,'',$rows,[
+     'page'=>$page,
+     'per_page'=>$perPage,
+     'total'=>$total,
+     'total_pages'=>$totalPages,
+     'from'=>$from,
+     'to'=>$to
+   ]);
  }
  if($action==='get'){
    $id=(int)($_GET['id']??0);$q=$pdo->prepare("SELECT * FROM sertifikat_akreditasi WHERE id_sertifikat=? LIMIT 1");$q->execute([$id]);$x=$q->fetch();if(!$x)out(false,'Data sertifikat tidak ditemukan.');out(true,'',$x);

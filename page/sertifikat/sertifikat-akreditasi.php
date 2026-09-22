@@ -16,7 +16,32 @@ function tanggal_id($d)
 function file_icon($f)
 {
   $x = strtolower(pathinfo($f, PATHINFO_EXTENSION));
-  return strtoupper($x ?: 'FILE');
+  $map = [
+    'pdf' => ['pdf', 'PDF', 'file-pdf'],
+    'doc' => ['word', 'W', 'file-word'],
+    'docx' => ['word', 'W', 'file-word'],
+    'xls' => ['excel', 'X', 'file-excel'],
+    'xlsx' => ['excel', 'X', 'file-excel'],
+    'ppt' => ['powerpoint', 'P', 'file-powerpoint'],
+    'pptx' => ['powerpoint', 'P', 'file-powerpoint'],
+    'jpg' => ['image', 'IMG', 'file-image'],
+    'jpeg' => ['image', 'IMG', 'file-image'],
+    'png' => ['image', 'IMG', 'file-image'],
+    'webp' => ['image', 'IMG', 'file-image'],
+    'gif' => ['image', 'IMG', 'file-image'],
+    'svg' => ['image', 'IMG', 'file-image'],
+    'zip' => ['archive', 'ZIP', 'file-archive'],
+    'rar' => ['archive', 'RAR', 'file-archive'],
+  ];
+
+  [$type, $label, $icon] = $map[$x] ?? ['generic', strtoupper($x ?: 'FILE'), 'file-generic'];
+  return '<div class="file-type-icon ' . e($type) . '" aria-label="Dokumen ' . e(strtoupper($x ?: 'FILE')) . '">'
+    . '<div class="file-sheet">'
+    . '<span class="file-fold"></span>'
+    . '<span class="file-symbol ' . e($icon) . '">' . e($label) . '</span>'
+    . '</div>'
+    . '<span class="file-extension">' . e(strtoupper($x ?: 'FILE')) . '</span>'
+    . '</div>';
 }
 function prodi_key($nama)
 {
@@ -216,19 +241,85 @@ $prodi = $pdo->query("SELECT id,kode_prodi,nama,jenjang,gelar FROM program_studi
     }
 
     .cert-icon {
-      width: 85px;
-      height: 105px;
-      border-radius: 8px;
-      background: #fff;
-      border: 1px solid #dce8e4;
-      box-shadow: 0 10px 25px rgba(18, 55, 42, .1);
+      width: 104px;
+      height: 116px;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--primary);
-      font-size: 13px;
-      font-weight: 800
     }
+
+    .file-type-icon {
+      position: relative;
+      width: 86px;
+      height: 106px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .file-sheet {
+      position: relative;
+      width: 72px;
+      height: 88px;
+      border-radius: 9px;
+      background: #fff;
+      border: 1px solid #dce8e4;
+      box-shadow: 0 10px 25px rgba(18, 55, 42, .10);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    .file-fold {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 22px;
+      height: 22px;
+      background: #f0f5f3;
+      clip-path: polygon(0 0, 100% 100%, 0 100%);
+    }
+
+    .file-symbol {
+      margin-top: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 800;
+      font-size: 19px;
+      letter-spacing: -.5px;
+    }
+
+    .file-symbol.file-pdf { color: #d93025; font-size: 15px; }
+    .file-symbol.file-word { color: #2b579a; font-size: 25px; }
+    .file-symbol.file-excel { color: #217346; font-size: 25px; }
+    .file-symbol.file-powerpoint { color: #d24726; font-size: 25px; }
+    .file-symbol.file-image { color: #7b61a8; font-size: 11px; }
+    .file-symbol.file-archive { color: #8a6d3b; font-size: 11px; }
+    .file-symbol.file-generic { color: var(--primary); font-size: 12px; }
+
+    .file-extension {
+      position: absolute;
+      bottom: 2px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 3px 7px;
+      border-radius: 999px;
+      background: #fff;
+      border: 1px solid #dce8e4;
+      box-shadow: 0 5px 12px rgba(18, 55, 42, .08);
+      color: #52635d;
+      font-size: 8px;
+      font-weight: 800;
+      line-height: 1;
+      letter-spacing: .4px;
+    }
+
+    .file-type-icon.pdf .file-sheet { border-top: 4px solid #d93025; }
+    .file-type-icon.word .file-sheet { border-top: 4px solid #2b579a; }
+    .file-type-icon.excel .file-sheet { border-top: 4px solid #217346; }
+    .file-type-icon.powerpoint .file-sheet { border-top: 4px solid #d24726; }
+    .file-type-icon.image .file-sheet { border-top: 4px solid #7b61a8; }
+    .file-type-icon.archive .file-sheet { border-top: 4px solid #8a6d3b; }
 
     .status {
       position: absolute;
@@ -490,7 +581,7 @@ $prodi = $pdo->query("SELECT id,kode_prodi,nama,jenjang,gelar FROM program_studi
             </div><?php else: foreach ($sertifikat as $s): ?><article class="certificate-card"
                 data-prodi="prodi-<?= e(prodi_key($s['nama_prodi'] ?? '')) ?>">
                 <div class="cert-head"><span class="status">TERAKREDITASI</span>
-                  <div class="cert-icon"><?= e(file_icon($s['file_sertifikat'] ?? '')) ?></div>
+                  <div class="cert-icon"><?= file_icon($s['file_sertifikat'] ?? '') ?></div>
                 </div>
                 <div class="cert-body">
                   <div class="cert-category"><?= e($s['jenjang'] ?? 'Program Studi') ?></div>
@@ -505,8 +596,8 @@ $prodi = $pdo->query("SELECT id,kode_prodi,nama,jenjang,gelar FROM program_studi
                     <div><small>Berlaku</small><strong><?= e(tanggal_id($s['tanggal_kadaluarsa'] ?? '')) ?></strong></div>
                   </div>
                   <div class="cert-actions"><?php if (!empty($s['file_sertifikat'])): ?><a class="btn btn-primary"
-                        href="/fikes/admin/uploads/upload-sertifikat/<?= rawurlencode(basename($s['file_sertifikat'])) ?>"
-                        target="_blank">Lihat Dokumen</a><a class="btn"
+                        href="/fikes/page/sertifikat/preview.php?id=<?= (int)$s['id_sertifikat'] ?>"
+                        target="_blank" rel="noopener">Lihat Dokumen</a><a class="btn"
                         href="/fikes/admin/uploads/upload-sertifikat/<?= rawurlencode(basename($s['file_sertifikat'])) ?>"
                         download>Download</a><?php endif; ?></div>
                 </div>

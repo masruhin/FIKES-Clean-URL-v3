@@ -1,0 +1,131 @@
+Options -MultiViews
+RewriteEngine On
+
+# =========================================================
+# FIKES BHAMADA - HOSTING / SUBDOMAIN
+# Domain : https://fikes.bhamada.ac.id
+# Document Root yang disarankan: public_html/fikes
+# =========================================================
+
+# ---------------------------------------------------------
+# 1. URL lama -> URL bersih
+#    THE_REQUEST mencegah internal rewrite ikut redirect.
+# ---------------------------------------------------------
+
+# Homepage lama
+RewriteCond %{THE_REQUEST} \s/+index\.php(?:[?\s]|$) [NC]
+RewriteRule ^index\.php$ / [R=301,L]
+
+# Berita lama
+RewriteCond %{THE_REQUEST} \s/+detail-berita\.php\?slug=([^\s&]+) [NC]
+RewriteRule ^detail-berita\.php$ /berita/%1 [R=301,L,NE]
+
+# Tentang FIKES
+RewriteCond %{THE_REQUEST} \s/+page/visi-misi/visi-misi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/visi-misi/visi-misi\.php$ /tentang/visi-misi [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+page/struktur/struktur-organisasi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/struktur/struktur-organisasi\.php$ /tentang/struktur-organisasi [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+page/sertifikat/sertifikat-akreditasi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/sertifikat/sertifikat-akreditasi\.php$ /tentang/sertifikat-akreditasi [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+page/unduh-logo/unduh-logo\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/unduh-logo/unduh-logo\.php$ /tentang/unduh-logo [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+page/unduh-logo/download-logo-all\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/unduh-logo/download-logo-all\.php$ /tentang/download-logo [R=301,L]
+
+# Struktur lama dari project sebelumnya
+RewriteCond %{THE_REQUEST} \s/+page/tentang-fikes/visi-misi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/tentang-fikes/visi-misi\.php$ /tentang/visi-misi [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+page/tentang-fikes/struktur-organisasi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/tentang-fikes/struktur-organisasi\.php$ /tentang/struktur-organisasi [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+page/tentang-fikes/sertifikat-akreditasi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/tentang-fikes/sertifikat-akreditasi\.php$ /tentang/sertifikat-akreditasi [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+page/tentang-fikes/unduh-logo\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/tentang-fikes/unduh-logo\.php$ /tentang/unduh-logo [R=301,L]
+
+# Dosen
+RewriteCond %{THE_REQUEST} \s/+page/dosen/dosen\.php(?:\?prodi=([^\s&]+))? [NC]
+RewriteRule ^page/dosen/dosen\.php$ /dosen [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+page/dosen/detail-dosen\.php\?id=([0-9]+) [NC]
+RewriteRule ^page/dosen/detail-dosen\.php$ /dosen/profil/%1 [R=301,L]
+
+# Program Studi
+RewriteCond %{THE_REQUEST} \s/+page/program-studi/detail-prodi\.php\?kode=([^\s&]+) [NC]
+RewriteRule ^page/program-studi/detail-prodi\.php$ /program-studi/%1 [R=301,L,NE]
+
+RewriteCond %{THE_REQUEST} \s/+page/program-studi/program-studi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/program-studi/program-studi\.php$ /program-studi [R=301,L]
+
+# Akademik
+RewriteCond %{THE_REQUEST} \s/+page/akademik/akademik\.php(?:[?#\s]|$) [NC]
+RewriteRule ^page/akademik/akademik\.php$ /akademik [R=301,L]
+
+# Survey
+RewriteCond %{THE_REQUEST} \s/+page/survey/isi-survey\.php\?slug=([^\s&]+) [NC]
+RewriteRule ^page/survey/isi-survey\.php$ /survey/%1 [R=301,L,NE]
+
+RewriteCond %{THE_REQUEST} \s/+page/survey/survey\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/survey/survey\.php$ /survey [R=301,L]
+
+# SPMI
+RewriteCond %{THE_REQUEST} \s/+page/spmi/spmi\.php(?:[?\s]|$) [NC]
+RewriteRule ^page/spmi/spmi\.php$ /spmi [R=301,L]
+
+# Kemahasiswaan lama
+RewriteCond %{THE_REQUEST} \s/+page/kemahasiswaan/himpunan-mhs\.html(?:[?\s]|$) [NC]
+RewriteRule ^page/kemahasiswaan/himpunan-mhs\.html$ /kemahasiswaan/himpunan-mahasiswa [R=301,L]
+
+RewriteCond %{THE_REQUEST} \s/+page/kemahasiswaan/ukm-mhs\.html(?:[?\s]|$) [NC]
+RewriteRule ^page/kemahasiswaan/ukm-mhs\.html$ /kemahasiswaan/ukm [R=301,L]
+
+# ---------------------------------------------------------
+# 2. File/folder fisik jangan di-rewrite
+# ---------------------------------------------------------
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# ---------------------------------------------------------
+# 3. URL bersih -> file asli
+# ---------------------------------------------------------
+RewriteRule ^$ index.php [L]
+
+RewriteRule ^berita/([^/]+)/?$ detail-berita.php?slug=$1 [L,QSA,NE]
+
+RewriteRule ^tentang/visi-misi/?$ page/visi-misi/visi-misi.php [L]
+RewriteRule ^tentang/struktur-organisasi/?$ page/struktur/struktur-organisasi.php [L]
+RewriteRule ^tentang/sertifikat-akreditasi/?$ page/sertifikat/sertifikat-akreditasi.php [L]
+RewriteRule ^tentang/unduh-logo/?$ page/unduh-logo/unduh-logo.php [L]
+RewriteRule ^tentang/download-logo/?$ page/unduh-logo/download-logo-all.php [L]
+
+RewriteRule ^dosen/?$ page/dosen/dosen.php [L,QSA]
+RewriteRule ^dosen/(keperawatan|kebidanan|farmasi|k3)/?$ page/dosen/dosen.php?prodi=$1 [L,QSA,NC]
+RewriteRule ^dosen/profil/([0-9]+)/?$ page/dosen/detail-dosen.php?id=$1 [L,QSA]
+
+RewriteRule ^program-studi/?$ page/program-studi/program-studi.php [L,QSA]
+RewriteRule ^program-studi/([^/]+)/?$ page/program-studi/detail-prodi.php?kode=$1 [L,QSA,NE]
+
+RewriteRule ^akademik/?$ page/akademik/akademik.php [L,QSA]
+
+RewriteRule ^survey/?$ page/survey/survey.php [L,QSA]
+RewriteRule ^survey/([^/]+)/?$ page/survey/isi-survey.php?slug=$1 [L,QSA,NE]
+
+RewriteRule ^spmi/?$ page/spmi/spmi.php [L,QSA]
+
+RewriteRule ^kemahasiswaan/himpunan-mahasiswa/?$ page/kemahasiswaan/himpunan-mahasiswa.php [L]
+RewriteRule ^kemahasiswaan/himpunan-kemahasiswaan/?$ page/kemahasiswaan/himpunan-kemahasiswaan.php [L]
+RewriteRule ^kemahasiswaan/himpunan/([^/]+)/?$ page/kemahasiswaan/detail-himpunan.php?slug=$1 [L,QSA,NE]
+RewriteRule ^kemahasiswaan/ukm/?$ page/kemahasiswaan/ukm.php [L]
+RewriteRule ^kemahasiswaan/ukm/([^/]+)/?$ page/kemahasiswaan/detail-ukm.php?slug=$1 [L,QSA,NE]
+
+# ---------------------------------------------------------
+# 4. Jika Apache mengizinkan DirectoryIndex
+# ---------------------------------------------------------
+DirectoryIndex index.php
