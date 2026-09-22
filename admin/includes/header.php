@@ -64,6 +64,7 @@ $active_kemahasiswaan = strpos($current_path, '/admin/modules/kemahasiswaan/') !
 $active_program_studi = strpos($current_path, '/admin/modules/program-studi/') !== false;
 $active_akademik = strpos($current_path, '/admin/modules/akademik/') !== false;
 $active_survey = strpos($current_path, '/admin/modules/survey/') !== false;
+$active_spmi = strpos($current_path, '/admin/modules/spmi/') !== false;
 
 $active_pengaturan_website = strpos($current_path, '/admin/modules/pengaturan/') !== false;
 $active_profil_admin = strpos($current_path, '/admin/modules/akun/') !== false;
@@ -221,6 +222,10 @@ function submenu_style($active)
           <a href="<?= $project_url ?>/admin/modules/akademik/index.php"
             class="menu-link<?= parent_class($active_akademik) ?>">
             <span>▥</span><b>Akademik</b>
+          </a>
+
+          <a href="<?= $project_url ?>/admin/modules/spmi/index.php" class="menu-link<?= parent_class($active_spmi) ?>">
+            <span>✦</span><b>SPMI</b>
           </a>
 
           <a href="<?= $project_url ?>/admin/modules/survey/index.php"

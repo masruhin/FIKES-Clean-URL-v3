@@ -1,11 +1,11 @@
--- phpMyAdmin SQL Dump
+-- phpMyAdmin SQL Dumpp
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 21 Sep 2026 pada 06.48
--- Versi server: 10.4.32-MariaDB
--- Versi PHP: 8.0.30
+-- Generation Time: Sep 22, 2026 at 05:50 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.0.30
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,7 +24,7 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `akademik_dokumen`
+-- Table structure for table `akademik_dokumen`
 --
 
 CREATE TABLE `akademik_dokumen` (
@@ -43,7 +43,7 @@ CREATE TABLE `akademik_dokumen` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `akademik_jadwal`
+-- Table structure for table `akademik_jadwal`
 --
 
 CREATE TABLE `akademik_jadwal` (
@@ -65,7 +65,7 @@ CREATE TABLE `akademik_jadwal` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `akademik_kalender`
+-- Table structure for table `akademik_kalender`
 --
 
 CREATE TABLE `akademik_kalender` (
@@ -82,7 +82,7 @@ CREATE TABLE `akademik_kalender` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `akademik_kalender`
+-- Dumping data for table `akademik_kalender`
 --
 
 INSERT INTO `akademik_kalender` (`id`, `tahun_ajaran`, `kategori`, `judul`, `tanggal_mulai`, `tanggal_selesai`, `keterangan`, `nomor_urut`, `status`, `created_at`) VALUES
@@ -93,7 +93,7 @@ INSERT INTO `akademik_kalender` (`id`, `tahun_ajaran`, `kategori`, `judul`, `tan
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `akademik_penilaian`
+-- Table structure for table `akademik_penilaian`
 --
 
 CREATE TABLE `akademik_penilaian` (
@@ -107,7 +107,7 @@ CREATE TABLE `akademik_penilaian` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `akademik_penilaian`
+-- Dumping data for table `akademik_penilaian`
 --
 
 INSERT INTO `akademik_penilaian` (`id`, `komponen`, `bobot`, `keterangan`, `nomor_urut`, `status`, `created_at`) VALUES
@@ -119,7 +119,7 @@ INSERT INTO `akademik_penilaian` (`id`, `komponen`, `bobot`, `keterangan`, `nomo
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `akademik_registrasi`
+-- Table structure for table `akademik_registrasi`
 --
 
 CREATE TABLE `akademik_registrasi` (
@@ -135,7 +135,7 @@ CREATE TABLE `akademik_registrasi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `akademik_registrasi`
+-- Dumping data for table `akademik_registrasi`
 --
 
 INSERT INTO `akademik_registrasi` (`id`, `tahun_ajaran`, `jenis`, `judul`, `tanggal_mulai`, `tanggal_selesai`, `keterangan`, `status`, `created_at`) VALUES
@@ -145,7 +145,7 @@ INSERT INTO `akademik_registrasi` (`id`, `tahun_ajaran`, `jenis`, `judul`, `tang
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `akademik_silabus`
+-- Table structure for table `akademik_silabus`
 --
 
 CREATE TABLE `akademik_silabus` (
@@ -159,7 +159,7 @@ CREATE TABLE `akademik_silabus` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `akademik_silabus`
+-- Dumping data for table `akademik_silabus`
 --
 
 INSERT INTO `akademik_silabus` (`id`, `kurikulum_id`, `judul`, `deskripsi`, `file_dokumen`, `status`, `created_at`) VALUES
@@ -168,7 +168,7 @@ INSERT INTO `akademik_silabus` (`id`, `kurikulum_id`, `judul`, `deskripsi`, `fil
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `akademik_skala_nilai`
+-- Table structure for table `akademik_skala_nilai`
 --
 
 CREATE TABLE `akademik_skala_nilai` (
@@ -184,7 +184,7 @@ CREATE TABLE `akademik_skala_nilai` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `akademik_skala_nilai`
+-- Dumping data for table `akademik_skala_nilai`
 --
 
 INSERT INTO `akademik_skala_nilai` (`id`, `kode_nilai`, `nilai_min`, `nilai_max`, `nilai_mutu`, `keterangan`, `nomor_urut`, `status`, `created_at`) VALUES
@@ -202,7 +202,7 @@ INSERT INTO `akademik_skala_nilai` (`id`, `kode_nilai`, `nilai_min`, `nilai_max`
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `berita`
+-- Table structure for table `berita`
 --
 
 CREATE TABLE `berita` (
@@ -220,18 +220,10 @@ CREATE TABLE `berita` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data untuk tabel `berita`
---
-
-INSERT INTO `berita` (`id`, `judul`, `slug`, `kategori`, `ringkasan`, `isi`, `gambar`, `penulis`, `tanggal_terbit`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'asdasdd', 'asdasdd', 'Berita', 'asdasdasd', 'asdasdasd', '20260914034106_7a9ea462.jpeg', 'Admin FIKES', '2026-09-12 16:06:00', 'terbit', '2026-09-12 09:06:42', '2026-09-14 01:41:06'),
-(2, 'okeaaa', 'oke', 'Berita', 'asdakjfadfjkbaas\r\nasdajsdajdn', 'asdasdhlnkajsld<div>askdjabskjdbha sd</div><div>asbd asbd</div><div>lasndlasd</div>', '20260914042413_9c52ca0e.jpeg', 'Admin FIKES', '2026-09-14 09:23:00', 'terbit', '2026-09-14 02:24:13', '2026-09-17 08:34:40');
-
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `dosen`
+-- Table structure for table `dosen`
 --
 
 CREATE TABLE `dosen` (
@@ -247,17 +239,16 @@ CREATE TABLE `dosen` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `dosen`
+-- Dumping data for table `dosen`
 --
 
 INSERT INTO `dosen` (`id`, `nidn`, `nama`, `program_studi`, `jabatan`, `email`, `foto`, `status`, `created_at`) VALUES
-(2, 'ds231233', 'adssss', 'Keperawatan', 'sdasd', 'furqonkamal9@gmail.com', 'dosen_20260909101621_5eb8169b.jpg', 'aktif', '2026-09-09 08:16:21'),
-(3, '213123', 'aaaa', 'Keperawatan', 'aaaa', 'furqonkamal9@gmail.com', 'dosen_20260909102521_1aaa54ee.jpg', 'aktif', '2026-09-09 08:25:21');
+(6, '', 'Firman Hidayat, M.Kep., Ns.Sp.Kep.J', 'Keperawatan', '', '', 'dosen_20260921102400_3a00aca2.jpg', 'aktif', '2026-09-21 08:24:00');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `dosen_bidang_ajar`
+-- Table structure for table `dosen_bidang_ajar`
 --
 
 CREATE TABLE `dosen_bidang_ajar` (
@@ -268,7 +259,7 @@ CREATE TABLE `dosen_bidang_ajar` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `dosen_bidang_ajar`
+-- Dumping data for table `dosen_bidang_ajar`
 --
 
 INSERT INTO `dosen_bidang_ajar` (`id`, `dosen_id`, `nilai`, `created_at`) VALUES
@@ -277,7 +268,7 @@ INSERT INTO `dosen_bidang_ajar` (`id`, `dosen_id`, `nilai`, `created_at`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `dosen_keilmuan`
+-- Table structure for table `dosen_keilmuan`
 --
 
 CREATE TABLE `dosen_keilmuan` (
@@ -288,7 +279,7 @@ CREATE TABLE `dosen_keilmuan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `dosen_keilmuan`
+-- Dumping data for table `dosen_keilmuan`
 --
 
 INSERT INTO `dosen_keilmuan` (`id`, `dosen_id`, `nilai`, `created_at`) VALUES
@@ -297,7 +288,7 @@ INSERT INTO `dosen_keilmuan` (`id`, `dosen_id`, `nilai`, `created_at`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `dosen_pendidikan`
+-- Table structure for table `dosen_pendidikan`
 --
 
 CREATE TABLE `dosen_pendidikan` (
@@ -308,7 +299,7 @@ CREATE TABLE `dosen_pendidikan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `dosen_pendidikan`
+-- Dumping data for table `dosen_pendidikan`
 --
 
 INSERT INTO `dosen_pendidikan` (`id`, `dosen_id`, `nilai`, `created_at`) VALUES
@@ -317,7 +308,7 @@ INSERT INTO `dosen_pendidikan` (`id`, `dosen_id`, `nilai`, `created_at`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `kemahasiswaan`
+-- Table structure for table `kemahasiswaan`
 --
 
 CREATE TABLE `kemahasiswaan` (
@@ -332,7 +323,7 @@ CREATE TABLE `kemahasiswaan` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `kemahasiswaan_anggota`
+-- Table structure for table `kemahasiswaan_anggota`
 --
 
 CREATE TABLE `kemahasiswaan_anggota` (
@@ -351,7 +342,7 @@ CREATE TABLE `kemahasiswaan_anggota` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `kemahasiswaan_galeri`
+-- Table structure for table `kemahasiswaan_galeri`
 --
 
 CREATE TABLE `kemahasiswaan_galeri` (
@@ -368,7 +359,7 @@ CREATE TABLE `kemahasiswaan_galeri` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `kemahasiswaan_kegiatan`
+-- Table structure for table `kemahasiswaan_kegiatan`
 --
 
 CREATE TABLE `kemahasiswaan_kegiatan` (
@@ -386,7 +377,7 @@ CREATE TABLE `kemahasiswaan_kegiatan` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `kemahasiswaan_organisasi`
+-- Table structure for table `kemahasiswaan_organisasi`
 --
 
 CREATE TABLE `kemahasiswaan_organisasi` (
@@ -414,11 +405,11 @@ CREATE TABLE `kemahasiswaan_organisasi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `kemahasiswaan_organisasi`
+-- Dumping data for table `kemahasiswaan_organisasi`
 --
 
 INSERT INTO `kemahasiswaan_organisasi` (`id`, `jenis`, `nama`, `slug`, `kategori`, `deskripsi`, `fokus`, `visi`, `misi`, `ketua_nama`, `sekretariat`, `email`, `telepon`, `instagram`, `facebook`, `youtube`, `logo`, `status`, `nomor_urut`, `created_at`, `updated_at`) VALUES
-(1, 'himpunan', 'HIMAFARDA', 'himafarda', 'Himpunan Mahasiswa Farmasi', 'Wadah mahasiswa Farmasi untuk mengembangkan potensi, kreativitas, kepemimpinan, dan kebersamaan di lingkungan FIKES.', 'Pengembangan organisasi, keilmuan, kreativitas, pengabdian, dan kebersamaan mahasiswa Farmasi.', '', '', '', '', '', '', '', '', '', 'org_20260917041355_6b70b2.jpg', 'aktif', 1, '2026-09-16 09:30:25', '2026-09-17 02:13:55'),
+(1, 'himpunan', 'HIMAFARDA', 'himafarda', 'Himpunan Mahasiswa Farmasi', 'Wadah mahasiswa Farmasi untuk mengembangkan potensi, kreativitas, kepemimpinan, dan kebersamaan di lingkungan FIKES.', 'Pengembangan organisasi, keilmuan, kreativitas, pengabdian, dan kebersamaan mahasiswa Farmasi.', '', '', '', '', '', '', '', '', '', 'org_20260917041355_6b70b2.jpg', 'aktif', 1, '2026-09-16 09:30:25', '2026-09-22 02:26:24'),
 (2, 'himpunan', 'HIMASADA HIMASADA', 'himasada', 'Himpunan Mahasiswa', 'Organisasi mahasiswa sebagai ruang pengembangan potensi, aspirasi, komunikasi, dan kegiatan kemahasiswaan.', 'Pengembangan potensi mahasiswa, kepemimpinan, kebersamaan, dan kegiatan kemahasiswaan.', '', '', '', '', '', '', '', '', '', 'org_20260917042601_4f03bb.jpg', 'aktif', 2, '2026-09-16 09:30:25', '2026-09-17 02:26:01'),
 (3, 'himpunan', 'HIMADIKA', 'himadika', 'Himpunan Mahasiswa Keperawatan', 'Wadah mahasiswa untuk kegiatan organisasi, pengembangan diri, kolaborasi, dan kontribusi bagi lingkungan kampus.', 'Keilmuan keperawatan, kepemimpinan, pengembangan diri, pengabdian, dan kegiatan mahasiswa.', '', '', '', '', '', '', '', '', '', 'org_20260917041437_6c511a.png', 'aktif', 3, '2026-09-16 09:30:25', '2026-09-17 02:14:37'),
 (4, 'himpunan', 'HIMIKA', 'himika', 'Himpunan Mahasiswa', 'Organisasi mahasiswa yang mendukung aktivitas kemahasiswaan dan pengembangan kemampuan kepemimpinan.', 'Organisasi, aspirasi mahasiswa, kepemimpinan, kreativitas, dan kolaborasi.', '', '', '', '', '', '', '', '', '', 'org_20260917041453_ca245e.png', 'aktif', 4, '2026-09-16 09:30:25', '2026-09-17 02:14:53'),
@@ -445,7 +436,7 @@ INSERT INTO `kemahasiswaan_organisasi` (`id`, `jenis`, `nama`, `slug`, `kategori
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `kemahasiswaan_pengurus`
+-- Table structure for table `kemahasiswaan_pengurus`
 --
 
 CREATE TABLE `kemahasiswaan_pengurus` (
@@ -463,7 +454,7 @@ CREATE TABLE `kemahasiswaan_pengurus` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `misi`
+-- Table structure for table `misi`
 --
 
 CREATE TABLE `misi` (
@@ -475,20 +466,20 @@ CREATE TABLE `misi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `misi`
+-- Dumping data for table `misi`
 --
 
 INSERT INTO `misi` (`id`, `nomor`, `judul`, `isi`, `created_at`) VALUES
-(1, 1, 'Pendidikan', 'Menyelenggarakan pendidikan dan pengajaran di bidang ilmu kesehatan mengacu kepada Kurikulum Kerangka Kualifikasi Nasional Indonesia.', '2026-09-08 07:46:57'),
-(2, 2, 'Pengembangan Keilmuan', 'Menyelenggarakan proses pendidikan dan menghasilkan lulusan yang berakhlak mulia, berkemampuan IPTEKs dan berjiwa wirausaha.', '2026-09-08 07:46:57'),
-(3, 3, 'Pengabdian Masyarakat', 'Menyelenggarakan dan mengembangkan ilmu pengetahuan dan riset di bidang kesehatan.', '2026-09-08 07:46:57'),
-(4, 4, 'Pengembangan Sumber Daya', 'Menyelenggarakan dan mengembangkan pengabdian kepada masyarakat di bidang kesehatan.', '2026-09-08 07:46:57'),
-(5, 5, 'Kerja Sama Strategis', 'Membangun dan memperluas kerja sama dengan berbagai pihak untuk mendukung pengembangan pendidikan, penelitian, dan pengabdian kepada masyarakat.', '2026-09-08 07:46:57');
+(1, 1, 'Pendidikan', '1. Menyelenggarakan pendidikan dan pengajaran di bidang ilmu kesehatan mengacu kepada Kurikulum Kerangka Kualifikasi Nasional Indonesia.', '2026-09-21 07:34:16'),
+(2, 2, 'Pengembangan Keilmuan', 'Menyelenggarakan proses pendidikan dan menghasilkan lulusan yang berakhlak mulia, berkemampuan IPTEKs dan berjiwa wirausaha.', '2026-09-21 07:34:16'),
+(3, 3, 'Pengabdian Masyarakat', 'Menyelenggarakan dan mengembangkan ilmu pengetahuan dan riset di bidang kesehatan.', '2026-09-21 07:34:16'),
+(4, 4, 'Pengembangan Sumber Daya', 'Menyelenggarakan dan mengembangkan pengabdian kepada masyarakat di bidang kesehatan.', '2026-09-21 07:34:16'),
+(5, 5, 'Kerja Sama Strategis', 'Mengembangkan jaringan kerja sama untuk meningkatkan kapasitas dan daya saing FIKes.', '2026-09-21 07:34:16');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `pengaturan`
+-- Table structure for table `pengaturan`
 --
 
 CREATE TABLE `pengaturan` (
@@ -504,7 +495,7 @@ CREATE TABLE `pengaturan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `pengaturan`
+-- Dumping data for table `pengaturan`
 --
 
 INSERT INTO `pengaturan` (`id`, `nama_kampus`, `email`, `telepon`, `alamat`, `instagram`, `facebook`, `youtube`, `maps_embed`) VALUES
@@ -513,7 +504,7 @@ INSERT INTO `pengaturan` (`id`, `nama_kampus`, `email`, `telepon`, `alamat`, `in
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `prodi_capaian_pembelajaran`
+-- Table structure for table `prodi_capaian_pembelajaran`
 --
 
 CREATE TABLE `prodi_capaian_pembelajaran` (
@@ -526,7 +517,7 @@ CREATE TABLE `prodi_capaian_pembelajaran` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `prodi_capaian_pembelajaran`
+-- Dumping data for table `prodi_capaian_pembelajaran`
 --
 
 INSERT INTO `prodi_capaian_pembelajaran` (`id`, `prodi_id`, `kategori`, `isi`, `nomor_urut`, `created_at`) VALUES
@@ -538,7 +529,7 @@ INSERT INTO `prodi_capaian_pembelajaran` (`id`, `prodi_id`, `kategori`, `isi`, `
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `prodi_fasilitas`
+-- Table structure for table `prodi_fasilitas`
 --
 
 CREATE TABLE `prodi_fasilitas` (
@@ -552,7 +543,7 @@ CREATE TABLE `prodi_fasilitas` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `prodi_fasilitas`
+-- Dumping data for table `prodi_fasilitas`
 --
 
 INSERT INTO `prodi_fasilitas` (`id`, `prodi_id`, `nama_fasilitas`, `deskripsi`, `gambar`, `nomor_urut`, `created_at`) VALUES
@@ -563,7 +554,7 @@ INSERT INTO `prodi_fasilitas` (`id`, `prodi_id`, `nama_fasilitas`, `deskripsi`, 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `prodi_kurikulum`
+-- Table structure for table `prodi_kurikulum`
 --
 
 CREATE TABLE `prodi_kurikulum` (
@@ -579,7 +570,7 @@ CREATE TABLE `prodi_kurikulum` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `prodi_kurikulum`
+-- Dumping data for table `prodi_kurikulum`
 --
 
 INSERT INTO `prodi_kurikulum` (`id`, `prodi_id`, `kode_mk`, `nama_mk`, `semester`, `sks`, `jenis`, `nomor_urut`, `created_at`) VALUES
@@ -592,7 +583,7 @@ INSERT INTO `prodi_kurikulum` (`id`, `prodi_id`, `kode_mk`, `nama_mk`, `semester
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `prodi_misi`
+-- Table structure for table `prodi_misi`
 --
 
 CREATE TABLE `prodi_misi` (
@@ -604,7 +595,7 @@ CREATE TABLE `prodi_misi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `prodi_misi`
+-- Dumping data for table `prodi_misi`
 --
 
 INSERT INTO `prodi_misi` (`id`, `prodi_id`, `nomor_urut`, `isi`, `created_at`) VALUES
@@ -630,7 +621,7 @@ INSERT INTO `prodi_misi` (`id`, `prodi_id`, `nomor_urut`, `isi`, `created_at`) V
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `program_studi`
+-- Table structure for table `program_studi`
 --
 
 CREATE TABLE `program_studi` (
@@ -663,7 +654,7 @@ CREATE TABLE `program_studi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `program_studi`
+-- Dumping data for table `program_studi`
 --
 
 INSERT INTO `program_studi` (`id`, `kode_prodi`, `nama`, `jenjang`, `gelar`, `kaprodi_nama`, `kaprodi_nidn`, `kaprodi_email`, `deskripsi`, `foto`, `visi`, `akreditasi`, `nomor_akreditasi`, `tanggal_akreditasi`, `sekretaris_nama`, `sekretaris_nidn`, `kontak_telepon`, `kontak_email`, `alamat`, `durasi_studi`, `sks_lulus`, `jumlah_tenaga_kependidikan`, `gambar`, `brosur`, `status`, `created_at`) VALUES
@@ -677,7 +668,7 @@ INSERT INTO `program_studi` (`id`, `kode_prodi`, `nama`, `jenjang`, `gelar`, `ka
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `sertifikat_akreditasi`
+-- Table structure for table `sertifikat_akreditasi`
 --
 
 CREATE TABLE `sertifikat_akreditasi` (
@@ -696,7 +687,7 @@ CREATE TABLE `sertifikat_akreditasi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `sertifikat_akreditasi`
+-- Dumping data for table `sertifikat_akreditasi`
 --
 
 INSERT INTO `sertifikat_akreditasi` (`id_sertifikat`, `id_prodi`, `id_institusi`, `id_lembaga`, `nomor_sk`, `peringkat`, `tanggal_sk`, `tanggal_kadaluarsa`, `file_sertifikat`, `status_aktif`, `created_at`, `updated_at`) VALUES
@@ -705,7 +696,7 @@ INSERT INTO `sertifikat_akreditasi` (`id_sertifikat`, `id_prodi`, `id_institusi`
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `slider_beranda`
+-- Table structure for table `slider_beranda`
 --
 
 CREATE TABLE `slider_beranda` (
@@ -725,19 +716,112 @@ CREATE TABLE `slider_beranda` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `slider_beranda`
+-- Dumping data for table `slider_beranda`
 --
 
 INSERT INTO `slider_beranda` (`id`, `judul`, `highlight`, `label`, `deskripsi`, `gambar`, `link_utama`, `teks_tombol_utama`, `link_kedua`, `teks_tombol_kedua`, `nomor_urut`, `status`, `created_at`) VALUES
 (1, 'Membangun Generasi', 'Tenaga Kesehatan Profesional', 'FAKULTAS ILMU KESEHATAN', 'Mewujudkan pendidikan kesehatan yang unggul, profesional, inovatif, dan berintegritas untuk masa depan yang lebih baik.', '20260914033930_14b336cb.jpeg', 'page/program-studi/program-studi.php', 'Lihat Program Studi', '#', 'Pendaftaran', 4, 'aktif', '2026-09-12 07:40:43'),
 (2, 'Pendidikan Kesehatan', 'Untuk Masa Depan', 'PENDIDIKAN BERKUALITAS', 'Mengembangkan kompetensi mahasiswa melalui pembelajaran berkualitas, teknologi, penelitian, dan pengalaman praktik.', '20260914034004_1db88d50.jpeg', 'page/program-studi/program-studi.php', 'Lihat Program Studi', '#', 'Pendaftaran', 3, 'aktif', '2026-09-12 07:40:43'),
 (4, 'Membangun Generasi', 'Tenaga Kesehatan Profesional', 'FAKULTAS ILMU KESEHATAN', 'Mewujudkan pendidikan kesehatan yang unggul, profesional, inovatif, dan berintegritas untuk masa depan yang lebih baik.', '20260914033939_865a2e52.jpeg', 'page/program-studi/program-studi.php', 'Lihat Program Studi', '#', 'Pendaftaran', 1, 'aktif', '2026-09-12 07:48:41'),
-(5, 'Pendidikan Kesehatan', 'Untuk Masa Depan', 'PENDIDIKAN BERKUALITAS', 'Mengembangkan kompetensi mahasiswa melalui pembelajaran berkualitas, teknologi, penelitian, dan pengalaman praktik.', '20260914033949_f75787cb.jpeg', 'page/program-studi/program-studi.php', 'Lihat Program Studi', '#', 'Pendaftaran', 2, 'aktif', '2026-09-12 07:48:41');
+(5, 'Pendidikan Kesehatan', 'Untuk Masa Depan', 'PENDIDIKAN BERKUALITAS', 'Mengembangkan kompetensi mahasiswa melalui pembelajaran berkualitas, teknologi, penelitian, dan pengalaman praktik.', '20260914033949_f75787cb.jpeg', 'page/program-studi/program-studi.php', 'Lihat Program Studi', '#', 'Pendaftaran', 2, 'aktif', '2026-09-12 07:48:41'),
+(7, 'Gedung Rektorat', 'Rektorat', 'Rektorat', '', '20260921093156_d82e608c.jpg', '', 'Lihat Program Studi', '', 'Pendaftaran', 1, 'aktif', '2026-09-21 07:31:56'),
+(8, 'Gedung Lab Terpadu', 'Gedung Lab Terpadu', 'Gedung Lab Terpadu', 'Gedung Lab Terpadu', '20260921093242_fb2f5247.jpg', '', 'Lihat Program Studi', '', 'Pendaftaran', 1, 'aktif', '2026-09-21 07:32:42');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `struktur_organisasi`
+-- Table structure for table `spmi_dokumen`
+--
+
+CREATE TABLE `spmi_dokumen` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `judul` varchar(180) NOT NULL,
+  `kategori` varchar(100) NOT NULL DEFAULT 'Dokumen SPMI',
+  `tahun` varchar(20) DEFAULT NULL,
+  `deskripsi` text DEFAULT NULL,
+  `file_dokumen` varchar(255) DEFAULT NULL,
+  `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif',
+  `nomor_urut` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spmi_informasi`
+--
+
+CREATE TABLE `spmi_informasi` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `judul` varchar(180) NOT NULL,
+  `ringkasan` text DEFAULT NULL,
+  `isi` longtext NOT NULL,
+  `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif',
+  `nomor_urut` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `spmi_informasi`
+--
+
+INSERT INTO `spmi_informasi` (`id`, `judul`, `ringkasan`, `isi`, `status`, `nomor_urut`, `created_at`, `updated_at`) VALUES
+(1, 'Pengantar SPMI', 'Sistem Penjaminan Mutu Internal sebagai bagian dari budaya mutu FIKES.', 'SPMI merupakan rangkaian kegiatan penjaminan mutu yang dilaksanakan secara mandiri dan berkelanjutan untuk memastikan seluruh penyelenggaraan pendidikan dan layanan FIKES memenuhi standar yang telah ditetapkan.', 'aktif', 0, '2026-09-22 03:29:50', '2026-09-22 03:47:00'),
+(2, 'Tujuan SPMI', 'Menjaga dan meningkatkan mutu penyelenggaraan pendidikan.', 'SPMI diarahkan untuk membangun budaya mutu, memastikan ketercapaian standar, menyediakan dasar evaluasi yang terukur, serta mendorong peningkatan mutu secara berkelanjutan.', 'aktif', 2, '2026-09-22 03:29:50', '2026-09-22 03:29:50');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spmi_kegiatan`
+--
+
+CREATE TABLE `spmi_kegiatan` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `judul` varchar(180) NOT NULL,
+  `tanggal` date DEFAULT NULL,
+  `lokasi` varchar(180) DEFAULT NULL,
+  `ringkasan` text DEFAULT NULL,
+  `isi` longtext DEFAULT NULL,
+  `gambar` varchar(255) DEFAULT NULL,
+  `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `spmi_siklus`
+--
+
+CREATE TABLE `spmi_siklus` (
+  `id` int(10) UNSIGNED NOT NULL,
+  `kode` varchar(10) NOT NULL DEFAULT '',
+  `tahap` varchar(100) NOT NULL,
+  `deskripsi` text NOT NULL,
+  `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif',
+  `nomor_urut` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `spmi_siklus`
+--
+
+INSERT INTO `spmi_siklus` (`id`, `kode`, `tahap`, `deskripsi`, `status`, `nomor_urut`, `created_at`, `updated_at`) VALUES
+(1, 'P', 'Penetapan', 'Menetapkan standar dan indikator mutu yang menjadi acuan penyelenggaraan kegiatan.', 'aktif', 1, '2026-09-22 03:29:50', '2026-09-22 03:29:50'),
+(2, 'P', 'Pelaksanaan', 'Melaksanakan kegiatan sesuai standar, kebijakan, dan prosedur yang telah ditetapkan.', 'aktif', 2, '2026-09-22 03:29:50', '2026-09-22 03:29:50'),
+(3, 'E', 'Evaluasi', 'Mengukur ketercapaian standar melalui monitoring, evaluasi, audit, dan pengumpulan bukti.', 'aktif', 3, '2026-09-22 03:29:50', '2026-09-22 03:29:50'),
+(4, 'P', 'Pengendalian', 'Menindaklanjuti hasil evaluasi untuk memastikan penyimpangan dan risiko mutu dikendalikan.', 'aktif', 4, '2026-09-22 03:29:50', '2026-09-22 03:29:50'),
+(5, 'P', 'Peningkatan', 'Meningkatkan standar dan proses berdasarkan hasil evaluasi serta kebutuhan pengembangan institusi.', 'aktif', 5, '2026-09-22 03:29:50', '2026-09-22 03:29:50');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `struktur_organisasi`
 --
 
 CREATE TABLE `struktur_organisasi` (
@@ -754,16 +838,41 @@ CREATE TABLE `struktur_organisasi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `struktur_organisasi`
+-- Dumping data for table `struktur_organisasi`
 --
 
 INSERT INTO `struktur_organisasi` (`id`, `periode`, `sk_rektor`, `dekan`, `wakil_dekan_akademik`, `wakil_dekan_adum_keu`, `wakil_dekan_kemahasiswaan`, `gambar`, `created_at`, `updated_at`) VALUES
-(1, '2024 - 2026', 'Nomor 030/Univ.BHAMADA/KEP/V/2024', 'Rosmalia, S.T.,M.Kes. MOH', 'Siswati, S.Si.T.,Bdn.,M.Kes.', 'Sri Hidayati, Ns.,M.Kep.,Sp.Kep.MB.', 'Deni Irawan, Ns.,M.Kep.', 'struktur_20260908111729_e58cb6b9.png', '2026-09-08 07:07:10', '2026-09-17 09:00:25');
+(1, '2024 - 2026', 'Nomor 030/Univ.BHAMADA/KEP/V/2024', 'Rosmalia, S.T.,M.Kes. MOH', 'Siswati, S.Si.T.,Bdn.,M.Kes.', 'Sri Hidayati, Ns.,M.Kep.,Sp.Kep.MB.', 'Deni Irawan, Ns.,M.Kep.', 'struktur_20260908111729_e58cb6b9.png', '2026-09-08 07:07:10', '2026-09-17 09:00:25'),
+(12, '2023 - 2024', 'Nomor 059/Univ.BHAMADA/KEP/VIII/2023', 'Dwi Budi Prastiani, Ns.,M.Kep.,Sp.Kep.Kom', 'Siswati, S.Si.T.,Bdn.,M.Kes.', 'Arifin Dwi Atmaja, Ns.,M.Kep.', 'Deni Irawan, Ns.,M.Kep.', 'struktur_20260921094422_01bd4bfe.png', '2026-09-21 07:36:23', '2026-09-21 07:44:22'),
+(13, '2021 - 2023', 'SK Ketua YPTSH Nomor 009/KP/YPTSH/VIII/2021', 'Natiqotul Fatkhiyah, S.Si.T.,Bdn.,M.Kes.', 'Arifin Dwi Atmaja, Ns.,M.Kep.', 'Siswati, S.Si.T.,Bdn.,M.Kes.', 'Deni Irawan, Ns.,M.Kep.', '', '2026-09-21 07:49:17', '2026-09-21 07:49:17');
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `survey`
+-- Table structure for table `struktur_organisasi_gambar`
+--
+
+CREATE TABLE `struktur_organisasi_gambar` (
+  `id` int(11) NOT NULL,
+  `judul` varchar(150) NOT NULL,
+  `periode` varchar(50) DEFAULT NULL,
+  `gambar` varchar(255) NOT NULL,
+  `status` enum('aktif','tidak_aktif') NOT NULL DEFAULT 'tidak_aktif',
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `struktur_organisasi_gambar`
+--
+
+INSERT INTO `struktur_organisasi_gambar` (`id`, `judul`, `periode`, `gambar`, `status`, `created_at`, `updated_at`) VALUES
+(1, 'Struktur Organisasi FIKES', '2023 - 2024', 'struktur_gambar_20260921100200_6c01c609.png', 'aktif', '2026-09-21 08:00:27', '2026-09-21 08:14:44');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `survey`
 --
 
 CREATE TABLE `survey` (
@@ -781,7 +890,7 @@ CREATE TABLE `survey` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `survey`
+-- Dumping data for table `survey`
 --
 
 INSERT INTO `survey` (`id`, `judul`, `slug`, `deskripsi`, `target_responden`, `tanggal_mulai`, `tanggal_selesai`, `status`, `nomor_urut`, `created_at`, `updated_at`) VALUES
@@ -793,7 +902,7 @@ INSERT INTO `survey` (`id`, `judul`, `slug`, `deskripsi`, `target_responden`, `t
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `survey_jawaban`
+-- Table structure for table `survey_jawaban`
 --
 
 CREATE TABLE `survey_jawaban` (
@@ -806,7 +915,7 @@ CREATE TABLE `survey_jawaban` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `survey_jawaban`
+-- Dumping data for table `survey_jawaban`
 --
 
 INSERT INTO `survey_jawaban` (`id`, `responden_id`, `pertanyaan_id`, `pilihan_id`, `jawaban_text`, `nilai`) VALUES
@@ -823,7 +932,7 @@ INSERT INTO `survey_jawaban` (`id`, `responden_id`, `pertanyaan_id`, `pilihan_id
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `survey_pertanyaan`
+-- Table structure for table `survey_pertanyaan`
 --
 
 CREATE TABLE `survey_pertanyaan` (
@@ -838,7 +947,7 @@ CREATE TABLE `survey_pertanyaan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `survey_pertanyaan`
+-- Dumping data for table `survey_pertanyaan`
 --
 
 INSERT INTO `survey_pertanyaan` (`id`, `survey_id`, `pertanyaan`, `tipe`, `wajib`, `nomor_urut`, `status`, `created_at`) VALUES
@@ -849,7 +958,7 @@ INSERT INTO `survey_pertanyaan` (`id`, `survey_id`, `pertanyaan`, `tipe`, `wajib
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `survey_pilihan`
+-- Table structure for table `survey_pilihan`
 --
 
 CREATE TABLE `survey_pilihan` (
@@ -861,7 +970,7 @@ CREATE TABLE `survey_pilihan` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `survey_pilihan`
+-- Dumping data for table `survey_pilihan`
 --
 
 INSERT INTO `survey_pilihan` (`id`, `pertanyaan_id`, `label`, `nilai`, `nomor_urut`) VALUES
@@ -879,7 +988,7 @@ INSERT INTO `survey_pilihan` (`id`, `pertanyaan_id`, `label`, `nilai`, `nomor_ur
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `survey_responden`
+-- Table structure for table `survey_responden`
 --
 
 CREATE TABLE `survey_responden` (
@@ -894,7 +1003,7 @@ CREATE TABLE `survey_responden` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `survey_responden`
+-- Dumping data for table `survey_responden`
 --
 
 INSERT INTO `survey_responden` (`id`, `survey_id`, `nama`, `email`, `kategori_responden`, `identitas`, `tanggal_isi`, `ip_address`) VALUES
@@ -906,7 +1015,7 @@ INSERT INTO `survey_responden` (`id`, `survey_id`, `nama`, `email`, `kategori_re
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `users`
+-- Table structure for table `users`
 --
 
 CREATE TABLE `users` (
@@ -919,7 +1028,7 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `users`
+-- Dumping data for table `users`
 --
 
 INSERT INTO `users` (`id`, `nama`, `username`, `password`, `role`, `created_at`) VALUES
@@ -928,7 +1037,7 @@ INSERT INTO `users` (`id`, `nama`, `username`, `password`, `role`, `created_at`)
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `visi_misi`
+-- Table structure for table `visi_misi`
 --
 
 CREATE TABLE `visi_misi` (
@@ -939,25 +1048,25 @@ CREATE TABLE `visi_misi` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
--- Dumping data untuk tabel `visi_misi`
+-- Dumping data for table `visi_misi`
 --
 
 INSERT INTO `visi_misi` (`id`, `visi`, `created_at`, `updated_at`) VALUES
-(1, 'Menjadi institusi pendidikan tinggi kesehatan yang unggul, profesional, inovatif, berintegritas, dan mampu memberikan kontribusi nyata bagi peningkatan derajat kesehatan masyarakat.sdsdsd', '2026-09-08 05:17:15', '2026-09-08 07:46:57');
+(1, 'Terwujudnya fakultas yang unggul dalam menghasilkan tenaga kesehatan yang berakhlak mulia, berkemampuan IPTEKs dan berjiwa wirausaha tahun 2030.', '2026-09-08 05:17:15', '2026-09-21 07:34:16');
 
 --
 -- Indexes for dumped tables
 --
 
 --
--- Indeks untuk tabel `akademik_dokumen`
+-- Indexes for table `akademik_dokumen`
 --
 ALTER TABLE `akademik_dokumen`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_dokumen` (`kategori`,`nomor_urut`);
 
 --
--- Indeks untuk tabel `akademik_jadwal`
+-- Indexes for table `akademik_jadwal`
 --
 ALTER TABLE `akademik_jadwal`
   ADD PRIMARY KEY (`id`),
@@ -965,34 +1074,34 @@ ALTER TABLE `akademik_jadwal`
   ADD KEY `idx_jadwal_prodi` (`prodi_id`);
 
 --
--- Indeks untuk tabel `akademik_kalender`
+-- Indexes for table `akademik_kalender`
 --
 ALTER TABLE `akademik_kalender`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_kalender` (`tahun_ajaran`,`tanggal_mulai`);
 
 --
--- Indeks untuk tabel `akademik_penilaian`
+-- Indexes for table `akademik_penilaian`
 --
 ALTER TABLE `akademik_penilaian`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `akademik_registrasi`
+-- Indexes for table `akademik_registrasi`
 --
 ALTER TABLE `akademik_registrasi`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_registrasi` (`tahun_ajaran`,`tanggal_mulai`);
 
 --
--- Indeks untuk tabel `akademik_silabus`
+-- Indexes for table `akademik_silabus`
 --
 ALTER TABLE `akademik_silabus`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_silabus_kurikulum` (`kurikulum_id`);
 
 --
--- Indeks untuk tabel `akademik_skala_nilai`
+-- Indexes for table `akademik_skala_nilai`
 --
 ALTER TABLE `akademik_skala_nilai`
   ADD PRIMARY KEY (`id`),
@@ -1000,7 +1109,7 @@ ALTER TABLE `akademik_skala_nilai`
   ADD UNIQUE KEY `uq_skala_kode` (`kode_nilai`);
 
 --
--- Indeks untuk tabel `berita`
+-- Indexes for table `berita`
 --
 ALTER TABLE `berita`
   ADD PRIMARY KEY (`id`),
@@ -1008,40 +1117,40 @@ ALTER TABLE `berita`
   ADD KEY `idx_berita_status_tanggal` (`status`,`tanggal_terbit`);
 
 --
--- Indeks untuk tabel `dosen`
+-- Indexes for table `dosen`
 --
 ALTER TABLE `dosen`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `dosen_bidang_ajar`
+-- Indexes for table `dosen_bidang_ajar`
 --
 ALTER TABLE `dosen_bidang_ajar`
   ADD PRIMARY KEY (`id`),
   ADD KEY `dosen_id` (`dosen_id`);
 
 --
--- Indeks untuk tabel `dosen_keilmuan`
+-- Indexes for table `dosen_keilmuan`
 --
 ALTER TABLE `dosen_keilmuan`
   ADD PRIMARY KEY (`id`),
   ADD KEY `dosen_id` (`dosen_id`);
 
 --
--- Indeks untuk tabel `dosen_pendidikan`
+-- Indexes for table `dosen_pendidikan`
 --
 ALTER TABLE `dosen_pendidikan`
   ADD PRIMARY KEY (`id`),
   ADD KEY `dosen_id` (`dosen_id`);
 
 --
--- Indeks untuk tabel `kemahasiswaan`
+-- Indexes for table `kemahasiswaan`
 --
 ALTER TABLE `kemahasiswaan`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `kemahasiswaan_anggota`
+-- Indexes for table `kemahasiswaan_anggota`
 --
 ALTER TABLE `kemahasiswaan_anggota`
   ADD PRIMARY KEY (`id`),
@@ -1049,7 +1158,7 @@ ALTER TABLE `kemahasiswaan_anggota`
   ADD KEY `idx_ka_status` (`organisasi_slug`,`status`);
 
 --
--- Indeks untuk tabel `kemahasiswaan_galeri`
+-- Indexes for table `kemahasiswaan_galeri`
 --
 ALTER TABLE `kemahasiswaan_galeri`
   ADD PRIMARY KEY (`id`),
@@ -1057,7 +1166,7 @@ ALTER TABLE `kemahasiswaan_galeri`
   ADD KEY `idx_kg_status` (`organisasi_slug`,`status`);
 
 --
--- Indeks untuk tabel `kemahasiswaan_kegiatan`
+-- Indexes for table `kemahasiswaan_kegiatan`
 --
 ALTER TABLE `kemahasiswaan_kegiatan`
   ADD PRIMARY KEY (`id`),
@@ -1065,7 +1174,7 @@ ALTER TABLE `kemahasiswaan_kegiatan`
   ADD KEY `idx_kk_status` (`organisasi_slug`,`status`);
 
 --
--- Indeks untuk tabel `kemahasiswaan_organisasi`
+-- Indexes for table `kemahasiswaan_organisasi`
 --
 ALTER TABLE `kemahasiswaan_organisasi`
   ADD PRIMARY KEY (`id`),
@@ -1074,7 +1183,7 @@ ALTER TABLE `kemahasiswaan_organisasi`
   ADD KEY `idx_ko_urut` (`jenis`,`nomor_urut`);
 
 --
--- Indeks untuk tabel `kemahasiswaan_pengurus`
+-- Indexes for table `kemahasiswaan_pengurus`
 --
 ALTER TABLE `kemahasiswaan_pengurus`
   ADD PRIMARY KEY (`id`),
@@ -1082,72 +1191,107 @@ ALTER TABLE `kemahasiswaan_pengurus`
   ADD KEY `idx_kp_status` (`organisasi_slug`,`status`);
 
 --
--- Indeks untuk tabel `misi`
+-- Indexes for table `misi`
 --
 ALTER TABLE `misi`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `pengaturan`
+-- Indexes for table `pengaturan`
 --
 ALTER TABLE `pengaturan`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `prodi_capaian_pembelajaran`
+-- Indexes for table `prodi_capaian_pembelajaran`
 --
 ALTER TABLE `prodi_capaian_pembelajaran`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_prodi_cpl` (`prodi_id`);
 
 --
--- Indeks untuk tabel `prodi_fasilitas`
+-- Indexes for table `prodi_fasilitas`
 --
 ALTER TABLE `prodi_fasilitas`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_prodi_fasilitas` (`prodi_id`);
 
 --
--- Indeks untuk tabel `prodi_kurikulum`
+-- Indexes for table `prodi_kurikulum`
 --
 ALTER TABLE `prodi_kurikulum`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_prodi_kurikulum` (`prodi_id`);
 
 --
--- Indeks untuk tabel `prodi_misi`
+-- Indexes for table `prodi_misi`
 --
 ALTER TABLE `prodi_misi`
   ADD PRIMARY KEY (`id`),
   ADD KEY `idx_prodi_misi` (`prodi_id`);
 
 --
--- Indeks untuk tabel `program_studi`
+-- Indexes for table `program_studi`
 --
 ALTER TABLE `program_studi`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `uk_kode_prodi` (`kode_prodi`);
 
 --
--- Indeks untuk tabel `sertifikat_akreditasi`
+-- Indexes for table `sertifikat_akreditasi`
 --
 ALTER TABLE `sertifikat_akreditasi`
   ADD PRIMARY KEY (`id_sertifikat`);
 
 --
--- Indeks untuk tabel `slider_beranda`
+-- Indexes for table `slider_beranda`
 --
 ALTER TABLE `slider_beranda`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `struktur_organisasi`
+-- Indexes for table `spmi_dokumen`
+--
+ALTER TABLE `spmi_dokumen`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_spmi_dok_status` (`status`,`kategori`,`nomor_urut`);
+
+--
+-- Indexes for table `spmi_informasi`
+--
+ALTER TABLE `spmi_informasi`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_spmi_info_status` (`status`,`nomor_urut`);
+
+--
+-- Indexes for table `spmi_kegiatan`
+--
+ALTER TABLE `spmi_kegiatan`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_spmi_kegiatan_status` (`status`,`tanggal`);
+
+--
+-- Indexes for table `spmi_siklus`
+--
+ALTER TABLE `spmi_siklus`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_spmi_siklus_status` (`status`,`nomor_urut`);
+
+--
+-- Indexes for table `struktur_organisasi`
 --
 ALTER TABLE `struktur_organisasi`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeks untuk tabel `survey`
+-- Indexes for table `struktur_organisasi_gambar`
+--
+ALTER TABLE `struktur_organisasi_gambar`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idx_status` (`status`);
+
+--
+-- Indexes for table `survey`
 --
 ALTER TABLE `survey`
   ADD PRIMARY KEY (`id`),
@@ -1156,7 +1300,7 @@ ALTER TABLE `survey`
   ADD KEY `idx_survey_urut` (`nomor_urut`);
 
 --
--- Indeks untuk tabel `survey_jawaban`
+-- Indexes for table `survey_jawaban`
 --
 ALTER TABLE `survey_jawaban`
   ADD PRIMARY KEY (`id`),
@@ -1164,7 +1308,7 @@ ALTER TABLE `survey_jawaban`
   ADD KEY `idx_sj_pertanyaan` (`pertanyaan_id`);
 
 --
--- Indeks untuk tabel `survey_pertanyaan`
+-- Indexes for table `survey_pertanyaan`
 --
 ALTER TABLE `survey_pertanyaan`
   ADD PRIMARY KEY (`id`),
@@ -1172,7 +1316,7 @@ ALTER TABLE `survey_pertanyaan`
   ADD KEY `idx_sp_urut` (`survey_id`,`nomor_urut`);
 
 --
--- Indeks untuk tabel `survey_pilihan`
+-- Indexes for table `survey_pilihan`
 --
 ALTER TABLE `survey_pilihan`
   ADD PRIMARY KEY (`id`),
@@ -1180,7 +1324,7 @@ ALTER TABLE `survey_pilihan`
   ADD KEY `idx_spl_urut` (`pertanyaan_id`,`nomor_urut`);
 
 --
--- Indeks untuk tabel `survey_responden`
+-- Indexes for table `survey_responden`
 --
 ALTER TABLE `survey_responden`
   ADD PRIMARY KEY (`id`),
@@ -1188,228 +1332,258 @@ ALTER TABLE `survey_responden`
   ADD KEY `idx_sr_tanggal` (`survey_id`,`tanggal_isi`);
 
 --
--- Indeks untuk tabel `users`
+-- Indexes for table `users`
 --
 ALTER TABLE `users`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`);
 
 --
--- Indeks untuk tabel `visi_misi`
+-- Indexes for table `visi_misi`
 --
 ALTER TABLE `visi_misi`
   ADD PRIMARY KEY (`id`);
 
 --
--- AUTO_INCREMENT untuk tabel yang dibuang
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT untuk tabel `akademik_dokumen`
+-- AUTO_INCREMENT for table `akademik_dokumen`
 --
 ALTER TABLE `akademik_dokumen`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT untuk tabel `akademik_jadwal`
+-- AUTO_INCREMENT for table `akademik_jadwal`
 --
 ALTER TABLE `akademik_jadwal`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `akademik_kalender`
+-- AUTO_INCREMENT for table `akademik_kalender`
 --
 ALTER TABLE `akademik_kalender`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `akademik_penilaian`
+-- AUTO_INCREMENT for table `akademik_penilaian`
 --
 ALTER TABLE `akademik_penilaian`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT untuk tabel `akademik_registrasi`
+-- AUTO_INCREMENT for table `akademik_registrasi`
 --
 ALTER TABLE `akademik_registrasi`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT untuk tabel `akademik_silabus`
+-- AUTO_INCREMENT for table `akademik_silabus`
 --
 ALTER TABLE `akademik_silabus`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT untuk tabel `akademik_skala_nilai`
+-- AUTO_INCREMENT for table `akademik_skala_nilai`
 --
 ALTER TABLE `akademik_skala_nilai`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
--- AUTO_INCREMENT untuk tabel `berita`
+-- AUTO_INCREMENT for table `berita`
 --
 ALTER TABLE `berita`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `dosen`
+-- AUTO_INCREMENT for table `dosen`
 --
 ALTER TABLE `dosen`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
--- AUTO_INCREMENT untuk tabel `dosen_bidang_ajar`
+-- AUTO_INCREMENT for table `dosen_bidang_ajar`
 --
 ALTER TABLE `dosen_bidang_ajar`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `dosen_keilmuan`
+-- AUTO_INCREMENT for table `dosen_keilmuan`
 --
 ALTER TABLE `dosen_keilmuan`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT untuk tabel `dosen_pendidikan`
+-- AUTO_INCREMENT for table `dosen_pendidikan`
 --
 ALTER TABLE `dosen_pendidikan`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `kemahasiswaan`
+-- AUTO_INCREMENT for table `kemahasiswaan`
 --
 ALTER TABLE `kemahasiswaan`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `kemahasiswaan_anggota`
+-- AUTO_INCREMENT for table `kemahasiswaan_anggota`
 --
 ALTER TABLE `kemahasiswaan_anggota`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `kemahasiswaan_galeri`
+-- AUTO_INCREMENT for table `kemahasiswaan_galeri`
 --
 ALTER TABLE `kemahasiswaan_galeri`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `kemahasiswaan_kegiatan`
+-- AUTO_INCREMENT for table `kemahasiswaan_kegiatan`
 --
 ALTER TABLE `kemahasiswaan_kegiatan`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `kemahasiswaan_organisasi`
+-- AUTO_INCREMENT for table `kemahasiswaan_organisasi`
 --
 ALTER TABLE `kemahasiswaan_organisasi`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=24;
 
 --
--- AUTO_INCREMENT untuk tabel `kemahasiswaan_pengurus`
+-- AUTO_INCREMENT for table `kemahasiswaan_pengurus`
 --
 ALTER TABLE `kemahasiswaan_pengurus`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `misi`
+-- AUTO_INCREMENT for table `misi`
 --
 ALTER TABLE `misi`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
--- AUTO_INCREMENT untuk tabel `pengaturan`
+-- AUTO_INCREMENT for table `pengaturan`
 --
 ALTER TABLE `pengaturan`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT untuk tabel `prodi_capaian_pembelajaran`
+-- AUTO_INCREMENT for table `prodi_capaian_pembelajaran`
 --
 ALTER TABLE `prodi_capaian_pembelajaran`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
--- AUTO_INCREMENT untuk tabel `prodi_fasilitas`
+-- AUTO_INCREMENT for table `prodi_fasilitas`
 --
 ALTER TABLE `prodi_fasilitas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
--- AUTO_INCREMENT untuk tabel `prodi_kurikulum`
+-- AUTO_INCREMENT for table `prodi_kurikulum`
 --
 ALTER TABLE `prodi_kurikulum`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
--- AUTO_INCREMENT untuk tabel `prodi_misi`
+-- AUTO_INCREMENT for table `prodi_misi`
 --
 ALTER TABLE `prodi_misi`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
--- AUTO_INCREMENT untuk tabel `program_studi`
+-- AUTO_INCREMENT for table `program_studi`
 --
 ALTER TABLE `program_studi`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
--- AUTO_INCREMENT untuk tabel `sertifikat_akreditasi`
+-- AUTO_INCREMENT for table `sertifikat_akreditasi`
 --
 ALTER TABLE `sertifikat_akreditasi`
   MODIFY `id_sertifikat` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `slider_beranda`
+-- AUTO_INCREMENT for table `slider_beranda`
 --
 ALTER TABLE `slider_beranda`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
--- AUTO_INCREMENT untuk tabel `struktur_organisasi`
+-- AUTO_INCREMENT for table `spmi_dokumen`
+--
+ALTER TABLE `spmi_dokumen`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `spmi_informasi`
+--
+ALTER TABLE `spmi_informasi`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT for table `spmi_kegiatan`
+--
+ALTER TABLE `spmi_kegiatan`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `spmi_siklus`
+--
+ALTER TABLE `spmi_siklus`
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `struktur_organisasi`
 --
 ALTER TABLE `struktur_organisasi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
--- AUTO_INCREMENT untuk tabel `survey`
+-- AUTO_INCREMENT for table `struktur_organisasi_gambar`
+--
+ALTER TABLE `struktur_organisasi_gambar`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT for table `survey`
 --
 ALTER TABLE `survey`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT untuk tabel `survey_jawaban`
+-- AUTO_INCREMENT for table `survey_jawaban`
 --
 ALTER TABLE `survey_jawaban`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
--- AUTO_INCREMENT untuk tabel `survey_pertanyaan`
+-- AUTO_INCREMENT for table `survey_pertanyaan`
 --
 ALTER TABLE `survey_pertanyaan`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `survey_pilihan`
+-- AUTO_INCREMENT for table `survey_pilihan`
 --
 ALTER TABLE `survey_pilihan`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT untuk tabel `survey_responden`
+-- AUTO_INCREMENT for table `survey_responden`
 --
 ALTER TABLE `survey_responden`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
--- AUTO_INCREMENT untuk tabel `users`
+-- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT untuk tabel `visi_misi`
+-- AUTO_INCREMENT for table `visi_misi`
 --
 ALTER TABLE `visi_misi`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;

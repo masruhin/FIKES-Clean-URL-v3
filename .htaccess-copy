@@ -1,16 +1,8 @@
 Options -MultiViews
 RewriteEngine On
 
-# =========================================================
 # SPMI
-# =========================================================
-
-# URL bersih SPMI -> halaman asli
 RewriteRule ^spmi/?$ page/spmi/spmi.php [L,QSA]
-
-# URL file PHP lama -> URL bersih
-# THE_REQUEST mencegah redirect terjadi pada internal rewrite
-RewriteCond %{THE_REQUEST} \s/+fikes/page/spmi/spmi\.php(?:[?\s]|$) [NC]
 RewriteRule ^page/spmi/spmi\.php$ /fikes/spmi [R=301,L]
 
 # =========================================================
@@ -117,8 +109,7 @@ RewriteRule ^akademik/?$ page/akademik/akademik.php [L,QSA]
 RewriteRule ^survey/?$ page/survey/survey.php [L,QSA]
 RewriteRule ^survey/([^/]+)/?$ page/survey/isi-survey.php?slug=$1 [L,QSA,NE]
 
-RewriteRule ^kemahasiswaan/himpunan-mahasiswa/?$ page/kemahasiswaan/himpunan-mahasiswa.php [L]
+
 RewriteRule ^kemahasiswaan/himpunan-kemahasiswaan/?$ page/kemahasiswaan/himpunan-kemahasiswaan.php [L]
 RewriteRule ^kemahasiswaan/himpunan/([^/]+)/?$ page/kemahasiswaan/detail-himpunan.php?slug=$1 [L,QSA,NE]
-RewriteRule ^kemahasiswaan/ukm/?$ page/kemahasiswaan/ukm.php [L]
 RewriteRule ^kemahasiswaan/ukm/([^/]+)/?$ page/kemahasiswaan/detail-ukm.php?slug=$1 [L,QSA,NE]

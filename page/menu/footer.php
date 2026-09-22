@@ -80,6 +80,8 @@ $siteCopyright = fikes_setting_value($site, ['copyright', 'copyright_text', 'foo
 
         <a href="#"> Pelayanan FIKES </a>
 
+        <a href="/fikes/spmi"> SPMI </a>
+
         <a href="#"> Survey </a>
       </div>
     </div>

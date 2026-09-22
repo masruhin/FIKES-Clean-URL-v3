@@ -252,6 +252,10 @@ function frontend_parent_active($paths) {
       <!-- SURVEY -->
 
       <div class="nav-item">
+        <a href="/fikes/spmi" class="nav-link <?= frontend_active('/fikes/spmi') ?>"> SPMI </a>
+      </div>
+
+      <div class="nav-item">
         <a href="/fikes/survey" class="nav-link <?= frontend_active('/fikes/survey') ?>"> Survey </a>
       </div>
     </nav>
