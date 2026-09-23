@@ -13,33 +13,35 @@ $base = '../../';
 $current_path = parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH);
 $current_path = rtrim($current_path, '/');
 if ($current_path === '') {
-    $current_path = '/';
+  $current_path = '/';
 }
 
-function frontend_active($paths, $exact = false) {
-    global $current_path;
-    $paths = (array) $paths;
+function frontend_active($paths, $exact = false)
+{
+  global $current_path;
+  $paths = (array) $paths;
 
-    foreach ($paths as $path) {
-        $path = rtrim($path, '/');
-        if ($path === '') $path = '/';
+  foreach ($paths as $path) {
+    $path = rtrim($path, '/');
+    if ($path === '') $path = '/';
 
-        if ($exact) {
-            if ($current_path === $path) {
-                return 'active';
-            }
-        } else {
-            if ($current_path === $path || strpos($current_path, $path . '/') === 0) {
-                return 'active';
-            }
-        }
+    if ($exact) {
+      if ($current_path === $path) {
+        return 'active';
+      }
+    } else {
+      if ($current_path === $path || strpos($current_path, $path . '/') === 0) {
+        return 'active';
+      }
     }
+  }
 
-    return '';
+  return '';
 }
 
-function frontend_parent_active($paths) {
-    return frontend_active($paths);
+function frontend_parent_active($paths)
+{
+  return frontend_active($paths);
 }
 ?>
 
@@ -70,7 +72,7 @@ function frontend_parent_active($paths) {
       <!-- TENTANG FIKES -->
 
       <div class="nav-item has-dropdown">
-        <a href="/fikes/" class="dropdown-link">
+        <a href="/" class="dropdown-link">
           Tentang FIKES
           <span class="arrow">▾</span>
         </a>

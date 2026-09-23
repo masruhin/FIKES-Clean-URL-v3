@@ -1,9 +1,9 @@
--- phpMyAdmin SQL Dumpp
+-- phpMyAdmin SQL Dump
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Sep 22, 2026 at 05:50 AM
+-- Generation Time: Sep 23, 2026 at 10:51 AM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.0.30
 
@@ -76,6 +76,7 @@ CREATE TABLE `akademik_kalender` (
   `tanggal_mulai` date NOT NULL,
   `tanggal_selesai` date DEFAULT NULL,
   `keterangan` text DEFAULT NULL,
+  `file_dokumen` varchar(255) DEFAULT NULL,
   `nomor_urut` int(11) NOT NULL DEFAULT 1,
   `status` enum('aktif','nonaktif') NOT NULL DEFAULT 'aktif',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
@@ -85,10 +86,10 @@ CREATE TABLE `akademik_kalender` (
 -- Dumping data for table `akademik_kalender`
 --
 
-INSERT INTO `akademik_kalender` (`id`, `tahun_ajaran`, `kategori`, `judul`, `tanggal_mulai`, `tanggal_selesai`, `keterangan`, `nomor_urut`, `status`, `created_at`) VALUES
-(1, '2026/2027', 'Perkuliahan', 'Awal Perkuliahan Semester Ganjil', '2026-09-01', '2026-09-01', 'Contoh data awal; silakan sesuaikan dengan kalender resmi FIKES..', 1, 'aktif', '2026-09-14 06:30:01'),
-(2, '2026/2027', 'Ujian', 'Ujian Tengah Semester (UTS)', '2026-11-02', '2026-11-07', 'Contoh data awal.', 2, 'aktif', '2026-09-14 06:30:01'),
-(3, '2026/2027', 'Ujian', 'Ujian Akhir Semester (UAS)', '2027-01-04', '2027-01-16', 'Contoh data awal.', 3, 'aktif', '2026-09-14 06:30:01');
+INSERT INTO `akademik_kalender` (`id`, `tahun_ajaran`, `kategori`, `judul`, `tanggal_mulai`, `tanggal_selesai`, `keterangan`, `file_dokumen`, `nomor_urut`, `status`, `created_at`) VALUES
+(1, '2026/2027', 'Perkuliahan', 'Awal Perkuliahan Semester Ganjil', '2026-09-01', '2026-09-01', 'Contoh data awal; silakan sesuaikan dengan kalender resmi FIKES..', NULL, 1, 'aktif', '2026-09-14 06:30:01'),
+(2, '2026/2027', 'Ujian', 'Ujian Tengah Semester (UTS)', '2026-11-02', '2026-11-07', 'Contoh data awal.', NULL, 2, 'aktif', '2026-09-14 06:30:01'),
+(3, '2026/2027', 'Ujian', 'Ujian Akhir Semester (UAS)', '2027-01-04', '2027-01-16', 'Contoh data awal.', NULL, 3, 'aktif', '2026-09-14 06:30:01');
 
 -- --------------------------------------------------------
 
@@ -163,7 +164,8 @@ CREATE TABLE `akademik_silabus` (
 --
 
 INSERT INTO `akademik_silabus` (`id`, `kurikulum_id`, `judul`, `deskripsi`, `file_dokumen`, `status`, `created_at`) VALUES
-(1, 29, 'Awal Perkuliahan Semester Ganjilllll', 'admin', '20260915042602_1a43e24a.docx', 'aktif', '2026-09-15 02:26:02');
+(1, 29, 'Awal Perkuliahan Semester Ganjilllll', 'admin', '20260915042602_1a43e24a.docx', 'aktif', '2026-09-15 02:26:02'),
+(2, 34, 'Membangun Generasi', '', '20260923102309_8945337e.pdf', 'aktif', '2026-09-23 08:23:09');
 
 -- --------------------------------------------------------
 
@@ -574,11 +576,11 @@ CREATE TABLE `prodi_kurikulum` (
 --
 
 INSERT INTO `prodi_kurikulum` (`id`, `prodi_id`, `kode_mk`, `nama_mk`, `semester`, `sks`, `jenis`, `nomor_urut`, `created_at`) VALUES
-(29, 6, 'K3', 'K3', '4', 2.0, 'Wajib', 5, '2026-09-15 02:25:18'),
 (30, 1, 'KEP101', 'Dasar-Dasar Keperawatan', '1', 3.0, NULL, 1, '2026-09-16 09:19:22'),
 (31, 1, 'KEP102', 'Anatomi dan Fisiologi', '1', 4.0, NULL, 2, '2026-09-16 09:19:22'),
 (32, 1, 'KEP201', 'Keperawatan Medikal Bedah', '2', 4.0, NULL, 3, '2026-09-16 09:19:22'),
-(33, 1, 'KEP301', 'Keperawatan Anak', '3', 3.0, NULL, 4, '2026-09-16 09:19:22');
+(33, 1, 'KEP301', 'Keperawatan Anak', '3', 3.0, NULL, 4, '2026-09-16 09:19:22'),
+(34, 6, 'K3', 'K3', '4', 2.0, 'Wajib', 5, '2026-09-23 08:22:41');
 
 -- --------------------------------------------------------
 
@@ -691,7 +693,8 @@ CREATE TABLE `sertifikat_akreditasi` (
 --
 
 INSERT INTO `sertifikat_akreditasi` (`id_sertifikat`, `id_prodi`, `id_institusi`, `id_lembaga`, `nomor_sk`, `peringkat`, `tanggal_sk`, `tanggal_kadaluarsa`, `file_sertifikat`, `status_aktif`, `created_at`, `updated_at`) VALUES
-(3, '2', 'univ bhamada', 'LAM-PTKes', 'Contoh/0001/AKR/2024', 'Baik Sekali', '2026-09-14', '2026-09-30', '20260914_052216_d38e465b.docx', 1, '2026-09-14 03:21:33', '2026-09-14 03:22:16');
+(3, '2', 'univ bhamada', 'LAM-PTKes', 'Contoh/0001/AKR/2024', 'Baik Sekali', '2026-09-14', '2026-09-30', '20260922_103314_fbe61ce2.pdf', 1, '2026-09-14 03:21:33', '2026-09-22 08:33:14'),
+(4, '2', 'univ bhamada', 'LAM-PTKes', 'Contoh/0001/AKR/2024', 'Baik Sekali', '2026-09-22', '2026-09-30', '20260922_104942_d5913d20.docx', 1, '2026-09-22 08:49:42', '2026-09-22 08:49:42');
 
 -- --------------------------------------------------------
 
@@ -1382,7 +1385,7 @@ ALTER TABLE `akademik_registrasi`
 -- AUTO_INCREMENT for table `akademik_silabus`
 --
 ALTER TABLE `akademik_silabus`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `akademik_skala_nilai`
@@ -1484,7 +1487,7 @@ ALTER TABLE `prodi_fasilitas`
 -- AUTO_INCREMENT for table `prodi_kurikulum`
 --
 ALTER TABLE `prodi_kurikulum`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `prodi_misi`
@@ -1502,7 +1505,7 @@ ALTER TABLE `program_studi`
 -- AUTO_INCREMENT for table `sertifikat_akreditasi`
 --
 ALTER TABLE `sertifikat_akreditasi`
-  MODIFY `id_sertifikat` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_sertifikat` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `slider_beranda`
